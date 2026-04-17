@@ -114,38 +114,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* STAFF */}
-      <section className="home-section">
-        <div className="home-section-head">
-          <div>
-            <p className="home-section-label">Our People</p>
-            <h2>Staff Spotlight</h2>
-          </div>
-        </div>
-
-        <div className="home-staff-grid">
-          {staff?.length ? (
-            staff.map((person) => (
-              <article key={person.id} className="home-staff-card">
-                <div className="home-staff-photo-wrap">
-                  <img
-                    src={person.image_url || "/images/lamoille-logo.png"}
-                    alt={person.full_name}
-                    className="home-staff-photo"
-                  />
-                </div>
-                <h3>{person.full_name}</h3>
-                <p>{person.title || "Staff Member"}</p>
-              </article>
-            ))
-          ) : (
-            <article className="home-card home-card-empty">
-              <h3>No staff profiles yet</h3>
-              <p>Staff spotlight entries will appear here once added.</p>
-            </article>
-          )}
-        </div>
-      </section>
+   
 
     </main>
   )
