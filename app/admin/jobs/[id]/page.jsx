@@ -4,142 +4,265 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../../../lib/supabase"
 import { useParams } from "next/navigation"
 
-export default function JobEditor() {
+export default function JobEditorPage() {
   const { id } = useParams()
 
+  const [loading, setLoading] = useState(true)
   const [job, setJob] = useState(null)
   const [questions, setQuestions] = useState([])
   const [newQuestion, setNewQuestion] = useState("")
+  const [message, setMessage] = useState("")
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (id) {
+      fetchData()
+    }
+  }, [id])
 
   async function fetchData() {
-    const { data: jobData } = await supabase
-      .from("jobs")
+    setLoading(true)
+
+    const { data: jobData, error: jobError } = await supabase
+      .from("job_postings")
       .select("*")
       .eq("id", id)
       .single()
 
-    const { data: questionData } = await supabase
+    if (jobError) {
+      console.log("Job load error:", jobError)
+      setLoading(false)
+      return
+    }
+
+    const { data: questionData, error: questionError } = await supabase
       .from("application_questions")
       .select("*")
-      .eq("job_id", id)
+      .eq("job_posting_id", id)
+      .order("created_at", { ascending: true })
+
+    if (questionError) {
+      console.log("Question load error:", questionError)
+    }
 
     setJob(jobData)
     setQuestions(questionData || [])
+    setLoading(false)
   }
 
-  async function updateJob() {
-    await supabase
-      .from("jobs")
+  async function saveJob() {
+    if (!job) return
+
+    const { error } = await supabase
+      .from("job_postings")
       .update({
         title: job.title,
+        department: job.department,
+        location: job.location,
+        employment_type: job.employment_type,
         description: job.description,
       })
       .eq("id", id)
 
-    alert("Saved")
+    if (error) {
+      console.log(error)
+      setMessage("Error saving job.")
+      return
+    }
+
+    setMessage("Job saved successfully.")
   }
 
   async function addQuestion() {
-    if (!newQuestion) return
+    if (!newQuestion.trim()) return
 
-    await supabase.from("application_questions").insert({
-      job_id: id,
-      question: newQuestion,
-    })
+    const { error } = await supabase
+      .from("application_questions")
+      .insert({
+        job_posting_id: id,
+        question: newQuestion,
+        question_type: "text",
+      })
+
+    if (error) {
+      console.log(error)
+      setMessage("Error adding question.")
+      return
+    }
 
     setNewQuestion("")
     fetchData()
   }
 
-  async function deleteQuestion(qid) {
-    await supabase
+  async function deleteQuestion(questionId) {
+    const { error } = await supabase
       .from("application_questions")
       .delete()
-      .eq("id", qid)
+      .eq("id", questionId)
+
+    if (error) {
+      console.log(error)
+      setMessage("Error deleting question.")
+      return
+    }
 
     fetchData()
   }
 
-  if (!job) return <p>Loading...</p>
+  if (loading) {
+    return (
+      <main className="content">
+        <section className="section">
+          <div className="container">
+            <p>Loading...</p>
+          </div>
+        </section>
+      </main>
+    )
+  }
+
+  if (!job) {
+    return (
+      <main className="content">
+        <section className="section">
+          <div className="container">
+            <h1>Job not found</h1>
+            <p className="muted">This posting could not be loaded.</p>
+          </div>
+        </section>
+      </main>
+    )
+  }
 
   return (
     <main className="content">
       <section className="section">
-        <div className="container">
+        <div className="container" style={{ maxWidth: "900px" }}>
+          <p className="section-label">Admin</p>
+          <h1>Edit Job Posting</h1>
 
-          <h1>Edit Job</h1>
+          {message && (
+            <p className="muted" style={{ marginTop: "10px" }}>
+              {message}
+            </p>
+          )}
 
-          {/* JOB INFO */}
-          <div className="card" style={{ marginBottom: "20px" }}>
+          <div className="card" style={{ marginTop: "24px" }}>
             <h3>Job Details</h3>
 
             <input
-              value={job.title}
-              onChange={(e) =>
-                setJob({ ...job, title: e.target.value })
-              }
+              value={job.title || ""}
+              onChange={(e) => setJob({ ...job, title: e.target.value })}
               placeholder="Job Title"
-              style={{ width: "100%", marginBottom: "10px" }}
+              style={inputStyle}
+            />
+
+            <input
+              value={job.department || ""}
+              onChange={(e) => setJob({ ...job, department: e.target.value })}
+              placeholder="Department"
+              style={inputStyle}
+            />
+
+            <input
+              value={job.location || ""}
+              onChange={(e) => setJob({ ...job, location: e.target.value })}
+              placeholder="Location"
+              style={inputStyle}
+            />
+
+            <input
+              value={job.employment_type || ""}
+              onChange={(e) =>
+                setJob({ ...job, employment_type: e.target.value })
+              }
+              placeholder="Employment Type"
+              style={inputStyle}
             />
 
             <textarea
-              value={job.description}
-              onChange={(e) =>
-                setJob({ ...job, description: e.target.value })
-              }
-              placeholder="Description"
-              style={{ width: "100%", height: "120px" }}
+              value={job.description || ""}
+              onChange={(e) => setJob({ ...job, description: e.target.value })}
+              placeholder="Job Description"
+              style={textareaStyle}
             />
 
-            <button onClick={updateJob} className="btn-primary">
+            <button className="btn-primary" onClick={saveJob}>
               Save Job
             </button>
           </div>
 
-          {/* QUESTIONS */}
-          <div className="card">
+          <div className="card" style={{ marginTop: "24px" }}>
             <h3>Application Questions</h3>
 
-            {questions.map((q) => (
-              <div
-                key={q.id}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "8px",
-                }}
-              >
-                <span>{q.question}</span>
+            <div style={{ marginTop: "12px", marginBottom: "16px" }}>
+              {questions.length ? (
+                questions.map((q) => (
+                  <div
+                    key={q.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "10px 0",
+                      borderBottom: "1px solid #e2e8f0",
+                      gap: "12px",
+                    }}
+                  >
+                    <span>{q.question}</span>
 
-                <button
-                  onClick={() => deleteQuestion(q.id)}
-                  style={{ color: "red" }}
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-
-            <div style={{ marginTop: "10px" }}>
-              <input
-                value={newQuestion}
-                onChange={(e) => setNewQuestion(e.target.value)}
-                placeholder="New question"
-                style={{ width: "100%", marginBottom: "8px" }}
-              />
-
-              <button onClick={addQuestion} className="btn-primary">
-                Add Question
-              </button>
+                    <button
+                      onClick={() => deleteQuestion(q.id)}
+                      style={deleteButtonStyle}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="muted">No questions added yet.</p>
+              )}
             </div>
-          </div>
 
+            <input
+              value={newQuestion}
+              onChange={(e) => setNewQuestion(e.target.value)}
+              placeholder="Add a new application question"
+              style={inputStyle}
+            />
+
+            <button className="btn-primary" onClick={addQuestion}>
+              Add Question
+            </button>
+          </div>
         </div>
       </section>
     </main>
   )
+}
+
+const inputStyle = {
+  width: "100%",
+  marginBottom: "10px",
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #cbd5e1",
+}
+
+const textareaStyle = {
+  width: "100%",
+  minHeight: "140px",
+  marginBottom: "10px",
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #cbd5e1",
+  resize: "vertical",
+}
+
+const deleteButtonStyle = {
+  border: "none",
+  background: "#fee2e2",
+  color: "#991b1b",
+  padding: "8px 12px",
+  borderRadius: "8px",
+  cursor: "pointer",
 }
