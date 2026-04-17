@@ -32,6 +32,8 @@ export default function NewJobPage() {
         department: department || "General",
         location: location || "Not specified",
         employment_type: employmentType || "Full-time",
+        is_published: false,
+        applications_open: true,
       })
       .select()
       .single()
@@ -43,7 +45,6 @@ export default function NewJobPage() {
       return
     }
 
-    // redirect to edit page
     router.push(`/admin/jobs/${data.id}`)
   }
 
@@ -51,11 +52,9 @@ export default function NewJobPage() {
     <main className="content">
       <section className="section">
         <div className="container">
-
           <h1>Create New Job</h1>
 
           <div className="card" style={{ maxWidth: "600px" }}>
-
             <input
               placeholder="Job Title"
               value={title}
@@ -78,7 +77,7 @@ export default function NewJobPage() {
             />
 
             <input
-              placeholder="Employment Type (Full-time, Part-time, etc.)"
+              placeholder="Employment Type"
               value={employmentType}
               onChange={(e) => setEmploymentType(e.target.value)}
               style={inputStyle}
@@ -89,11 +88,9 @@ export default function NewJobPage() {
               className="btn-primary"
               disabled={loading}
             >
-              {loading ? "Creating..." : "Create Job"}
+              {loading ? "Creating..." : "Create Draft Job"}
             </button>
-
           </div>
-
         </div>
       </section>
     </main>
