@@ -71,7 +71,7 @@ export default async function Home() {
       <section className="announcements-preview">
         <div className="section-head">
           <div>
-            <p className="eyebrow">Latest News</p>
+            <p className="eyebrow dark">Latest News</p>
             <h2>Recent Announcements</h2>
           </div>
           <Link href="/announcements" className="text-link">
