@@ -15,16 +15,14 @@ export default function JobApplicationPage() {
   const [saving, setSaving] = useState(false)
 
   const [form, setForm] = useState({
-    applicant_name: "",
-    applicant_email: "",
-    discord_username: "",
-    roblox_username: "",
+    full_name: "",
+    email: "",
   })
 
   useEffect(() => {
     const loadData = async () => {
       const { data: jobData } = await supabase
-        .from("job_postings")
+        .from("jobs") // ✅ FIXED
         .select("*")
         .eq("id", jobId)
         .single()
@@ -32,7 +30,7 @@ export default function JobApplicationPage() {
       const { data: questionData } = await supabase
         .from("application_questions")
         .select("*")
-        .eq("job_posting_id", jobId)
+        .eq("job_id", jobId) // ✅ FIXED
 
       setJob(jobData)
       setQuestions(questionData || [])
@@ -59,17 +57,14 @@ export default function JobApplicationPage() {
     setSaving(true)
     setMessage("")
 
-    // create application
+    // ✅ CREATE APPLICATION
     const { data: appData, error } = await supabase
       .from("applications")
       .insert([
         {
-          job_posting_id: jobId,
-          applicant_name: form.applicant_name,
-          applicant_email: form.applicant_email,
-          discord_username: form.discord_username,
-          roblox_username: form.roblox_username,
-          status: "pending",
+          job_id: jobId, // ✅ FIXED
+          full_name: form.full_name,
+          email: form.email,
         },
       ])
       .select()
@@ -83,7 +78,7 @@ export default function JobApplicationPage() {
 
     const applicationId = appData.id
 
-    // save answers
+    // ✅ SAVE ANSWERS
     if (questions.length) {
       const answerRows = questions.map((q) => ({
         application_id: applicationId,
@@ -94,141 +89,104 @@ export default function JobApplicationPage() {
       await supabase.from("application_answers").insert(answerRows)
     }
 
-    // reset
     setMessage("Application submitted successfully.")
-    setForm({
-      applicant_name: "",
-      applicant_email: "",
-      discord_username: "",
-      roblox_username: "",
-    })
+    setForm({ full_name: "", email: "" })
     setAnswers({})
     setSaving(false)
   }
 
-  if (loading) return <p style={{ padding: "40px" }}>Loading...</p>
+  if (loading) {
+    return (
+      <div className="loading-center">
+        <p>Loading...</p>
+      </div>
+    )
+  }
 
   if (!job) {
     return (
-      <main className="page-shell">
-        <div className="content-card">
-          <h1>Job not found</h1>
-        </div>
+      <main className="content">
+        <section className="section">
+          <div className="container">
+            <h1>Job not found</h1>
+          </div>
+        </section>
       </main>
     )
   }
 
   return (
-    <>
-      <section className="page-hero">
-        <p className="eyebrow">Apply Now</p>
-        <h1>{job.title}</h1>
-        <p>
-          {[job.department, job.location, job.employment_type]
-            .filter(Boolean)
-            .join(" • ")}
-        </p>
-      </section>
+    <main className="content">
+      <section className="section">
+        <div className="container" style={{ maxWidth: "700px" }}>
 
-      <main className="page-shell">
-        <div className="content-card" style={{ maxWidth: "760px", margin: "0 auto" }}>
-          <h2>Application Form</h2>
+          <p className="section-label">Apply Now</p>
+          <h1>{job.title}</h1>
+          <p className="muted">{job.description}</p>
 
-          <form onSubmit={handleSubmit}>
-            {/* BASIC INFO */}
-            <div style={{ marginBottom: "14px" }}>
-              <label>Full Name</label>
+          <div className="card" style={{ marginTop: "20px" }}>
+            <h3>Application Form</h3>
+
+            <form onSubmit={handleSubmit}>
+
               <input
-                name="applicant_name"
-                value={form.applicant_name}
+                name="full_name"
+                placeholder="Full Name"
+                value={form.full_name}
                 onChange={handleChange}
                 required
                 style={inputStyle}
               />
-            </div>
 
-            <div style={{ marginBottom: "14px" }}>
-              <label>Email</label>
               <input
-                name="applicant_email"
-                value={form.applicant_email}
+                name="email"
+                placeholder="Email"
+                value={form.email}
                 onChange={handleChange}
                 required
                 style={inputStyle}
               />
-            </div>
 
-            <div style={{ marginBottom: "14px" }}>
-              <label>Discord Username</label>
-              <input
-                name="discord_username"
-                value={form.discord_username}
-                onChange={handleChange}
-                placeholder="username#0000"
-                style={inputStyle}
-              />
-            </div>
+              {questions.map((q) => (
+                <div key={q.id}>
+                  <label>{q.question}</label>
 
-            <div style={{ marginBottom: "14px" }}>
-              <label>Roblox Username</label>
-              <input
-                name="roblox_username"
-                value={form.roblox_username}
-                onChange={handleChange}
-                style={inputStyle}
-              />
-            </div>
-
-            {/* CUSTOM QUESTIONS */}
-            {questions.map((q) => (
-              <div key={q.id} style={{ marginBottom: "14px" }}>
-                <label>{q.question}</label>
-
-                {q.question_type === "textarea" ? (
-                  <textarea
-                    onChange={(e) =>
-                      handleAnswerChange(q.id, e.target.value)
-                    }
-                    style={textareaStyle}
-                  />
-                ) : (
                   <input
                     onChange={(e) =>
                       handleAnswerChange(q.id, e.target.value)
                     }
                     style={inputStyle}
                   />
-                )}
-              </div>
-            ))}
+                </div>
+              ))}
 
-            <button type="submit" className="btn btn-primary" disabled={saving}>
-              {saving ? "Submitting..." : "Submit Application"}
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={saving}
+              >
+                {saving ? "Submitting..." : "Submit Application"}
+              </button>
 
-          {message && <p style={{ marginTop: "16px" }}>{message}</p>}
+            </form>
+
+            {message && (
+              <p style={{ marginTop: "10px" }}>{message}</p>
+            )}
+
+          </div>
+
         </div>
-      </main>
-    </>
+      </section>
+    </main>
   )
 }
 
 const inputStyle = {
   width: "100%",
-  marginTop: "6px",
-  padding: "12px 14px",
-  borderRadius: "14px",
+  marginTop: "10px",
+  marginBottom: "10px",
+  padding: "12px",
+  borderRadius: "10px",
   border: "1px solid #cbd5e1",
-  fontSize: "16px",
-}
-
-const textareaStyle = {
-  width: "100%",
-  marginTop: "6px",
-  padding: "12px 14px",
-  borderRadius: "14px",
-  border: "1px solid #cbd5e1",
-  fontSize: "16px",
-  resize: "vertical",
 }
