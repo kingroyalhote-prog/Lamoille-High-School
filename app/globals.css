@@ -318,3 +318,50 @@ main {
     transform: translateY(-18px) translateX(8px);
   }
 }
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top, rgba(51, 121, 255, 0.18), transparent 35%),
+    linear-gradient(135deg, #06101f 0%, #0b1f4d 45%, #123f9c 100%);
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.loading-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.loading-inner h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.loading-inner p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.loading-spinner {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
