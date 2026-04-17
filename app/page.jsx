@@ -1,101 +1,103 @@
-export const dynamic = "force-dynamic"
+"use client"
 
-import Image from "next/image"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 
-export default async function Home() {
-  const { data: announcements } = await supabase
-    .from("announcements")
-    .select("id, title, summary, published_at")
-    .eq("is_published", true)
-    .order("published_at", { ascending: false })
-    .limit(3)
+export default function HomePage() {
+  const [announcements, setAnnouncements] = useState([])
+  const [staff, setStaff] = useState([])
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const loadData = async () => {
+    const { data: a } = await supabase
+      .from("announcements")
+      .select("*")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false })
+      .limit(3)
+
+    const { data: s } = await supabase
+      .from("staff_members")
+      .select("*")
+      .eq("is_active", true)
+      .limit(4)
+
+    setAnnouncements(a || [])
+    setStaff(s || [])
+  }
 
   return (
-    <main className="home-page">
+    <div className="home-wrapper">
+      {/* FLOATING BACKGROUND */}
+      <div className="floating-bg">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      {/* HERO */}
       <section className="hero">
-        <div className="hero-bg">
-          <div className="orb orb-1" />
-          <div className="orb orb-2" />
-          <div className="orb orb-3" />
-        </div>
+        <h1>Welcome to Lamoille High School</h1>
+        <p className="hero-sub">
+          Excellence. Community. Opportunity.
+        </p>
 
-        <div className="hero-content">
-          <div className="hero-logo-wrap">
-            <Image
-              src="/images/lamoille-logo.png"
-              alt="Lamoille High School logo"
-              width={150}
-              height={150}
-              className="hero-logo"
-              priority
-            />
-          </div>
+        <p className="hero-desc">
+          A modern school environment focused on leadership, growth, and real opportunity.
+        </p>
 
-          <p className="eyebrow">Home of the Raiders</p>
-          <h1>Welcome to Lamoille</h1>
-          <p className="hero-text">
-            A modern school community built on leadership and opportunity.
-          </p>
-
-          <div className="hero-actions">
-            <Link href="/employment" className="btn btn-primary">
-              Employment Opportunities
-            </Link>
-          </div>
+        <div className="hero-buttons">
+          <Link href="/employment" className="btn-primary">
+            Apply Now
+          </Link>
+          <Link href="/staff" className="btn-secondary">
+            Meet Our Staff
+          </Link>
         </div>
       </section>
 
-      <section className="quick-grid">
-        <div className="glass-card">
-          <h2>About Lamoille</h2>
-          <p>Learn more about our mission, values, and school community.</p>
-          <Link href="/about">Learn More</Link>
+      {/* ANNOUNCEMENTS */}
+      <section className="section">
+        <div className="section-header">
+          <h2>Latest Announcements</h2>
+          <Link href="/announcements" className="view-all">
+            View All →
+          </Link>
         </div>
 
-        <div className="glass-card">
-          <h2>Staff Directory</h2>
-          <p>Find administrators, faculty, and support staff in one place.</p>
-          <Link href="/staff-directory">View Directory</Link>
-        </div>
-
-        <div className="glass-card">
-          <h2>Employment</h2>
-          <p>Browse current openings and explore opportunities to join our team.</p>
-          <Link href="/employment">See Openings</Link>
-        </div>
-      </section>
-
-      <section className="announcements-preview">
-        <div className="section-head">
-          <div>
-            <p className="eyebrow dark">Latest News</p>
-            <h2>Recent Announcements</h2>
-          </div>
-        </div>
-
-        <div className="announcement-grid">
-          {announcements?.length ? (
-            announcements.map((item) => (
-              <article key={item.id} className="announcement-card">
-                <p className="announcement-date">
-                  {item.published_at
-                    ? new Date(item.published_at).toLocaleDateString()
-                    : "Recently posted"}
-                </p>
-                <h3>{item.title}</h3>
-                <p>{item.summary || "No summary provided yet."}</p>
-              </article>
+        <div className="card-grid">
+          {announcements.length ? (
+            announcements.map((a) => (
+              <div key={a.id} className="card">
+                <h3>{a.title}</h3>
+                <p>{a.content}</p>
+              </div>
             ))
           ) : (
-            <article className="announcement-card empty-card">
-              <h3>No announcements yet</h3>
-              <p>Published announcements will appear here once you add them.</p>
-            </article>
+            <p>No announcements yet</p>
           )}
         </div>
       </section>
-    </main>
+
+      {/* STAFF SPOTLIGHT */}
+      <section className="section">
+        <h2>Meet Our Team</h2>
+
+        <div className="staff-grid">
+          {staff.map((s) => (
+            <div key={s.id} className="staff-card">
+              <img src={s.photo_url} alt={s.name} />
+              <h3>{s.name}</h3>
+              <p>{s.role}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
   )
 }
