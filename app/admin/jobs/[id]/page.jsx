@@ -74,31 +74,31 @@ export default function JobEditorPage() {
   }
 
   async function addQuestion() {
-    const trimmed = newQuestion.trim()
-    if (!trimmed) return
+  const trimmed = newQuestion.trim()
+  if (!trimmed) return
 
-    const nextOrder = questions.length
+  const nextOrder = questions.length
 
-    const { error } = await supabase
-      .from("application_questions")
-      .insert({
-        job_posting_id: id,
-        question: trimmed,
-        question_type: "textarea",
-        is_required: true,
-        display_order: nextOrder,
-      })
+  const { error } = await supabase
+    .from("application_questions")
+    .insert({
+      job_posting_id: id,
+      question: trimmed,
+      question_type: "textarea",
+      is_required: true,
+      display_order: nextOrder,
+    })
 
-    if (error) {
-      console.log("Add question error:", error)
-      setMessage("Error adding question.")
-      return
-    }
-
-    setNewQuestion("")
-    setMessage("Question added.")
-    fetchData()
+  if (error) {
+    console.log("Add question error:", error)
+    setMessage(error.message || "Error adding question.")
+    return
   }
+
+  setNewQuestion("")
+  setMessage("Question added.")
+  fetchData()
+}
 
   async function saveQuestion(updatedQuestion) {
     const { error } = await supabase
