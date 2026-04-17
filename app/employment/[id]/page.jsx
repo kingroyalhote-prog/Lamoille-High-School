@@ -5,11 +5,12 @@ import { supabase } from "../../../lib/supabase"
 import { useParams } from "next/navigation"
 
 export default function JobApplicationPage() {
-  const params = useParams()
-  const jobId = params.id
+  const { id: jobId } = useParams()
 
   const [loading, setLoading] = useState(true)
   const [job, setJob] = useState(null)
+  const [questions, setQuestions] = useState([])
+  const [answers, setAnswers] = useState({})
   const [message, setMessage] = useState("")
   const [saving, setSaving] = useState(false)
 
@@ -17,25 +18,29 @@ export default function JobApplicationPage() {
     applicant_name: "",
     applicant_email: "",
     applicant_phone: "",
-    notes: "",
   })
 
   useEffect(() => {
-    const loadJob = async () => {
-      const { data, error } = await supabase
+    const loadData = async () => {
+      // load job
+      const { data: jobData } = await supabase
         .from("job_postings")
         .select("*")
         .eq("id", jobId)
         .single()
 
-      if (!error) {
-        setJob(data)
-      }
+      // load questions
+      const { data: questionData } = await supabase
+        .from("application_questions")
+        .select("*")
+        .eq("job_posting_id", jobId)
 
+      setJob(jobData)
+      setQuestions(questionData || [])
       setLoading(false)
     }
 
-    if (jobId) loadJob()
+    if (jobId) loadData()
   }, [jobId])
 
   const handleChange = (e) => {
@@ -43,34 +48,60 @@ export default function JobApplicationPage() {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
+  const handleAnswerChange = (qid, value) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [qid]: value,
+    }))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
     setMessage("")
 
-    const { error } = await supabase.from("applications").insert([
-      {
-        job_posting_id: jobId,
-        applicant_name: form.applicant_name,
-        applicant_email: form.applicant_email,
-        applicant_phone: form.applicant_phone,
-        review_notes: form.notes,
-        status: "pending",
-      },
-    ])
+    // 1. create application
+    const { data: appData, error } = await supabase
+      .from("applications")
+      .insert([
+        {
+          job_posting_id: jobId,
+          applicant_name: form.applicant_name,
+          applicant_email: form.applicant_email,
+          applicant_phone: form.applicant_phone,
+          status: "pending",
+        },
+      ])
+      .select()
+      .single()
 
     if (error) {
       setMessage(error.message)
-    } else {
-      setMessage("Application submitted successfully.")
-      setForm({
-        applicant_name: "",
-        applicant_email: "",
-        applicant_phone: "",
-        notes: "",
-      })
+      setSaving(false)
+      return
     }
 
+    const applicationId = appData.id
+
+    // 2. insert answers
+    if (questions.length) {
+      const answerRows = questions.map((q) => ({
+        application_id: applicationId,
+        question_id: q.id,
+        answer: answers[q.id] || "",
+      }))
+
+      await supabase.from("application_answers").insert(answerRows)
+    }
+
+    // reset
+    setMessage("Application submitted successfully.")
+    setForm({
+      applicant_name: "",
+      applicant_email: "",
+      applicant_phone: "",
+    })
+    setAnswers({})
     setSaving(false)
   }
 
@@ -91,34 +122,73 @@ export default function JobApplicationPage() {
       <section className="page-hero">
         <p className="eyebrow">Apply Now</p>
         <h1>{job.title}</h1>
-        <p>{[job.department, job.location, job.employment_type].filter(Boolean).join(" • ")}</p>
+        <p>
+          {[job.department, job.location, job.employment_type]
+            .filter(Boolean)
+            .join(" • ")}
+        </p>
       </section>
 
       <main className="page-shell">
         <div className="content-card" style={{ maxWidth: "760px", margin: "0 auto" }}>
           <h2>Application Form</h2>
-          <p style={{ marginBottom: "20px" }}>{job.description}</p>
 
           <form onSubmit={handleSubmit}>
+            {/* BASIC INFO */}
             <div style={{ marginBottom: "14px" }}>
               <label>Full Name</label>
-              <input name="applicant_name" value={form.applicant_name} onChange={handleChange} required style={inputStyle} />
+              <input
+                name="applicant_name"
+                value={form.applicant_name}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
             </div>
 
             <div style={{ marginBottom: "14px" }}>
               <label>Email</label>
-              <input name="applicant_email" value={form.applicant_email} onChange={handleChange} required style={inputStyle} />
+              <input
+                name="applicant_email"
+                value={form.applicant_email}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
             </div>
 
             <div style={{ marginBottom: "14px" }}>
               <label>Phone</label>
-              <input name="applicant_phone" value={form.applicant_phone} onChange={handleChange} style={inputStyle} />
+              <input
+                name="applicant_phone"
+                value={form.applicant_phone}
+                onChange={handleChange}
+                style={inputStyle}
+              />
             </div>
 
-            <div style={{ marginBottom: "14px" }}>
-              <label>Additional Notes</label>
-              <textarea name="notes" value={form.notes} onChange={handleChange} rows={6} style={textareaStyle} />
-            </div>
+            {/* CUSTOM QUESTIONS */}
+            {questions.map((q) => (
+              <div key={q.id} style={{ marginBottom: "14px" }}>
+                <label>{q.question}</label>
+
+                {q.question_type === "textarea" ? (
+                  <textarea
+                    onChange={(e) =>
+                      handleAnswerChange(q.id, e.target.value)
+                    }
+                    style={textareaStyle}
+                  />
+                ) : (
+                  <input
+                    onChange={(e) =>
+                      handleAnswerChange(q.id, e.target.value)
+                    }
+                    style={inputStyle}
+                  />
+                )}
+              </div>
+            ))}
 
             <button type="submit" className="btn btn-primary" disabled={saving}>
               {saving ? "Submitting..." : "Submit Application"}
