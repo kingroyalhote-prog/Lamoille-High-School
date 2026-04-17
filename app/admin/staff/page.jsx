@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../../../lib/supabase"
 import { useRouter } from "next/navigation"
 
@@ -19,7 +19,6 @@ export default function AdminStaffPage() {
     title: "",
     department: "",
     email: "",
-    phone: "",
     office_location: "",
     bio: "",
     is_active: true,
@@ -138,7 +137,6 @@ export default function AdminStaffPage() {
           title: "",
           department: "",
           email: "",
-          phone: "",
           office_location: "",
           bio: "",
           is_active: true,
@@ -232,16 +230,6 @@ export default function AdminStaffPage() {
               <input
                 name="email"
                 value={form.email}
-                onChange={handleChange}
-                style={inputStyle}
-              />
-            </div>
-
-            <div style={{ marginBottom: "14px" }}>
-              <label>Phone</label>
-              <input
-                name="phone"
-                value={form.phone}
                 onChange={handleChange}
                 style={inputStyle}
               />
@@ -394,5 +382,7 @@ const textareaStyle = {
   borderRadius: "14px",
   border: "1px solid #cbd5e1",
   fontSize: "16px",
+  resize: "vertical",
+}
   resize: "vertical",
 }
