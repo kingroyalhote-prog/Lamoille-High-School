@@ -59,6 +59,8 @@ export default function JobEditorPage() {
         location: job.location,
         employment_type: job.employment_type,
         description: job.description,
+        is_published: job.is_published,
+        applications_open: job.applications_open,
       })
       .eq("id", id)
 
@@ -257,6 +259,28 @@ export default function JobEditorPage() {
               style={textareaStyle}
             />
 
+            <label style={toggleLabelStyle}>
+              <input
+                type="checkbox"
+                checked={!!job.is_published}
+                onChange={(e) =>
+                  setJob({ ...job, is_published: e.target.checked })
+                }
+              />
+              Publish this job to the website
+            </label>
+
+            <label style={toggleLabelStyle}>
+              <input
+                type="checkbox"
+                checked={!!job.applications_open}
+                onChange={(e) =>
+                  setJob({ ...job, applications_open: e.target.checked })
+                }
+              />
+              Applications open
+            </label>
+
             <button className="btn-primary" onClick={saveJob}>
               Save Job
             </button>
@@ -319,14 +343,7 @@ export default function JobEditorPage() {
                       marginTop: "10px",
                     }}
                   >
-                    <label
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        fontWeight: 500,
-                      }}
-                    >
+                    <label style={toggleLabelStyle}>
                       <input
                         type="checkbox"
                         checked={!!q.is_required}
@@ -395,6 +412,14 @@ const textareaStyle = {
   borderRadius: "10px",
   border: "1px solid #cbd5e1",
   resize: "vertical",
+}
+
+const toggleLabelStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  marginBottom: "12px",
+  fontWeight: 500,
 }
 
 const smallButtonStyle = {
