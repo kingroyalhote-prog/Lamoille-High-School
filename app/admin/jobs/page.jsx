@@ -96,7 +96,11 @@ export default function AdminJobsPage() {
 
   const toggleStatus = async (job) => {
     const nextStatus =
-      job.status === "open" ? "closed" : job.status === "closed" ? "draft" : "open"
+      job.status === "draft"
+        ? "open"
+        : job.status === "open"
+        ? "closed"
+        : "draft"
 
     const { error } = await supabase
       .from("job_postings")
@@ -128,12 +132,13 @@ export default function AdminJobsPage() {
     <main className="page-shell">
       <div className="content-card" style={{ marginBottom: "24px" }}>
         <h1>Manage Job Postings</h1>
-        <p>Create job postings and control whether they are open to applications.</p>
+        <p>Create jobs and control applications.</p>
       </div>
 
       <div className="info-grid" style={{ alignItems: "start" }}>
+        {/* CREATE JOB */}
         <div className="content-card">
-          <h2>Create Job Posting</h2>
+          <h2>Create Job</h2>
 
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: "14px" }}>
@@ -190,24 +195,39 @@ export default function AdminJobsPage() {
           {message && <p style={{ marginTop: "14px" }}>{message}</p>}
         </div>
 
+        {/* JOB LIST */}
         <div className="content-card">
-          <h2>Current Job Postings</h2>
+          <h2>Job Postings</h2>
 
           <div style={{ display: "grid", gap: "14px" }}>
             {jobs.length ? (
               jobs.map((job) => (
                 <div key={job.id} className="announcement-card" style={{ padding: "18px" }}>
                   <p className="announcement-date">Status: {job.status}</p>
+
                   <h3>{job.title}</h3>
-                  <p>{[job.department, job.location, job.employment_type].filter(Boolean).join(" • ")}</p>
+
+                  <p>
+                    {[job.department, job.location, job.employment_type]
+                      .filter(Boolean)
+                      .join(" • ")}
+                  </p>
+
                   <p>{job.description}</p>
 
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "12px" }}>
-                    <button className="btn btn-primary" type="button" onClick={() => toggleStatus(job)}>
+                    <button className="btn btn-primary" onClick={() => toggleStatus(job)}>
                       Change Status
                     </button>
 
-                    <button className="btn btn-secondary" type="button" onClick={() => deleteJob(job.id)}>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => router.push(`/admin/jobs/${job.id}`)}
+                    >
+                      Edit Questions
+                    </button>
+
+                    <button className="btn btn-secondary" onClick={() => deleteJob(job.id)}>
                       Delete
                     </button>
                   </div>
@@ -216,7 +236,7 @@ export default function AdminJobsPage() {
             ) : (
               <div className="announcement-card">
                 <h3>No jobs yet</h3>
-                <p>Your saved job postings will appear here.</p>
+                <p>Your job postings will appear here.</p>
               </div>
             )}
           </div>
