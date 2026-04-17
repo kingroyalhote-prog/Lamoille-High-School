@@ -30,8 +30,15 @@ export default function AdminApplicationsPage() {
   const loadApplications = async () => {
     const { data, error } = await supabase
       .from("applications")
-      .select("*, job_postings(title)")
-      .order("submitted_at", { ascending: false })
+      .select(`
+        *,
+        job_postings(title),
+        application_answers(
+          answer,
+          application_questions(question)
+        )
+      `)
+      .order("created_at", { ascending: false })
 
     if (!error) {
       setApplications(data || [])
@@ -58,28 +65,68 @@ export default function AdminApplicationsPage() {
     <main className="page-shell">
       <div className="content-card" style={{ marginBottom: "24px" }}>
         <h1>Review Applications</h1>
-        <p>Review incoming applications and update their status.</p>
+        <p>Review, accept, or deny incoming applications.</p>
       </div>
 
       <div style={{ display: "grid", gap: "16px" }}>
         {applications.length ? (
           applications.map((app) => (
             <div key={app.id} className="content-card">
-              <p className="announcement-date">Status: {app.status}</p>
-              <h2 style={{ marginBottom: "8px" }}>{app.applicant_name}</h2>
-              <p><strong>Job:</strong> {app.job_postings?.title || "Unknown job"}</p>
+              <p className="announcement-date">
+                Status: {app.status || "pending"}
+              </p>
+
+              <h2 style={{ marginBottom: "8px" }}>
+                {app.applicant_name}
+              </h2>
+
+              <p><strong>Job:</strong> {app.job_postings?.title || "Unknown"}</p>
               <p><strong>Email:</strong> {app.applicant_email}</p>
               <p><strong>Phone:</strong> {app.applicant_phone || "Not provided"}</p>
-              <p><strong>Notes:</strong> {app.review_notes || "No notes submitted"}</p>
 
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "14px" }}>
-                <button className="btn btn-primary" type="button" onClick={() => updateStatus(app.id, "accepted")}>
+              {/* CUSTOM ANSWERS */}
+              {app.application_answers?.length ? (
+                <div style={{ marginTop: "14px" }}>
+                  <h3 style={{ marginBottom: "10px" }}>Responses</h3>
+
+                  {app.application_answers.map((a, i) => (
+                    <div key={i} style={{ marginBottom: "10px" }}>
+                      <strong>{a.application_questions?.question}</strong>
+                      <p style={{ marginTop: "4px" }}>
+                        {a.answer || "No response"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {/* ACTION BUTTONS */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexWrap: "wrap",
+                  marginTop: "16px",
+                }}
+              >
+                <button
+                  className="btn btn-primary"
+                  onClick={() => updateStatus(app.id, "accepted")}
+                >
                   Accept
                 </button>
-                <button className="btn btn-secondary" type="button" onClick={() => updateStatus(app.id, "denied")}>
+
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => updateStatus(app.id, "denied")}
+                >
                   Deny
                 </button>
-                <button className="btn btn-secondary" type="button" onClick={() => updateStatus(app.id, "pending")}>
+
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => updateStatus(app.id, "pending")}
+                >
                   Set Pending
                 </button>
               </div>
@@ -88,6 +135,7 @@ export default function AdminApplicationsPage() {
         ) : (
           <div className="content-card">
             <h2>No applications yet</h2>
+            <p>Applications will appear here once submitted.</p>
           </div>
         )}
       </div>
