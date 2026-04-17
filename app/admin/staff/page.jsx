@@ -384,5 +384,3 @@ const textareaStyle = {
   fontSize: "16px",
   resize: "vertical",
 }
-  resize: "vertical",
-}
