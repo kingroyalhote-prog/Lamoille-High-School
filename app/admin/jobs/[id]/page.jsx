@@ -14,9 +14,7 @@ export default function JobEditorPage() {
   const [message, setMessage] = useState("")
 
   useEffect(() => {
-    if (id) {
-      fetchData()
-    }
+    if (id) fetchData()
   }, [id])
 
   async function fetchData() {
@@ -38,6 +36,7 @@ export default function JobEditorPage() {
       .from("application_questions")
       .select("*")
       .eq("job_posting_id", id)
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: true })
 
     if (questionError) {
@@ -73,23 +72,50 @@ export default function JobEditorPage() {
   }
 
   async function addQuestion() {
-    if (!newQuestion.trim()) return
+    const trimmed = newQuestion.trim()
+    if (!trimmed) return
+
+    const nextOrder = questions.length
 
     const { error } = await supabase
       .from("application_questions")
       .insert({
         job_posting_id: id,
-        question: newQuestion,
-        question_type: "text",
+        question: trimmed,
+        question_type: "textarea",
+        is_required: true,
+        display_order: nextOrder,
       })
 
     if (error) {
-      console.log(error)
+      console.log("Add question error:", error)
       setMessage("Error adding question.")
       return
     }
 
     setNewQuestion("")
+    setMessage("Question added.")
+    fetchData()
+  }
+
+  async function saveQuestion(updatedQuestion) {
+    const { error } = await supabase
+      .from("application_questions")
+      .update({
+        question: updatedQuestion.question,
+        question_type: "textarea",
+        is_required: updatedQuestion.is_required,
+        display_order: updatedQuestion.display_order,
+      })
+      .eq("id", updatedQuestion.id)
+
+    if (error) {
+      console.log("Save question error:", error)
+      setMessage("Error saving question.")
+      return
+    }
+
+    setMessage("Question updated.")
     fetchData()
   }
 
@@ -100,12 +126,57 @@ export default function JobEditorPage() {
       .eq("id", questionId)
 
     if (error) {
-      console.log(error)
+      console.log("Delete question error:", error)
       setMessage("Error deleting question.")
       return
     }
 
+    const remaining = questions.filter((q) => q.id !== questionId)
+    await normalizeDisplayOrder(remaining)
+    setMessage("Question deleted.")
     fetchData()
+  }
+
+  async function moveQuestion(index, direction) {
+    const newIndex = index + direction
+    if (newIndex < 0 || newIndex >= questions.length) return
+
+    const reordered = [...questions]
+    const temp = reordered[index]
+    reordered[index] = reordered[newIndex]
+    reordered[newIndex] = temp
+
+    const withOrder = reordered.map((q, i) => ({
+      ...q,
+      display_order: i,
+    }))
+
+    setQuestions(withOrder)
+    await normalizeDisplayOrder(withOrder)
+    setMessage("Question order updated.")
+    fetchData()
+  }
+
+  async function normalizeDisplayOrder(questionList) {
+    const updates = questionList.map((q, index) =>
+      supabase
+        .from("application_questions")
+        .update({ display_order: index })
+        .eq("id", q.id)
+    )
+
+    const results = await Promise.all(updates)
+    const failed = results.find((r) => r.error)
+    if (failed?.error) {
+      console.log("Reorder error:", failed.error)
+      setMessage("Error reordering questions.")
+    }
+  }
+
+  function updateLocalQuestion(id, field, value) {
+    setQuestions((prev) =>
+      prev.map((q) => (q.id === id ? { ...q, [field]: value } : q))
+    )
   }
 
   if (loading) {
@@ -193,22 +264,101 @@ export default function JobEditorPage() {
 
           <div className="card" style={{ marginTop: "24px" }}>
             <h3>Application Questions</h3>
+            <p className="muted" style={{ marginBottom: "16px" }}>
+              All questions are long-answer responses.
+            </p>
 
-            <div style={{ marginTop: "12px", marginBottom: "16px" }}>
-              {questions.length ? (
-                questions.map((q) => (
-                  <div
-                    key={q.id}
+            <div style={{ marginBottom: "20px" }}>
+              <textarea
+                value={newQuestion}
+                onChange={(e) => setNewQuestion(e.target.value)}
+                placeholder="Type a new application question"
+                style={textareaStyle}
+              />
+              <button className="btn-primary" onClick={addQuestion}>
+                Add Question
+              </button>
+            </div>
+
+            {questions.length ? (
+              questions.map((q, index) => (
+                <div
+                  key={q.id}
+                  style={{
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "12px",
+                    padding: "16px",
+                    marginBottom: "14px",
+                    background: "#fff",
+                  }}
+                >
+                  <label
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "10px 0",
-                      borderBottom: "1px solid #e2e8f0",
-                      gap: "12px",
+                      display: "block",
+                      fontWeight: 600,
+                      marginBottom: "8px",
                     }}
                   >
-                    <span>{q.question}</span>
+                    Question {index + 1}
+                  </label>
+
+                  <textarea
+                    value={q.question || ""}
+                    onChange={(e) =>
+                      updateLocalQuestion(q.id, "question", e.target.value)
+                    }
+                    style={textareaStyle}
+                  />
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      flexWrap: "wrap",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!!q.is_required}
+                        onChange={(e) =>
+                          updateLocalQuestion(q.id, "is_required", e.target.checked)
+                        }
+                      />
+                      Required
+                    </label>
+
+                    <button
+                      onClick={() => moveQuestion(index, -1)}
+                      style={smallButtonStyle}
+                      disabled={index === 0}
+                    >
+                      Move Up
+                    </button>
+
+                    <button
+                      onClick={() => moveQuestion(index, 1)}
+                      style={smallButtonStyle}
+                      disabled={index === questions.length - 1}
+                    >
+                      Move Down
+                    </button>
+
+                    <button
+                      onClick={() => saveQuestion(q)}
+                      style={smallButtonStyle}
+                    >
+                      Save
+                    </button>
 
                     <button
                       onClick={() => deleteQuestion(q.id)}
@@ -217,22 +367,11 @@ export default function JobEditorPage() {
                       Delete
                     </button>
                   </div>
-                ))
-              ) : (
-                <p className="muted">No questions added yet.</p>
-              )}
-            </div>
-
-            <input
-              value={newQuestion}
-              onChange={(e) => setNewQuestion(e.target.value)}
-              placeholder="Add a new application question"
-              style={inputStyle}
-            />
-
-            <button className="btn-primary" onClick={addQuestion}>
-              Add Question
-            </button>
+                </div>
+              ))
+            ) : (
+              <p className="muted">No questions added yet.</p>
+            )}
           </div>
         </div>
       </section>
@@ -250,12 +389,21 @@ const inputStyle = {
 
 const textareaStyle = {
   width: "100%",
-  minHeight: "140px",
+  minHeight: "110px",
   marginBottom: "10px",
   padding: "12px",
   borderRadius: "10px",
   border: "1px solid #cbd5e1",
   resize: "vertical",
+}
+
+const smallButtonStyle = {
+  border: "none",
+  background: "#e2e8f0",
+  color: "#0f172a",
+  padding: "8px 12px",
+  borderRadius: "8px",
+  cursor: "pointer",
 }
 
 const deleteButtonStyle = {
