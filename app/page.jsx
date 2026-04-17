@@ -51,6 +51,9 @@ export default async function Home() {
             <p className="home-section-label">Latest Updates</p>
             <h2>Recent Announcements</h2>
           </div>
+          <span style={{ color: "#64748b", fontWeight: 700 }}>
+            More coming soon
+          </span>
         </div>
 
         <div className="home-cards-grid">
