@@ -27,7 +27,7 @@ export default function JobEditorPage() {
       .single()
 
     if (jobError) {
-      console.log("Job load error:", jobError)
+      console.log("Job error:", jobError)
       setLoading(false)
       return
     }
@@ -37,10 +37,9 @@ export default function JobEditorPage() {
       .select("*")
       .eq("job_posting_id", id)
       .order("display_order", { ascending: true })
-      .order("created_at", { ascending: true })
 
     if (questionError) {
-      console.log("Question load error:", questionError)
+      console.log("Question error:", questionError)
     }
 
     setJob(jobData)
@@ -49,8 +48,6 @@ export default function JobEditorPage() {
   }
 
   async function saveJob() {
-    if (!job) return
-
     const { error } = await supabase
       .from("job_postings")
       .update({
@@ -70,55 +67,44 @@ export default function JobEditorPage() {
       return
     }
 
-    setMessage("Job saved successfully.")
+    setMessage("Saved successfully.")
   }
 
   async function addQuestion() {
-  const trimmed = newQuestion.trim()
-  if (!trimmed) return
+    const trimmed = newQuestion.trim()
+    if (!trimmed) return
 
-  const nextOrder = questions.length
+    const nextOrder = questions.length
 
-  const { error } = await supabase
-    .from("application_questions")
-    .insert({
-      job_posting_id: id,
-      question: trimmed,
-      question_type: "textarea",
-      is_required: true,
-      display_order: nextOrder,
-    })
-
-  if (error) {
-    console.log("Add question error:", error)
-    setMessage(error.message || "Error adding question.")
-    return
-  }
-
-  setNewQuestion("")
-  setMessage("Question added.")
-  fetchData()
-}
-
-  async function saveQuestion(updatedQuestion) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("application_questions")
-      .update({
-        question: updatedQuestion.question,
-        question_type: "textarea",
-        is_required: updatedQuestion.is_required,
-        display_order: updatedQuestion.display_order,
-      })
-      .eq("id", updatedQuestion.id)
+      .insert([
+        {
+          job_posting_id: id,
+          question: trimmed,
+          question_type: "textarea",
+          is_required: true,
+          display_order: nextOrder,
+        },
+      ])
+      .select()
+
+    console.log("Insert result:", data)
+    console.log("Insert error:", error)
 
     if (error) {
-      console.log("Save question error:", error)
-      setMessage("Error saving question.")
+      setMessage(error.message || "Error adding question.")
       return
     }
 
-    setMessage("Question updated.")
-    fetchData()
+    if (!data || !data.length) {
+      setMessage("Question did not save.")
+      return
+    }
+
+    setNewQuestion("")
+    setMessage("Question added.")
+    await fetchData()
   }
 
   async function deleteQuestion(questionId) {
@@ -128,15 +114,32 @@ export default function JobEditorPage() {
       .eq("id", questionId)
 
     if (error) {
-      console.log("Delete question error:", error)
+      console.log(error)
       setMessage("Error deleting question.")
       return
     }
 
-    const remaining = questions.filter((q) => q.id !== questionId)
-    await normalizeDisplayOrder(remaining)
-    setMessage("Question deleted.")
-    fetchData()
+    await fetchData()
+  }
+
+  async function saveQuestion(q) {
+    const { error } = await supabase
+      .from("application_questions")
+      .update({
+        question: q.question,
+        is_required: q.is_required,
+        display_order: q.display_order,
+      })
+      .eq("id", q.id)
+
+    if (error) {
+      console.log(error)
+      setMessage("Error saving question.")
+      return
+    }
+
+    setMessage("Question updated.")
+    await fetchData()
   }
 
   async function moveQuestion(index, direction) {
@@ -148,31 +151,21 @@ export default function JobEditorPage() {
     reordered[index] = reordered[newIndex]
     reordered[newIndex] = temp
 
-    const withOrder = reordered.map((q, i) => ({
+    const updated = reordered.map((q, i) => ({
       ...q,
       display_order: i,
     }))
 
-    setQuestions(withOrder)
-    await normalizeDisplayOrder(withOrder)
-    setMessage("Question order updated.")
-    fetchData()
-  }
+    setQuestions(updated)
 
-  async function normalizeDisplayOrder(questionList) {
-    const updates = questionList.map((q, index) =>
-      supabase
+    for (let q of updated) {
+      await supabase
         .from("application_questions")
-        .update({ display_order: index })
+        .update({ display_order: q.display_order })
         .eq("id", q.id)
-    )
-
-    const results = await Promise.all(updates)
-    const failed = results.find((r) => r.error)
-    if (failed?.error) {
-      console.log("Reorder error:", failed.error)
-      setMessage("Error reordering questions.")
     }
+
+    await fetchData()
   }
 
   function updateLocalQuestion(id, field, value) {
@@ -199,7 +192,6 @@ export default function JobEditorPage() {
         <section className="section">
           <div className="container">
             <h1>Job not found</h1>
-            <p className="muted">This posting could not be loaded.</p>
           </div>
         </section>
       </main>
@@ -210,37 +202,34 @@ export default function JobEditorPage() {
     <main className="content">
       <section className="section">
         <div className="container" style={{ maxWidth: "900px" }}>
+
           <p className="section-label">Admin</p>
           <h1>Edit Job Posting</h1>
 
-          {message && (
-            <p className="muted" style={{ marginTop: "10px" }}>
-              {message}
-            </p>
-          )}
+          {message && <p className="muted">{message}</p>}
 
-          <div className="card" style={{ marginTop: "24px" }}>
+          <div className="card" style={{ marginTop: "20px" }}>
             <h3>Job Details</h3>
 
             <input
               value={job.title || ""}
               onChange={(e) => setJob({ ...job, title: e.target.value })}
-              placeholder="Job Title"
               style={inputStyle}
+              placeholder="Title"
             />
 
             <input
               value={job.department || ""}
               onChange={(e) => setJob({ ...job, department: e.target.value })}
-              placeholder="Department"
               style={inputStyle}
+              placeholder="Department"
             />
 
             <input
               value={job.location || ""}
               onChange={(e) => setJob({ ...job, location: e.target.value })}
-              placeholder="Location"
               style={inputStyle}
+              placeholder="Location"
             />
 
             <input
@@ -248,18 +237,18 @@ export default function JobEditorPage() {
               onChange={(e) =>
                 setJob({ ...job, employment_type: e.target.value })
               }
-              placeholder="Employment Type"
               style={inputStyle}
+              placeholder="Employment Type"
             />
 
             <textarea
               value={job.description || ""}
               onChange={(e) => setJob({ ...job, description: e.target.value })}
-              placeholder="Job Description"
               style={textareaStyle}
+              placeholder="Description"
             />
 
-            <label style={toggleLabelStyle}>
+            <label style={toggleStyle}>
               <input
                 type="checkbox"
                 checked={!!job.is_published}
@@ -267,10 +256,10 @@ export default function JobEditorPage() {
                   setJob({ ...job, is_published: e.target.checked })
                 }
               />
-              Publish this job to the website
+              Published (visible on site)
             </label>
 
-            <label style={toggleLabelStyle}>
+            <label style={toggleStyle}>
               <input
                 type="checkbox"
                 checked={!!job.applications_open}
@@ -278,7 +267,7 @@ export default function JobEditorPage() {
                   setJob({ ...job, applications_open: e.target.checked })
                 }
               />
-              Applications open
+              Applications Open
             </label>
 
             <button className="btn-primary" onClick={saveJob}>
@@ -286,110 +275,51 @@ export default function JobEditorPage() {
             </button>
           </div>
 
-          <div className="card" style={{ marginTop: "24px" }}>
+          <div className="card" style={{ marginTop: "20px" }}>
             <h3>Application Questions</h3>
-            <p className="muted" style={{ marginBottom: "16px" }}>
-              All questions are long-answer responses.
-            </p>
 
-            <div style={{ marginBottom: "20px" }}>
-              <textarea
-                value={newQuestion}
-                onChange={(e) => setNewQuestion(e.target.value)}
-                placeholder="Type a new application question"
-                style={textareaStyle}
-              />
-              <button className="btn-primary" onClick={addQuestion}>
-                Add Question
-              </button>
-            </div>
+            <textarea
+              value={newQuestion}
+              onChange={(e) => setNewQuestion(e.target.value)}
+              placeholder="New question..."
+              style={textareaStyle}
+            />
 
-            {questions.length ? (
-              questions.map((q, index) => (
-                <div
-                  key={q.id}
-                  style={{
-                    border: "1px solid #e2e8f0",
-                    borderRadius: "12px",
-                    padding: "16px",
-                    marginBottom: "14px",
-                    background: "#fff",
-                  }}
-                >
-                  <label
-                    style={{
-                      display: "block",
-                      fontWeight: 600,
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Question {index + 1}
+            <button className="btn-primary" onClick={addQuestion}>
+              Add Question
+            </button>
+
+            {questions.map((q, index) => (
+              <div key={q.id} style={questionCard}>
+                <textarea
+                  value={q.question}
+                  onChange={(e) =>
+                    updateLocalQuestion(q.id, "question", e.target.value)
+                  }
+                  style={textareaStyle}
+                />
+
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  <label style={toggleStyle}>
+                    <input
+                      type="checkbox"
+                      checked={!!q.is_required}
+                      onChange={(e) =>
+                        updateLocalQuestion(q.id, "is_required", e.target.checked)
+                      }
+                    />
+                    Required
                   </label>
 
-                  <textarea
-                    value={q.question || ""}
-                    onChange={(e) =>
-                      updateLocalQuestion(q.id, "question", e.target.value)
-                    }
-                    style={textareaStyle}
-                  />
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      flexWrap: "wrap",
-                      marginTop: "10px",
-                    }}
-                  >
-                    <label style={toggleLabelStyle}>
-                      <input
-                        type="checkbox"
-                        checked={!!q.is_required}
-                        onChange={(e) =>
-                          updateLocalQuestion(q.id, "is_required", e.target.checked)
-                        }
-                      />
-                      Required
-                    </label>
-
-                    <button
-                      onClick={() => moveQuestion(index, -1)}
-                      style={smallButtonStyle}
-                      disabled={index === 0}
-                    >
-                      Move Up
-                    </button>
-
-                    <button
-                      onClick={() => moveQuestion(index, 1)}
-                      style={smallButtonStyle}
-                      disabled={index === questions.length - 1}
-                    >
-                      Move Down
-                    </button>
-
-                    <button
-                      onClick={() => saveQuestion(q)}
-                      style={smallButtonStyle}
-                    >
-                      Save
-                    </button>
-
-                    <button
-                      onClick={() => deleteQuestion(q.id)}
-                      style={deleteButtonStyle}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  <button onClick={() => moveQuestion(index, -1)}>↑</button>
+                  <button onClick={() => moveQuestion(index, 1)}>↓</button>
+                  <button onClick={() => saveQuestion(q)}>Save</button>
+                  <button onClick={() => deleteQuestion(q.id)}>Delete</button>
                 </div>
-              ))
-            ) : (
-              <p className="muted">No questions added yet.</p>
-            )}
+              </div>
+            ))}
           </div>
+
         </div>
       </section>
     </main>
@@ -406,36 +336,23 @@ const inputStyle = {
 
 const textareaStyle = {
   width: "100%",
-  minHeight: "110px",
+  minHeight: "100px",
   marginBottom: "10px",
   padding: "12px",
   borderRadius: "10px",
   border: "1px solid #cbd5e1",
-  resize: "vertical",
 }
 
-const toggleLabelStyle = {
+const toggleStyle = {
   display: "flex",
-  alignItems: "center",
   gap: "8px",
-  marginBottom: "12px",
-  fontWeight: 500,
+  marginBottom: "10px",
+  alignItems: "center",
 }
 
-const smallButtonStyle = {
-  border: "none",
-  background: "#e2e8f0",
-  color: "#0f172a",
-  padding: "8px 12px",
-  borderRadius: "8px",
-  cursor: "pointer",
-}
-
-const deleteButtonStyle = {
-  border: "none",
-  background: "#fee2e2",
-  color: "#991b1b",
-  padding: "8px 12px",
-  borderRadius: "8px",
-  cursor: "pointer",
+const questionCard = {
+  border: "1px solid #e2e8f0",
+  padding: "12px",
+  borderRadius: "10px",
+  marginTop: "10px",
 }
