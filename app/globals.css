@@ -556,4 +556,37 @@ main {
     text-align: left;
   }
 }
+.staff-section {
+  margin-top: 50px;
+}
+
+.staff-section-title {
+  font-size: 1.6rem;
+  margin-bottom: 16px;
+  color: white;
+  border-left: 4px solid #6366f1;
+  padding-left: 12px;
+}
+
+.staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+.staff-card {
+  background: rgba(255,255,255,0.05);
+  padding: 16px;
+  border-radius: 16px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.staff-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
 }
