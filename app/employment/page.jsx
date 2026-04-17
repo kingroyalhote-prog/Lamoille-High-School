@@ -1,65 +1,48 @@
+import Link from "next/link"
 import { supabase } from "../../lib/supabase"
 
 export const dynamic = "force-dynamic"
 
-export default async function StaffDirectory() {
-  const { data: staff } = await supabase
-    .from("staff_members")
+export default async function EmploymentPage() {
+  const { data: jobs } = await supabase
+    .from("jobs")
     .select("*")
-    .eq("is_active", true)
-    .order("display_order", { ascending: true })
-
-  const grouped = {
-    Administration: [],
-    Teachers: [],
-    "Support Staff": [],
-  }
-
-  staff?.forEach((person) => {
-    const category = person.category || "Support Staff"
-    if (grouped[category]) {
-      grouped[category].push(person)
-    } else {
-      grouped["Support Staff"].push(person)
-    }
-  })
+    .order("created_at", { ascending: false })
 
   return (
     <main className="content">
       <section className="section">
         <div className="container">
 
-          <p className="section-label">Directory</p>
-          <h1>Staff Directory</h1>
+          <p className="section-label">Careers</p>
+          <h1>Employment Opportunities</h1>
+          <p className="muted">
+            Join our team and help shape the future of our students.
+          </p>
 
-          {Object.entries(grouped).map(([group, members]) =>
-            members.length > 0 && (
-              <div key={group} style={{ marginTop: "40px" }}>
-                <h2>{group}</h2>
+          <div className="card-grid" style={{ marginTop: "30px" }}>
+            {jobs?.length ? (
+              jobs.map((job) => (
+                <div key={job.id} className="card">
+                  <h3>{job.title}</h3>
+                  <p>{job.description}</p>
 
-                <div className="card-grid">
-                  {members.map((person) => (
-                    <div key={person.id} className="card" style={{ textAlign: "center" }}>
-                      <img
-                        src={person.image_url || "/images/lamoille-logo.png"}
-                        alt={person.full_name}
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          borderRadius: "999px",
-                          objectFit: "cover",
-                          marginBottom: "10px",
-                        }}
-                      />
-
-                      <h3>{person.full_name}</h3>
-                      <p>{person.title}</p>
-                    </div>
-                  ))}
+                  <Link
+                    href={`/employment/${job.id}`}
+                    className="btn-primary"
+                    style={{ marginTop: "10px", display: "inline-block" }}
+                  >
+                    Apply
+                  </Link>
                 </div>
+              ))
+            ) : (
+              <div className="card">
+                <h3>No openings right now</h3>
+                <p>Please check back later.</p>
               </div>
-            )
-          )}
+            )}
+          </div>
 
         </div>
       </section>
