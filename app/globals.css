@@ -434,4 +434,58 @@ main {
   50% {
     transform: translateY(-16px);
   }
+  /* FOOTER */
+.site-footer {
+  margin-top: 80px;
+  padding: 30px 20px;
+  background: #06101f;
+  color: white;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-left img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.footer-left h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.footer-left p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.footer-right {
+  text-align: right;
+}
+
+.footer-right p {
+  margin: 2px 0;
+}
+
+.footer-small {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
 }
