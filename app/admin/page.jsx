@@ -1,14 +1,14 @@
-import Link from "next/link"
 import { supabase } from "../../lib/supabase"
+import { redirect } from "next/navigation"
 
 export default async function AdminDashboardPage() {
-  const [{ count: announcementCount }, { count: staffCount }, { count: jobCount }, { count: applicationCount }] =
-    await Promise.all([
-      supabase.from("announcements").select("*", { count: "exact", head: true }),
-      supabase.from("staff_members").select("*", { count: "exact", head: true }),
-      supabase.from("job_postings").select("*", { count: "exact", head: true }),
-      supabase.from("applications").select("*", { count: "exact", head: true }),
-    ])
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/login")
+  }
 
   return (
     <>
