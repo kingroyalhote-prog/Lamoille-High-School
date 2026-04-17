@@ -20,49 +20,68 @@ export default function JobApplicationPage() {
   })
 
   useEffect(() => {
-    const loadData = async () => {
-      const { data: jobData } = await supabase
-        .from("jobs") // ✅ FIXED
-        .select("*")
-        .eq("id", jobId)
-        .single()
-
-      const { data: questionData } = await supabase
-        .from("application_questions")
-        .select("*")
-        .eq("job_id", jobId) // ✅ FIXED
-
-      setJob(jobData)
-      setQuestions(questionData || [])
-      setLoading(false)
-    }
-
     if (jobId) loadData()
   }, [jobId])
 
-  const handleChange = (e) => {
+  async function loadData() {
+    setLoading(true)
+
+    const { data: jobData, error: jobError } = await supabase
+      .from("job_postings")
+      .select("*")
+      .eq("id", jobId)
+      .single()
+
+    if (jobError) {
+      console.log("Job error:", jobError)
+    }
+
+    const { data: questionData, error: questionError } = await supabase
+      .from("application_questions")
+      .select("*")
+      .eq("job_posting_id", jobId)
+      .order("display_order", { ascending: true })
+
+    if (questionError) {
+      console.log("Question error:", questionError)
+    }
+
+    setJob(jobData)
+    setQuestions(questionData || [])
+    setLoading(false)
+  }
+
+  function handleChange(e) {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleAnswerChange = (qid, value) => {
+  function handleAnswerChange(qid, value) {
     setAnswers((prev) => ({
       ...prev,
       [qid]: value,
     }))
   }
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault()
     setSaving(true)
     setMessage("")
 
-    // ✅ CREATE APPLICATION
+    // validate required questions
+    for (let q of questions) {
+      if (q.is_required && !answers[q.id]?.trim()) {
+        setMessage("Please answer all required questions.")
+        setSaving(false)
+        return
+      }
+    }
+
     const { data: appData, error } = await supabase
       .from("applications")
       .insert([
         {
-          job_id: jobId, // ✅ FIXED
+          job_posting_id: jobId,
           full_name: form.full_name,
           email: form.email,
         },
@@ -71,14 +90,15 @@ export default function JobApplicationPage() {
       .single()
 
     if (error) {
-      setMessage(error.message)
+      console.log(error)
+      setMessage("Error submitting application.")
       setSaving(false)
       return
     }
 
     const applicationId = appData.id
 
-    // ✅ SAVE ANSWERS
+    // save answers
     if (questions.length) {
       const answerRows = questions.map((q) => ({
         application_id: applicationId,
@@ -86,7 +106,13 @@ export default function JobApplicationPage() {
         answer: answers[q.id] || "",
       }))
 
-      await supabase.from("application_answers").insert(answerRows)
+      const { error: answerError } = await supabase
+        .from("application_answers")
+        .insert(answerRows)
+
+      if (answerError) {
+        console.log(answerError)
+      }
     }
 
     setMessage("Application submitted successfully.")
@@ -122,9 +148,14 @@ export default function JobApplicationPage() {
 
           <p className="section-label">Apply Now</p>
           <h1>{job.title}</h1>
-          <p className="muted">{job.description}</p>
 
-          <div className="card" style={{ marginTop: "20px" }}>
+          <p className="muted" style={{ marginBottom: "20px" }}>
+            {[job.department, job.location, job.employment_type]
+              .filter(Boolean)
+              .join(" • ")}
+          </p>
+
+          <div className="card">
             <h3>Application Form</h3>
 
             <form onSubmit={handleSubmit}>
@@ -149,13 +180,16 @@ export default function JobApplicationPage() {
 
               {questions.map((q) => (
                 <div key={q.id}>
-                  <label>{q.question}</label>
+                  <label>
+                    {q.question} {q.is_required && "*"}
+                  </label>
 
-                  <input
+                  <textarea
+                    required={!!q.is_required}
                     onChange={(e) =>
                       handleAnswerChange(q.id, e.target.value)
                     }
-                    style={inputStyle}
+                    style={textareaStyle}
                   />
                 </div>
               ))}
@@ -171,7 +205,7 @@ export default function JobApplicationPage() {
             </form>
 
             {message && (
-              <p style={{ marginTop: "10px" }}>{message}</p>
+              <p style={{ marginTop: "12px" }}>{message}</p>
             )}
 
           </div>
@@ -184,9 +218,18 @@ export default function JobApplicationPage() {
 
 const inputStyle = {
   width: "100%",
-  marginTop: "10px",
   marginBottom: "10px",
   padding: "12px",
   borderRadius: "10px",
   border: "1px solid #cbd5e1",
+}
+
+const textareaStyle = {
+  width: "100%",
+  minHeight: "120px",
+  marginBottom: "10px",
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #cbd5e1",
+  resize: "vertical",
 }
