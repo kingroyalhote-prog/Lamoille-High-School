@@ -49,45 +49,67 @@ html, body {
 }
 
 /* HERO */
+/* HERO FIX */
 .hero {
   position: relative;
-  min-height: 85vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
-  background:
-    radial-gradient(circle at top, rgba(51,121,255,0.25), transparent 40%),
-    linear-gradient(135deg, #06101f 0%, #0b1f4d 45%, #123f9c 100%);
-  color: white;
+  padding: 140px 20px 100px;
 }
 
-.hero-content {
-  z-index: 2;
+.hero-inner {
   max-width: 700px;
-  padding: 20px;
-}
-
-.hero-logo {
-  margin-bottom: 14px;
-}
-
-.eyebrow {
-  letter-spacing: 0.15em;
-  font-size: 12px;
-  opacity: 0.7;
+  margin: 0 auto;
 }
 
 .hero h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  margin: 10px 0;
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
-.hero-text {
-  opacity: 0.85;
-  margin-bottom: 20px;
+.hero-sub {
+  font-size: 20px;
+  margin-top: 12px;
+  opacity: 0.8;
 }
 
+.hero-desc {
+  margin-top: 16px;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+/* BUTTONS */
+.hero-buttons {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.btn-primary {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+}
+
+.btn-secondary {
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  color: white;
+  text-decoration: none;
+}
 /* BUTTONS */
 .btn {
   padding: 12px 22px;
