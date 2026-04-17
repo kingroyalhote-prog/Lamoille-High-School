@@ -11,73 +11,59 @@ export default async function Home() {
     .order("published_at", { ascending: false })
     .limit(3)
 
-  const { data: staff } = await supabase
-    .from("staff_members")
-    .select("id, full_name, title, image_url")
-    .eq("is_active", true)
-    .order("display_order", { ascending: true })
-    .limit(4)
-
   return (
     <main className="home-page">
       
       {/* HERO */}
       <section className="home-hero">
-        <div className="home-hero-overlay" />
-        <div className="home-hero-shape shape-one" />
-        <div className="home-hero-shape shape-two" />
-        <div className="home-hero-shape shape-three" />
+        <p className="home-eyebrow">Lamoille High School</p>
 
-        <div className="home-hero-inner">
-          <p className="home-eyebrow">Lamoille High School</p>
-          <h1>Welcome to Lamoille High School</h1>
-          <p className="home-tagline">Excellence. Community. Opportunity.</p>
-          <p className="home-subtext">
-            A modern school community focused on leadership, belonging, and meaningful opportunity for every student.
-          </p>
+        <h1>Welcome to Lamoille High School</h1>
 
-          <div className="home-hero-actions">
-            <Link href="/employment" className="home-btn home-btn-primary">
-              Apply Now
-            </Link>
-            <Link href="/staff-directory" className="home-btn home-btn-secondary">
-              Meet Our Staff
-            </Link>
-          </div>
+        <p className="home-tagline">
+          Excellence. Community. Opportunity.
+        </p>
+
+        <p className="home-subtext">
+          A modern school community focused on leadership, belonging, and meaningful opportunity for every student.
+        </p>
+
+        <div className="home-hero-actions">
+          <Link href="/employment" className="home-btn home-btn-primary">
+            Apply Now
+          </Link>
+
+          <Link href="/staff-directory" className="home-btn home-btn-secondary">
+            Meet Our Staff
+          </Link>
         </div>
       </section>
 
-      {/* ABOUT SECTION */}
-      <section className="home-section">
-        <div className="home-about">
+      {/* ABOUT */}
+      <section className="home-about">
+        <p className="home-section-label">About Us</p>
 
-          <div className="home-about-text">
-            <p className="home-section-label">About Us</p>
-            <h2>Building a Stronger School Community</h2>
+        <h2>Building a Stronger School Community</h2>
 
-            <p>
-              Lamoille High School is dedicated to creating a supportive and engaging
-              environment where students can grow academically, socially, and personally.
-              We focus on leadership, collaboration, and real-world opportunities that
-              prepare students for success beyond the classroom.
-            </p>
+        <p>
+          Lamoille High School is dedicated to creating a supportive and engaging
+          environment where students can grow academically, socially, and personally.
+          We focus on leadership, collaboration, and real-world opportunities that
+          prepare students for success beyond the classroom.
+        </p>
 
-            <p>
-              Our staff is committed to helping every student feel valued, challenged,
-              and inspired every day.
-            </p>
-          </div>
+        <p>
+          Our staff is committed to helping every student feel valued, challenged,
+          and inspired every day.
+        </p>
 
-          <div className="home-about-box">
-            <h3>Why Lamoille?</h3>
-            <ul>
-              <li>✔ Supportive and inclusive environment</li>
-              <li>✔ Strong leadership and student involvement</li>
-              <li>✔ Real opportunities for growth</li>
-            </ul>
-          </div>
+        <h3>Why Lamoille?</h3>
 
-        </div>
+        <ul>
+          <li>✔ Supportive and inclusive environment</li>
+          <li>✔ Strong leadership and student involvement</li>
+          <li>✔ Real opportunities for growth</li>
+        </ul>
       </section>
 
       {/* ANNOUNCEMENTS */}
@@ -87,7 +73,8 @@ export default async function Home() {
             <p className="home-section-label">Latest Updates</p>
             <h2>Recent Announcements</h2>
           </div>
-          <span style={{ color: "#64748b", fontWeight: 700 }}>
+
+          <span style={{ color: "#64748b", fontWeight: 600 }}>
             More coming soon
           </span>
         </div>
@@ -101,7 +88,9 @@ export default async function Home() {
                     ? new Date(item.published_at).toLocaleDateString()
                     : "Recently posted"}
                 </p>
+
                 <h3>{item.title}</h3>
+
                 <p>{item.summary || "No summary provided yet."}</p>
               </article>
             ))
@@ -113,8 +102,6 @@ export default async function Home() {
           )}
         </div>
       </section>
-
-   
 
     </main>
   )
