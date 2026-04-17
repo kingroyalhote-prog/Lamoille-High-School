@@ -1,18 +1,23 @@
-import "./globals.css";
-import Navbar from "../components/Navbar";
+import "./globals.css"
+import Footer from "../components/Footer"
 
 export const metadata = {
   title: "Lamoille High School",
-  description: "Official school website",
-};
+  description: "Official website of Lamoille High School",
+}
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
+
+        {/* MAIN CONTENT */}
         {children}
+
+        {/* GLOBAL FOOTER */}
+        <Footer />
+
       </body>
     </html>
-  );
+  )
 }
