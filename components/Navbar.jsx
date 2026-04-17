@@ -16,7 +16,6 @@ export default function Navbar() {
         </Link>
 
         <Link href="/about">About</Link>
-        <Link href="/announcements">Announcements</Link>
         <Link href="/staff-directory">Staff Directory</Link>
         <Link href="/employment">Employment</Link>
         <Link href="/login">Login</Link>
