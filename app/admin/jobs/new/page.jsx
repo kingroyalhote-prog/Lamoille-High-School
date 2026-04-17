@@ -8,30 +8,42 @@ export default function NewJobPage() {
   const router = useRouter()
 
   const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
+  const [department, setDepartment] = useState("")
+  const [location, setLocation] = useState("")
+  const [employmentType, setEmploymentType] = useState("")
   const [loading, setLoading] = useState(false)
 
   async function createJob() {
-    if (!title) return alert("Title is required")
+    if (!title) {
+      alert("Title is required")
+      return
+    }
 
     setLoading(true)
 
+    const slug =
+      title.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now()
+
     const { data, error } = await supabase
-      .from("jobs")
+      .from("job_postings")
       .insert({
         title,
-        description,
+        slug,
+        department: department || "General",
+        location: location || "Not specified",
+        employment_type: employmentType || "Full-time",
       })
       .select()
       .single()
 
     if (error) {
+      console.log(error)
       alert("Error creating job")
       setLoading(false)
       return
     }
 
-    // redirect to edit page after creating
+    // redirect to edit page
     router.push(`/admin/jobs/${data.id}`)
   }
 
@@ -42,20 +54,34 @@ export default function NewJobPage() {
 
           <h1>Create New Job</h1>
 
-          <div className="card">
+          <div className="card" style={{ maxWidth: "600px" }}>
 
             <input
               placeholder="Job Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              style={{ width: "100%", marginBottom: "10px" }}
+              style={inputStyle}
             />
 
-            <textarea
-              placeholder="Job Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              style={{ width: "100%", height: "120px" }}
+            <input
+              placeholder="Department (optional)"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              style={inputStyle}
+            />
+
+            <input
+              placeholder="Location (optional)"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              style={inputStyle}
+            />
+
+            <input
+              placeholder="Employment Type (Full-time, Part-time, etc.)"
+              value={employmentType}
+              onChange={(e) => setEmploymentType(e.target.value)}
+              style={inputStyle}
             />
 
             <button
@@ -72,4 +98,12 @@ export default function NewJobPage() {
       </section>
     </main>
   )
+}
+
+const inputStyle = {
+  width: "100%",
+  marginBottom: "10px",
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #cbd5e1",
 }
