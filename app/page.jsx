@@ -1,67 +1,111 @@
-"use client"
-
 import Link from "next/link"
+import { supabase } from "../lib/supabase"
 
-export default function Home() {
+export const dynamic = "force-dynamic"
+
+export default async function Home() {
+  const { data: announcements } = await supabase
+    .from("announcements")
+    .select("id, title, summary, published_at")
+    .eq("is_published", true)
+    .order("published_at", { ascending: false })
+    .limit(3)
+
+  const { data: staff } = await supabase
+    .from("staff_members")
+    .select("id, full_name, title, image_url")
+    .eq("is_active", true)
+    .order("display_order", { ascending: true })
+    .limit(4)
+
   return (
-    <main>
+    <main className="home-page">
+      <section className="home-hero">
+        <div className="home-hero-overlay" />
+        <div className="home-hero-shape shape-one" />
+        <div className="home-hero-shape shape-two" />
+        <div className="home-hero-shape shape-three" />
 
-      {/* FLOATING BACKGROUND */}
-      <div className="floating-bg">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+        <div className="home-hero-inner">
+          <p className="home-eyebrow">Lamoille High School</p>
+          <h1>Welcome to Lamoille High School</h1>
+          <p className="home-tagline">Excellence. Community. Opportunity.</p>
+          <p className="home-subtext">
+            A modern school community focused on leadership, belonging, and meaningful opportunity for every student.
+          </p>
 
-      {/* HERO */}
-      <section className="section" style={{ textAlign: "center", marginTop: "80px" }}>
-        <h1>Welcome to Lamoille High School</h1>
-
-        <p style={{ marginTop: "12px" }}>
-          Excellence. Community. Opportunity.
-        </p>
-
-        <p style={{ marginTop: "8px", opacity: 0.7 }}>
-          A modern school environment focused on leadership, growth, and real opportunity.
-        </p>
-
-        <div style={{ marginTop: "24px" }}>
-          <Link href="/employment">
-            <button className="primary-btn">Apply Now</button>
-          </Link>
-
-          <Link href="/staff-directory">
-            <button className="secondary-btn" style={{ marginLeft: "10px" }}>
+          <div className="home-hero-actions">
+            <Link href="/employment" className="home-btn home-btn-primary">
+              Apply Now
+            </Link>
+            <Link href="/staff-directory" className="home-btn home-btn-secondary">
               Meet Our Staff
-            </button>
-          </Link>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ANNOUNCEMENTS */}
-      <section className="section">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2>Latest Announcements</h2>
-
-          <Link href="/announcements">
-            View All →
-          </Link>
+      <section className="home-section">
+        <div className="home-section-head">
+          <div>
+            <p className="home-section-label">Latest Updates</p>
+            <h2>Recent Announcements</h2>
+          </div>
         </div>
 
-        <div className="glass-card" style={{ marginTop: "20px" }}>
-          <p>No announcements yet</p>
+        <div className="home-cards-grid">
+          {announcements?.length ? (
+            announcements.map((item) => (
+              <article key={item.id} className="home-card">
+                <p className="home-card-date">
+                  {item.published_at
+                    ? new Date(item.published_at).toLocaleDateString()
+                    : "Recently posted"}
+                </p>
+                <h3>{item.title}</h3>
+                <p>{item.summary || "No summary provided yet."}</p>
+              </article>
+            ))
+          ) : (
+            <article className="home-card home-card-empty">
+              <h3>No announcements yet</h3>
+              <p>Published announcements will appear here once added.</p>
+            </article>
+          )}
         </div>
       </section>
 
-      {/* STAFF */}
-      <section className="section">
-        <h2>Meet Our Team</h2>
+      <section className="home-section">
+        <div className="home-section-head">
+          <div>
+            <p className="home-section-label">Our People</p>
+            <h2>Staff Spotlight</h2>
+          </div>
+        </div>
 
-        <div className="glass-card" style={{ marginTop: "20px", textAlign: "center" }}>
-          <p>Staff profiles coming soon</p>
+        <div className="home-staff-grid">
+          {staff?.length ? (
+            staff.map((person) => (
+              <article key={person.id} className="home-staff-card">
+                <div className="home-staff-photo-wrap">
+                  <img
+                    src={person.image_url || "/images/lamoille-logo.png"}
+                    alt={person.full_name}
+                    className="home-staff-photo"
+                  />
+                </div>
+                <h3>{person.full_name}</h3>
+                <p>{person.title || "Staff Member"}</p>
+              </article>
+            ))
+          ) : (
+            <article className="home-card home-card-empty">
+              <h3>No staff profiles yet</h3>
+              <p>Staff spotlight entries will appear here once added.</p>
+            </article>
+          )}
         </div>
       </section>
-
     </main>
   )
 }
