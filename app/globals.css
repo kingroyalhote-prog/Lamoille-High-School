@@ -589,4 +589,60 @@ main {
   object-fit: cover;
   margin-bottom: 10px;
 }
+.staff-directory-section {
+  margin-top: 40px;
+}
+
+.staff-directory-section:first-child {
+  margin-top: 0;
+}
+
+.staff-directory-section-title {
+  font-size: 1.7rem;
+  margin: 0 0 18px;
+  color: #0f172a;
+  border-left: 4px solid #2563eb;
+  padding-left: 12px;
+}
+
+.staff-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.staff-directory-card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+  text-align: center;
+}
+
+.staff-directory-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 14px;
+  background: #dbeafe;
+}
+
+.staff-directory-card h3 {
+  margin: 0 0 8px;
+  color: #0f172a;
+}
+
+.staff-directory-role {
+  margin: 0 0 10px;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.staff-directory-card p {
+  margin: 6px 0 0;
+  color: #475569;
+  line-height: 1.6;
+}
 }
