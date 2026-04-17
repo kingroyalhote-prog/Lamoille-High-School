@@ -29,12 +29,11 @@ export default async function JobDetailPage({ params }) {
   }
 
   // 🔹 Get questions
-  const { data: questions } = await supabase
-    .from("application_questions")
-    .select("*")
-    .eq("job_posting_id", id)
-    .order("display_order", { ascending: true })
-    .order("created_at", { ascending: true })
+ const { data: questions } = await supabase
+  .from("application_questions")
+  .select("*")
+  .eq("job_posting_id", id)
+  .order("display_order", { ascending: true })
 
   return (
     <main className="content">
