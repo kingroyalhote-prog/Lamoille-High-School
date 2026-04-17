@@ -20,6 +20,8 @@ export default async function Home() {
 
   return (
     <main className="home-page">
+      
+      {/* HERO */}
       <section className="home-hero">
         <div className="home-hero-overlay" />
         <div className="home-hero-shape shape-one" />
@@ -45,6 +47,40 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ABOUT SECTION */}
+      <section className="home-section">
+        <div className="home-about">
+
+          <div className="home-about-text">
+            <p className="home-section-label">About Us</p>
+            <h2>Building a Stronger School Community</h2>
+
+            <p>
+              Lamoille High School is dedicated to creating a supportive and engaging
+              environment where students can grow academically, socially, and personally.
+              We focus on leadership, collaboration, and real-world opportunities that
+              prepare students for success beyond the classroom.
+            </p>
+
+            <p>
+              Our staff is committed to helping every student feel valued, challenged,
+              and inspired every day.
+            </p>
+          </div>
+
+          <div className="home-about-box">
+            <h3>Why Lamoille?</h3>
+            <ul>
+              <li>✔ Supportive and inclusive environment</li>
+              <li>✔ Strong leadership and student involvement</li>
+              <li>✔ Real opportunities for growth</li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ANNOUNCEMENTS */}
       <section className="home-section">
         <div className="home-section-head">
           <div>
@@ -78,6 +114,7 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* STAFF */}
       <section className="home-section">
         <div className="home-section-head">
           <div>
@@ -109,6 +146,7 @@ export default async function Home() {
           )}
         </div>
       </section>
+
     </main>
   )
 }
