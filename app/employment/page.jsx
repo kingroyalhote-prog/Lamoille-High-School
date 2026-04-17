@@ -4,10 +4,11 @@ import { supabase } from "../../lib/supabase"
 export const dynamic = "force-dynamic"
 
 export default async function EmploymentPage() {
-  const { data: jobs } = await supabase
-    .from("jobs")
-    .select("*")
-    .order("created_at", { ascending: false })
+const { data: jobs } = await supabase
+  .from("job_postings")
+  .select("*")
+  .eq("is_published", true)
+  .order("created_at", { ascending: false })
 
   return (
     <main className="content">
