@@ -1,87 +1,80 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { supabase } from "../../lib/supabase"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { supabase } from "../../lib/supabase"
 
-export default function AdminDashboardPage() {
-  const [loading, setLoading] = useState(true)
-  const [counts, setCounts] = useState({
-    announcements: 0,
-    staff: 0,
-    jobs: 0,
-    applications: 0,
-  })
+export const dynamic = "force-dynamic"
 
-  const router = useRouter()
+export default async function AdminPage() {
+  const { count: announcementsCount } = await supabase
+    .from("announcements")
+    .select("*", { count: "exact", head: true })
 
-  useEffect(() => {
-    const init = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
+  const { count: staffCount } = await supabase
+    .from("staff_members")
+    .select("*", { count: "exact", head: true })
 
-      if (!user) {
-        router.push("/login")
-        return
-      }
+  const { count: jobsCount } = await supabase
+    .from("jobs")
+    .select("*", { count: "exact", head: true })
 
-      // get counts
-      const [a, s, j, ap] = await Promise.all([
-        supabase.from("announcements").select("*", { count: "exact", head: true }),
-        supabase.from("staff_members").select("*", { count: "exact", head: true }),
-        supabase.from("job_postings").select("*", { count: "exact", head: true }),
-        supabase.from("applications").select("*", { count: "exact", head: true }),
-      ])
-
-      setCounts({
-        announcements: a.count || 0,
-        staff: s.count || 0,
-        jobs: j.count || 0,
-        applications: ap.count || 0,
-      })
-
-      setLoading(false)
-    }
-
-    init()
-  }, [])
-
-  if (loading) return <p style={{ padding: "40px" }}>Loading...</p>
+  const { count: applicationsCount } = await supabase
+    .from("applications")
+    .select("*", { count: "exact", head: true })
 
   return (
-    <main className="page-shell">
-      <div className="content-card" style={{ marginBottom: "20px" }}>
-        <h1>Admin Dashboard</h1>
-        <p>Manage your entire site from here.</p>
-      </div>
+    <main className="content">
+      <section className="section">
+        <div className="container">
 
-      <div className="info-grid">
-        <div className="content-card">
-          <h2>Announcements</h2>
-          <p>{counts.announcements} total</p>
-          <Link href="/admin/announcements">Manage</Link>
-        </div>
+          <p className="section-label">Admin</p>
+          <h1>Admin Dashboard</h1>
+          <p className="muted">Manage your entire site from here.</p>
 
-        <div className="content-card">
-          <h2>Staff Directory</h2>
-          <p>{counts.staff} staff</p>
-          <Link href="/admin/staff">Manage</Link>
-        </div>
+          <div className="card-grid" style={{ marginTop: "30px" }}>
 
-        <div className="content-card">
-          <h2>Jobs</h2>
-          <p>{counts.jobs} postings</p>
-          <Link href="/admin/jobs">Manage</Link>
-        </div>
+            {/* ANNOUNCEMENTS */}
+            <div className="card">
+              <h3>Announcements</h3>
+              <p>{announcementsCount || 0} total</p>
 
-        <div className="content-card">
-          <h2>Applications</h2>
-          <p>{counts.applications} submitted</p>
-          <Link href="/admin/applications">Review</Link>
+              <Link href="/admin/announcements" className="btn-primary" style={{ marginTop: "10px", display: "inline-block" }}>
+                Manage
+              </Link>
+            </div>
+
+            {/* STAFF */}
+            <div className="card">
+              <h3>Staff Directory</h3>
+              <p>{staffCount || 0} staff</p>
+
+              <Link href="/admin/staff" className="btn-primary" style={{ marginTop: "10px", display: "inline-block" }}>
+                Manage
+              </Link>
+            </div>
+
+            {/* JOBS */}
+            <div className="card">
+              <h3>Jobs</h3>
+              <p>{jobsCount || 0} postings</p>
+
+              <Link href="/admin/jobs" className="btn-primary" style={{ marginTop: "10px", display: "inline-block" }}>
+                Manage
+              </Link>
+            </div>
+
+            {/* APPLICATIONS */}
+            <div className="card">
+              <h3>Applications</h3>
+              <p>{applicationsCount || 0} submitted</p>
+
+              <Link href="/admin/applications" className="btn-primary" style={{ marginTop: "10px", display: "inline-block" }}>
+                Review
+              </Link>
+            </div>
+
+          </div>
+
         </div>
-      </div>
+      </section>
     </main>
   )
 }
