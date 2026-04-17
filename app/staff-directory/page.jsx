@@ -16,47 +16,53 @@ export default async function StaffDirectory() {
   }
 
   staff?.forEach((person) => {
-    const category = person.category || "Teachers"
-    if (!grouped[category]) grouped[category] = []
-    grouped[category].push(person)
+    const category = person.category || "Support Staff"
+    if (grouped[category]) {
+      grouped[category].push(person)
+    } else {
+      grouped["Support Staff"].push(person)
+    }
   })
 
   return (
-    <>
-      <section className="page-hero">
-        <p className="eyebrow">Our People</p>
-        <h1>Staff Directory</h1>
-        <p>Meet the team that supports the Lamoille High School community.</p>
-      </section>
+    <main className="content">
+      <section className="section">
+        <div className="container">
 
-      <main className="page-shell">
-        {Object.entries(grouped).map(([category, people]) =>
-          people.length > 0 ? (
-            <section key={category} className="staff-directory-section">
-              <h2 className="staff-directory-section-title">{category}</h2>
+          <p className="section-label">Directory</p>
+          <h1>Staff Directory</h1>
 
-              <div className="staff-directory-grid">
-                {people.map((person) => (
-                  <article key={person.id} className="staff-directory-card">
-                    <img
-                      src={person.image_url || "/images/lamoille-logo.png"}
-                      alt={person.full_name}
-                      className="staff-directory-photo"
-                    />
+          {Object.entries(grouped).map(([group, members]) =>
+            members.length > 0 && (
+              <div key={group} style={{ marginTop: "40px" }}>
+                <h2>{group}</h2>
 
-                    <h3>{person.full_name}</h3>
-                    <p className="staff-directory-role">
-                      {person.title || "Staff Member"}
-                    </p>
-                    {person.email ? <p>{person.email}</p> : null}
-                    {person.bio ? <p>{person.bio}</p> : null}
-                  </article>
-                ))}
+                <div className="card-grid">
+                  {members.map((person) => (
+                    <div key={person.id} className="card" style={{ textAlign: "center" }}>
+                      <img
+                        src={person.image_url || "/images/lamoille-logo.png"}
+                        alt={person.full_name}
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          borderRadius: "999px",
+                          objectFit: "cover",
+                          marginBottom: "10px",
+                        }}
+                      />
+
+                      <h3>{person.full_name}</h3>
+                      <p>{person.title}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </section>
-          ) : null
-        )}
-      </main>
-    </>
+            )
+          )}
+
+        </div>
+      </section>
+    </main>
   )
 }
