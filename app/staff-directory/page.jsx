@@ -9,7 +9,6 @@ export default async function StaffDirectory() {
     .eq("is_active", true)
     .order("display_order", { ascending: true })
 
-  // Group staff by category
   const grouped = {
     Administration: [],
     Teachers: [],
@@ -23,30 +22,41 @@ export default async function StaffDirectory() {
   })
 
   return (
-    <main className="page-container">
-      <h1>Staff Directory</h1>
+    <>
+      <section className="page-hero">
+        <p className="eyebrow">Our People</p>
+        <h1>Staff Directory</h1>
+        <p>Meet the team that supports the Lamoille High School community.</p>
+      </section>
 
-      {Object.entries(grouped).map(([category, people]) => (
-        people.length > 0 && (
-          <section key={category} className="staff-section">
-            <h2 className="staff-section-title">{category}</h2>
+      <main className="page-shell">
+        {Object.entries(grouped).map(([category, people]) =>
+          people.length > 0 ? (
+            <section key={category} className="staff-directory-section">
+              <h2 className="staff-directory-section-title">{category}</h2>
 
-            <div className="staff-grid">
-              {people.map((person) => (
-                <div key={person.id} className="staff-card">
-                  <img
-                    src={person.image_url || "/images/lamoille-logo.png"}
-                    alt={person.full_name}
-                    className="staff-photo"
-                  />
-                  <h3>{person.full_name}</h3>
-                  <p>{person.title}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )
-      ))}
-    </main>
+              <div className="staff-directory-grid">
+                {people.map((person) => (
+                  <article key={person.id} className="staff-directory-card">
+                    <img
+                      src={person.image_url || "/images/lamoille-logo.png"}
+                      alt={person.full_name}
+                      className="staff-directory-photo"
+                    />
+
+                    <h3>{person.full_name}</h3>
+                    <p className="staff-directory-role">
+                      {person.title || "Staff Member"}
+                    </p>
+                    {person.email ? <p>{person.email}</p> : null}
+                    {person.bio ? <p>{person.bio}</p> : null}
+                  </article>
+                ))}
+              </div>
+            </section>
+          ) : null
+        )}
+      </main>
+    </>
   )
 }
