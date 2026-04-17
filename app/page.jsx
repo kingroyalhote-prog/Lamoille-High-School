@@ -40,26 +40,29 @@ export default function HomePage() {
         <span></span>
       </div>
 
-      {/* HERO */}
-      <section className="hero">
-        <h1>Welcome to Lamoille High School</h1>
-        <p className="hero-sub">
-          Excellence. Community. Opportunity.
-        </p>
+     <section className="hero">
+  <div className="hero-inner">
+    <h1>Welcome to Lamoille High School</h1>
 
-        <p className="hero-desc">
-          A modern school environment focused on leadership, growth, and real opportunity.
-        </p>
+    <p className="hero-sub">
+      Excellence. Community. Opportunity.
+    </p>
 
-        <div className="hero-buttons">
-          <Link href="/employment" className="btn-primary">
-            Apply Now
-          </Link>
-          <Link href="/staff" className="btn-secondary">
-            Meet Our Staff
-          </Link>
-        </div>
-      </section>
+    <p className="hero-desc">
+      A modern school environment focused on leadership, growth, and real opportunity.
+    </p>
+
+    <div className="hero-buttons">
+      <Link href="/employment" className="btn-primary">
+        Apply Now
+      </Link>
+
+      <Link href="/staff" className="btn-secondary">
+        Meet Our Staff
+      </Link>
+    </div>
+  </div>
+</section>
 
       {/* ANNOUNCEMENTS */}
       <section className="section">
