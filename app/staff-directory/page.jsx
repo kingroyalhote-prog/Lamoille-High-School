@@ -6,7 +6,7 @@ import { supabase } from "../../lib/supabase"
 export default async function StaffDirectoryPage() {
   const { data: staff } = await supabase
     .from("staff_members")
-    .select("id, full_name, title, department, email, phone, image_url, bio")
+    .select("id, full_name, title, department, email, image_url, bio")
     .eq("is_active", true)
     .order("display_order", { ascending: true })
 
@@ -40,7 +40,6 @@ export default async function StaffDirectoryPage() {
                 <p className="meta-text">{person.title}</p>
                 <p>{person.department || "Department not listed"}</p>
                 <p>{person.email || "Email not listed"}</p>
-                <p>{person.phone || "Phone not listed"}</p>
                 <p>{person.bio || ""}</p>
               </article>
             ))
