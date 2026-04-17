@@ -1,266 +1,49 @@
-"use client"
-
-import { useEffect, useState } from "react"
+import Link from "next/link"
 import { supabase } from "../../../lib/supabase"
-import { useRouter } from "next/navigation"
 
-export default function AdminJobsPage() {
-  const router = useRouter()
+export const dynamic = "force-dynamic"
 
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState("")
-  const [jobs, setJobs] = useState([])
-
-  const [form, setForm] = useState({
-    title: "",
-    department: "",
-    location: "",
-    employment_type: "",
-    description: "",
-    status: "draft",
-  })
-
-  useEffect(() => {
-    const init = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
-      if (!user) {
-        router.push("/login")
-        return
-      }
-
-      await loadJobs()
-      setLoading(false)
-    }
-
-    init()
-  }, [router])
-
-  const loadJobs = async () => {
-    const { data, error } = await supabase
-      .from("job_postings")
-      .select("*")
-      .order("created_at", { ascending: false })
-
-    if (!error) {
-      setJobs(data || [])
-    }
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const createSlug = (text) => {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setSaving(true)
-    setMessage("")
-
-    const payload = {
-      ...form,
-      slug: `${createSlug(form.title)}-${Date.now()}`,
-    }
-
-    const { error } = await supabase.from("job_postings").insert([payload])
-
-    if (error) {
-      setMessage(error.message)
-    } else {
-      setMessage("Job created successfully.")
-      setForm({
-        title: "",
-        department: "",
-        location: "",
-        employment_type: "",
-        description: "",
-        status: "draft",
-      })
-      await loadJobs()
-    }
-
-    setSaving(false)
-  }
-
-  const toggleStatus = async (job) => {
-    const nextStatus =
-      job.status === "draft"
-        ? "open"
-        : job.status === "open"
-        ? "closed"
-        : "draft"
-
-    const { error } = await supabase
-      .from("job_postings")
-      .update({ status: nextStatus })
-      .eq("id", job.id)
-
-    if (!error) {
-      await loadJobs()
-    }
-  }
-
-  const deleteJob = async (id) => {
-    const confirmed = window.confirm("Delete this job posting?")
-    if (!confirmed) return
-
-    const { error } = await supabase
-      .from("job_postings")
-      .delete()
-      .eq("id", id)
-
-    if (!error) {
-      await loadJobs()
-    }
-  }
-
-  if (loading) return <p style={{ padding: "40px" }}>Loading...</p>
+export default async function JobsAdmin() {
+  const { data: jobs } = await supabase
+    .from("jobs")
+    .select("*")
+    .order("created_at", { ascending: false })
 
   return (
-    <main className="page-shell">
-      <div className="content-card" style={{ marginBottom: "24px" }}>
-        <h1>Manage Job Postings</h1>
-        <p>Create jobs and control applications.</p>
-      </div>
+    <main className="content">
+      <section className="section">
+        <div className="container">
 
-      <div className="info-grid" style={{ alignItems: "start" }}>
-        {/* CREATE JOB */}
-        <div className="content-card">
-          <h2>Create Job</h2>
-
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: "14px" }}>
-              <label>Title</label>
-              <input name="title" value={form.title} onChange={handleChange} required style={inputStyle} />
+          <div className="section-head">
+            <div>
+              <p className="section-label">Admin</p>
+              <h1>Job Postings</h1>
             </div>
 
-            <div style={{ marginBottom: "14px" }}>
-              <label>Department</label>
-              <input name="department" value={form.department} onChange={handleChange} style={inputStyle} />
-            </div>
-
-            <div style={{ marginBottom: "14px" }}>
-              <label>Location</label>
-              <input name="location" value={form.location} onChange={handleChange} style={inputStyle} />
-            </div>
-
-            <div style={{ marginBottom: "14px" }}>
-              <label>Employment Type</label>
-              <input
-                name="employment_type"
-                value={form.employment_type}
-                onChange={handleChange}
-                placeholder="Full-time, Part-time, Seasonal..."
-                style={inputStyle}
-              />
-            </div>
-
-            <div style={{ marginBottom: "14px" }}>
-              <label>Description</label>
-              <textarea
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                rows={6}
-                style={textareaStyle}
-              />
-            </div>
-
-            <div style={{ marginBottom: "16px" }}>
-              <label>Status</label>
-              <select name="status" value={form.status} onChange={handleChange} style={inputStyle}>
-                <option value="draft">Draft</option>
-                <option value="open">Open</option>
-                <option value="closed">Closed</option>
-              </select>
-            </div>
-
-            <button type="submit" className="btn btn-primary" disabled={saving}>
-              {saving ? "Saving..." : "Create Job"}
-            </button>
-          </form>
-
-          {message && <p style={{ marginTop: "14px" }}>{message}</p>}
-        </div>
-
-        {/* JOB LIST */}
-        <div className="content-card">
-          <h2>Job Postings</h2>
-
-          <div style={{ display: "grid", gap: "14px" }}>
-            {jobs.length ? (
-              jobs.map((job) => (
-                <div key={job.id} className="announcement-card" style={{ padding: "18px" }}>
-                  <p className="announcement-date">Status: {job.status}</p>
-
-                  <h3>{job.title}</h3>
-
-                  <p>
-                    {[job.department, job.location, job.employment_type]
-                      .filter(Boolean)
-                      .join(" • ")}
-                  </p>
-
-                  <p>{job.description}</p>
-
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "12px" }}>
-                    <button className="btn btn-primary" onClick={() => toggleStatus(job)}>
-                      Change Status
-                    </button>
-
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() => router.push(`/admin/jobs/${job.id}`)}
-                    >
-                      Edit Questions
-                    </button>
-
-                    <button className="btn btn-secondary" onClick={() => deleteJob(job.id)}>
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="announcement-card">
-                <h3>No jobs yet</h3>
-                <p>Your job postings will appear here.</p>
-              </div>
-            )}
+            <Link href="/admin/jobs/new" className="btn-primary">
+              + New Job
+            </Link>
           </div>
+
+          <div className="card-grid">
+            {jobs?.map((job) => (
+              <div key={job.id} className="card">
+                <h3>{job.title}</h3>
+                <p>{job.description?.slice(0, 100)}...</p>
+
+                <Link
+                  href={`/admin/jobs/${job.id}`}
+                  className="btn-primary"
+                  style={{ marginTop: "10px", display: "inline-block" }}
+                >
+                  Edit
+                </Link>
+              </div>
+            ))}
+          </div>
+
         </div>
-      </div>
+      </section>
     </main>
   )
-}
-
-const inputStyle = {
-  width: "100%",
-  marginTop: "6px",
-  padding: "12px 14px",
-  borderRadius: "14px",
-  border: "1px solid #cbd5e1",
-  fontSize: "16px",
-}
-
-const textareaStyle = {
-  width: "100%",
-  marginTop: "6px",
-  padding: "12px 14px",
-  borderRadius: "14px",
-  border: "1px solid #cbd5e1",
-  fontSize: "16px",
-  resize: "vertical",
 }
