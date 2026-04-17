@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { supabase } from "../../../lib/supabase"
 import { useRouter } from "next/navigation"
 
@@ -12,6 +12,7 @@ export default function AdminStaffPage() {
   const [message, setMessage] = useState("")
   const [staff, setStaff] = useState([])
   const [photoFile, setPhotoFile] = useState(null)
+  const [photoPreview, setPhotoPreview] = useState("")
 
   const [form, setForm] = useState({
     full_name: "",
@@ -41,6 +42,18 @@ export default function AdminStaffPage() {
 
     init()
   }, [router])
+
+  useEffect(() => {
+    if (!photoFile) {
+      setPhotoPreview("")
+      return
+    }
+
+    const objectUrl = URL.createObjectURL(photoFile)
+    setPhotoPreview(objectUrl)
+
+    return () => URL.revokeObjectURL(objectUrl)
+  }, [photoFile])
 
   const loadStaff = async () => {
     const { data, error } = await supabase
@@ -131,6 +144,7 @@ export default function AdminStaffPage() {
           is_active: true,
         })
         setPhotoFile(null)
+        setPhotoPreview("")
         await loadStaff()
       }
     } catch (err) {
@@ -264,6 +278,24 @@ export default function AdminStaffPage() {
               />
             </div>
 
+            {photoPreview ? (
+              <div style={{ marginBottom: "16px" }}>
+                <p style={{ marginBottom: "8px", fontWeight: 600 }}>Photo Preview</p>
+                <img
+                  src={photoPreview}
+                  alt="Preview"
+                  style={{
+                    width: "110px",
+                    height: "110px",
+                    borderRadius: "999px",
+                    objectFit: "cover",
+                    border: "3px solid #dbeafe",
+                    boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+                  }}
+                />
+              </div>
+            ) : null}
+
             <div style={{ marginBottom: "16px" }}>
               <label style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <input
@@ -294,10 +326,6 @@ export default function AdminStaffPage() {
                   <p className="announcement-date">
                     {person.is_active ? "Visible" : "Hidden"}
                   </p>
-                  <h3>{person.full_name}</h3>
-                  <p>{person.title}</p>
-                  <p>{person.department || "No department listed"}</p>
-                  <p>{person.email || "No email listed"}</p>
 
                   {person.image_url ? (
                     <img
@@ -308,10 +336,15 @@ export default function AdminStaffPage() {
                         height: "72px",
                         borderRadius: "999px",
                         objectFit: "cover",
-                        marginTop: "10px",
+                        marginBottom: "10px",
                       }}
                     />
                   ) : null}
+
+                  <h3>{person.full_name}</h3>
+                  <p>{person.title}</p>
+                  <p>{person.department || "No department listed"}</p>
+                  <p>{person.email || "No email listed"}</p>
 
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "12px" }}>
                     <button
