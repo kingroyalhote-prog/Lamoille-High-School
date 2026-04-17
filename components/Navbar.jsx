@@ -1,25 +1,34 @@
-import Image from "next/image"
+"use client"
+
 import Link from "next/link"
+import Image from "next/image"
 
 export default function Navbar() {
   return (
-    <nav className="site-nav">
-      <div className="site-nav-inner">
-        <Link href="/" className="site-brand">
+    <header className="navbar">
+      <div className="nav-container">
+        
+        {/* Logo + Title */}
+        <Link href="/" className="nav-left">
           <Image
-            src="/images/lamoille-logo.png"
-            alt="Lamoille High School logo"
-            width={42}
-            height={42}
+            src="/lamoille-logo.png"
+            alt="Lamoille High School Logo"
+            width={40}
+            height={40}
+            className="nav-logo"
           />
-          <span>Lamoille High School</span>
+          <span className="nav-title">Lamoille High School</span>
         </Link>
 
-        <Link href="/about">About</Link>
-        <Link href="/staff-directory">Staff Directory</Link>
-        <Link href="/employment">Employment</Link>
-        <Link href="/login">Login</Link>
+        {/* Navigation Links */}
+        <nav className="nav-links">
+          <Link href="/about">About</Link>
+          <Link href="/staff-directory">Staff Directory</Link>
+          <Link href="/employment">Employment</Link>
+          <Link href="/login">Login</Link>
+        </nav>
+
       </div>
-    </nav>
+    </header>
   )
 }
