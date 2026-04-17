@@ -17,19 +17,18 @@ export default function JobApplicationPage() {
   const [form, setForm] = useState({
     applicant_name: "",
     applicant_email: "",
-    applicant_phone: "",
+    discord_username: "",
+    roblox_username: "",
   })
 
   useEffect(() => {
     const loadData = async () => {
-      // load job
       const { data: jobData } = await supabase
         .from("job_postings")
         .select("*")
         .eq("id", jobId)
         .single()
 
-      // load questions
       const { data: questionData } = await supabase
         .from("application_questions")
         .select("*")
@@ -60,7 +59,7 @@ export default function JobApplicationPage() {
     setSaving(true)
     setMessage("")
 
-    // 1. create application
+    // create application
     const { data: appData, error } = await supabase
       .from("applications")
       .insert([
@@ -68,7 +67,8 @@ export default function JobApplicationPage() {
           job_posting_id: jobId,
           applicant_name: form.applicant_name,
           applicant_email: form.applicant_email,
-          applicant_phone: form.applicant_phone,
+          discord_username: form.discord_username,
+          roblox_username: form.roblox_username,
           status: "pending",
         },
       ])
@@ -83,7 +83,7 @@ export default function JobApplicationPage() {
 
     const applicationId = appData.id
 
-    // 2. insert answers
+    // save answers
     if (questions.length) {
       const answerRows = questions.map((q) => ({
         application_id: applicationId,
@@ -99,7 +99,8 @@ export default function JobApplicationPage() {
     setForm({
       applicant_name: "",
       applicant_email: "",
-      applicant_phone: "",
+      discord_username: "",
+      roblox_username: "",
     })
     setAnswers({})
     setSaving(false)
@@ -158,10 +159,21 @@ export default function JobApplicationPage() {
             </div>
 
             <div style={{ marginBottom: "14px" }}>
-              <label>Phone</label>
+              <label>Discord Username</label>
               <input
-                name="applicant_phone"
-                value={form.applicant_phone}
+                name="discord_username"
+                value={form.discord_username}
+                onChange={handleChange}
+                placeholder="username#0000"
+                style={inputStyle}
+              />
+            </div>
+
+            <div style={{ marginBottom: "14px" }}>
+              <label>Roblox Username</label>
+              <input
+                name="roblox_username"
+                value={form.roblox_username}
                 onChange={handleChange}
                 style={inputStyle}
               />
