@@ -15,7 +15,7 @@ export default async function Home() {
     <main>
 
       {/* HERO */}
-      <section className="hero">
+<section className="hero">
   <div className="hero-bg-orb hero-orb-one" />
   <div className="hero-bg-orb hero-orb-two" />
   <div className="hero-bg-grid" />
