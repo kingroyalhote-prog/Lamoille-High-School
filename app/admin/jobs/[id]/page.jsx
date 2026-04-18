@@ -63,7 +63,7 @@ export default function JobEditorPage() {
 
     if (error) {
       console.log(error)
-      setMessage("Error saving job.")
+      setMessage(error.message || "Error saving job.")
       return
     }
 
@@ -98,11 +98,6 @@ export default function JobEditorPage() {
       return
     }
 
-    if (!data || !data.length) {
-      setMessage("Question did not save.")
-      return
-    }
-
     setNewQuestion("")
     setMessage("Question added.")
     await fetchData()
@@ -116,7 +111,7 @@ export default function JobEditorPage() {
 
     if (error) {
       console.log(error)
-      setMessage("Error deleting question.")
+      setMessage(error.message || "Error deleting question.")
       return
     }
 
@@ -137,7 +132,7 @@ export default function JobEditorPage() {
 
     if (error) {
       console.log(error)
-      setMessage("Error saving question.")
+      setMessage(error.message || "Error saving question.")
       return
     }
 
@@ -161,7 +156,7 @@ export default function JobEditorPage() {
 
     setQuestions(updated)
 
-    for (let q of updated) {
+    for (const q of updated) {
       await supabase
         .from("application_questions")
         .update({ sort_order: q.sort_order })
@@ -351,6 +346,7 @@ const textareaStyle = {
   padding: "12px",
   borderRadius: "10px",
   border: "1px solid #cbd5e1",
+  resize: "vertical",
 }
 
 const toggleStyle = {
