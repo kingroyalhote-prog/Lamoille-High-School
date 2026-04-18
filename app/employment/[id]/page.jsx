@@ -26,25 +26,17 @@ export default function JobApplicationPage() {
   async function loadData() {
     setLoading(true)
 
-    const { data: jobData, error: jobError } = await supabase
+    const { data: jobData } = await supabase
       .from("job_postings")
       .select("*")
       .eq("id", jobId)
       .single()
 
-    if (jobError) {
-      console.log("Job error:", jobError)
-    }
-
-    const { data: questionData, error: questionError } = await supabase
+    const { data: questionData } = await supabase
       .from("application_questions")
       .select("*")
       .eq("job_posting_id", jobId)
       .order("sort_order", { ascending: true })
-
-    if (questionError) {
-      console.log("Question error:", questionError)
-    }
 
     setJob(jobData)
     setQuestions(questionData || [])
@@ -68,6 +60,7 @@ export default function JobApplicationPage() {
     setSaving(true)
     setMessage("")
 
+    // Validate required questions
     for (const q of questions) {
       if (q.is_required && !answers[q.id]?.trim()) {
         setMessage("Please answer all required questions.")
@@ -76,32 +69,25 @@ export default function JobApplicationPage() {
       }
     }
 
-   const { data, error } = await supabase.rpc("insert_application", {
-  job_id: jobId,
-  name: form.full_name,
-  email: form.email,
-})
+    // 🔥 Insert application via RPC (bypasses RLS)
+    const { data, error } = await supabase.rpc("insert_application", {
+      job_id: jobId,
+      name: form.full_name,
+      email: form.email,
+    })
 
-console.log("RPC result:", data)
-console.log("RPC error:", error)
-
-if (error) {
-  setMessage(error.message || "Error submitting application.")
-  setSaving(false)
-  return
-}
-
-const applicationId = data
+    console.log("RPC result:", data)
+    console.log("RPC error:", error)
 
     if (error) {
-      console.log(error)
       setMessage(error.message || "Error submitting application.")
       setSaving(false)
       return
     }
 
-    const applicationId = appData.id
+    const applicationId = data
 
+    // Insert answers
     if (questions.length) {
       const answerRows = questions.map((q) => ({
         application_id: applicationId,
@@ -115,6 +101,9 @@ const applicationId = data
 
       if (answerError) {
         console.log(answerError)
+        setMessage("Application saved, but answers failed.")
+        setSaving(false)
+        return
       }
     }
 
@@ -193,11 +182,11 @@ const applicationId = data
                       {q.is_required && " *"}
                     </label>
 
-                    {q.help_text ? (
-                      <p className="muted" style={{ marginTop: "-4px", marginBottom: "8px" }}>
+                    {q.help_text && (
+                      <p className="muted" style={{ marginBottom: "6px" }}>
                         {q.help_text}
                       </p>
-                    ) : null}
+                    )}
 
                     <textarea
                       required={!!q.is_required}
