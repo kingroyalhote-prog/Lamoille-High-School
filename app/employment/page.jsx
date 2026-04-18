@@ -4,17 +4,20 @@ import { supabase } from "../../lib/supabase"
 export const dynamic = "force-dynamic"
 
 export default async function EmploymentPage() {
-const { data: jobs } = await supabase
-  .from("job_postings")
-  .select("*")
-  .eq("is_published", true)
-  .order("created_at", { ascending: false })
+  const { data: jobs, error } = await supabase
+    .from("job_postings")
+    .select("*")
+    .eq("is_published", true)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    console.log(error)
+  }
 
   return (
     <main className="content">
       <section className="section">
         <div className="container">
-
           <p className="section-label">Careers</p>
           <h1>Employment Opportunities</h1>
           <p className="muted">
@@ -26,14 +29,21 @@ const { data: jobs } = await supabase
               jobs.map((job) => (
                 <div key={job.id} className="card">
                   <h3>{job.title}</h3>
-                  <p>{job.description}</p>
+
+                  <p className="muted" style={{ marginBottom: "10px" }}>
+                    {[job.department, job.location, job.employment_type]
+                      .filter(Boolean)
+                      .join(" • ")}
+                  </p>
+
+                  {job.description ? <p>{job.description}</p> : null}
 
                   <Link
                     href={`/employment/${job.id}`}
                     className="btn-primary"
                     style={{ marginTop: "10px", display: "inline-block" }}
                   >
-                    Apply
+                    {job.applications_open ? "Apply" : "View"}
                   </Link>
                 </div>
               ))
@@ -44,7 +54,6 @@ const { data: jobs } = await supabase
               </div>
             )}
           </div>
-
         </div>
       </section>
     </main>
