@@ -36,7 +36,7 @@ export default function JobEditorPage() {
       .from("application_questions")
       .select("*")
       .eq("job_posting_id", id)
-      .order("display_order", { ascending: true })
+      .order("sort_order", { ascending: true })
 
     if (questionError) {
       console.log("Question error:", questionError)
@@ -81,10 +81,11 @@ export default function JobEditorPage() {
       .insert([
         {
           job_posting_id: id,
-          question: trimmed,
-          question_type: "textarea",
+          label: trimmed,
+          help_text: "",
+          field_type: "textarea",
           is_required: true,
-          display_order: nextOrder,
+          sort_order: nextOrder,
         },
       ])
       .select()
@@ -126,9 +127,11 @@ export default function JobEditorPage() {
     const { error } = await supabase
       .from("application_questions")
       .update({
-        question: q.question,
+        label: q.label,
+        help_text: q.help_text,
         is_required: q.is_required,
-        display_order: q.display_order,
+        sort_order: q.sort_order,
+        field_type: "textarea",
       })
       .eq("id", q.id)
 
@@ -153,7 +156,7 @@ export default function JobEditorPage() {
 
     const updated = reordered.map((q, i) => ({
       ...q,
-      display_order: i,
+      sort_order: i,
     }))
 
     setQuestions(updated)
@@ -161,7 +164,7 @@ export default function JobEditorPage() {
     for (let q of updated) {
       await supabase
         .from("application_questions")
-        .update({ display_order: q.display_order })
+        .update({ sort_order: q.sort_order })
         .eq("id", q.id)
     }
 
@@ -202,7 +205,6 @@ export default function JobEditorPage() {
     <main className="content">
       <section className="section">
         <div className="container" style={{ maxWidth: "900px" }}>
-
           <p className="section-label">Admin</p>
           <h1>Edit Job Posting</h1>
 
@@ -292,11 +294,20 @@ export default function JobEditorPage() {
             {questions.map((q, index) => (
               <div key={q.id} style={questionCard}>
                 <textarea
-                  value={q.question}
+                  value={q.label || ""}
                   onChange={(e) =>
-                    updateLocalQuestion(q.id, "question", e.target.value)
+                    updateLocalQuestion(q.id, "label", e.target.value)
                   }
                   style={textareaStyle}
+                />
+
+                <input
+                  value={q.help_text || ""}
+                  onChange={(e) =>
+                    updateLocalQuestion(q.id, "help_text", e.target.value)
+                  }
+                  style={inputStyle}
+                  placeholder="Optional help text"
                 />
 
                 <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
@@ -319,7 +330,6 @@ export default function JobEditorPage() {
               </div>
             ))}
           </div>
-
         </div>
       </section>
     </main>
