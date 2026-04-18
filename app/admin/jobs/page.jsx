@@ -9,9 +9,7 @@ export default async function JobsAdminPage() {
     .select("*")
     .order("created_at", { ascending: false })
 
-  if (error) {
-    console.log(error)
-  }
+  if (error) console.log(error)
 
   return (
     <main className="content">
