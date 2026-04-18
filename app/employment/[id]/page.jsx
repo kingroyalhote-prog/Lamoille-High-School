@@ -76,17 +76,22 @@ export default function JobApplicationPage() {
       }
     }
 
-    const { data: appData, error } = await supabase
-      .from("applications")
-      .insert([
-        {
-          job_posting_id: jobId,
-          full_name: form.full_name,
-          email: form.email,
-        },
-      ])
-      .select()
-      .single()
+   const { data, error } = await supabase.rpc("insert_application", {
+  job_id: jobId,
+  name: form.full_name,
+  email: form.email,
+})
+
+console.log("RPC result:", data)
+console.log("RPC error:", error)
+
+if (error) {
+  setMessage(error.message || "Error submitting application.")
+  setSaving(false)
+  return
+}
+
+const applicationId = data
 
     if (error) {
       console.log(error)
