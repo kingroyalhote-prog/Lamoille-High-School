@@ -16,30 +16,38 @@ export default async function Home() {
 
       {/* HERO */}
       <section className="hero">
-        <div className="hero-inner">
-          <p className="hero-eyebrow">Lamoille High School</p>
+  <div className="hero-bg-orb hero-orb-one" />
+  <div className="hero-bg-orb hero-orb-two" />
+  <div className="hero-bg-grid" />
 
-          <h1>Welcome to Lamoille High School</h1>
+  <div className="hero-inner">
+    <p className="hero-eyebrow">Lamoille High School</p>
 
-          <p className="hero-tagline">
-            Excellence. Community. Opportunity.
-          </p>
+    <h1>
+      Welcome to
+      <span className="hero-break">Lamoille High School</span>
+    </h1>
 
-          <p className="hero-subtext">
-            A modern school community focused on leadership, belonging, and meaningful opportunity for every student.
-          </p>
+    <p className="hero-tagline">
+      Excellence. Community. Opportunity.
+    </p>
 
-          <div className="hero-actions">
-            <Link href="/employment" className="btn-primary">
-              Apply Now
-            </Link>
+    <p className="hero-subtext">
+      A modern school community focused on leadership, belonging, and
+      meaningful opportunity for every student.
+    </p>
 
-            <Link href="/staff-directory" className="btn-secondary">
-              Meet Our Staff
-            </Link>
-          </div>
-        </div>
-      </section>
+    <div className="hero-actions">
+      <Link href="/employment" className="btn-primary">
+        Apply Now
+      </Link>
+
+      <Link href="/staff-directory" className="btn-secondary">
+        Meet Our Staff
+      </Link>
+    </div>
+  </div>
+</section>
 
       {/* WHITE CONTENT AREA */}
       <div className="content">
