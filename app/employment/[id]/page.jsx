@@ -1,79 +1,173 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { supabase } from "../../../lib/supabase"
+import { useParams } from "next/navigation"
 
-export const dynamic = "force-dynamic"
+export default function JobApplicationPage() {
+  const { id: jobId } = useParams()
 
-export default async function JobDetailPage({ params }) {
-  const { id } = params
+  const [loading, setLoading] = useState(true)
+  const [job, setJob] = useState(null)
+  const [questions, setQuestions] = useState([])
+  const [answers, setAnswers] = useState({})
+  const [message, setMessage] = useState("")
+  const [saving, setSaving] = useState(false)
 
-  // 🔹 Get job
-  const { data: job } = await supabase
-    .from("job_postings")
-    .select("*")
-    .eq("id", id)
-    .single()
+  const [form, setForm] = useState({
+    full_name: "",
+    email: "",
+  })
 
-  // 🔴 If job doesn't exist or is not published
+  useEffect(() => {
+    if (jobId) loadData()
+  }, [jobId])
+
+  async function loadData() {
+    setLoading(true)
+
+    const { data: jobData, error: jobError } = await supabase
+      .from("job_postings")
+      .select("*")
+      .eq("id", jobId)
+      .single()
+
+    if (jobError) {
+      console.log("Job error:", jobError)
+    }
+
+    const { data: questionData, error: questionError } = await supabase
+      .from("application_questions")
+      .select("*")
+      .eq("job_posting_id", jobId)
+      .order("sort_order", { ascending: true })
+
+    if (questionError) {
+      console.log("Question error:", questionError)
+    }
+
+    setJob(jobData)
+    setQuestions(questionData || [])
+    setLoading(false)
+  }
+
+  function handleChange(e) {
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
+
+  function handleAnswerChange(qid, value) {
+    setAnswers((prev) => ({
+      ...prev,
+      [qid]: value,
+    }))
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setSaving(true)
+    setMessage("")
+
+    for (let q of questions) {
+      if (q.is_required && !answers[q.id]?.trim()) {
+        setMessage("Please answer all required questions.")
+        setSaving(false)
+        return
+      }
+    }
+
+    const { data: appData, error } = await supabase
+      .from("applications")
+      .insert([
+        {
+          job_posting_id: jobId,
+          full_name: form.full_name,
+          email: form.email,
+        },
+      ])
+      .select()
+      .single()
+
+    if (error) {
+      console.log(error)
+      setMessage("Error submitting application.")
+      setSaving(false)
+      return
+    }
+
+    const applicationId = appData.id
+
+    if (questions.length) {
+      const answerRows = questions.map((q) => ({
+        application_id: applicationId,
+        question_id: q.id,
+        answer: answers[q.id] || "",
+      }))
+
+      const { error: answerError } = await supabase
+        .from("application_answers")
+        .insert(answerRows)
+
+      if (answerError) {
+        console.log(answerError)
+      }
+    }
+
+    setMessage("Application submitted successfully.")
+    setForm({ full_name: "", email: "" })
+    setAnswers({})
+    setSaving(false)
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-center">
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
   if (!job || !job.is_published) {
     return (
       <main className="content">
         <section className="section">
           <div className="container">
             <h1>Job not available</h1>
-            <p className="muted">
-              This position is not currently available.
-            </p>
+            <p className="muted">This position is not currently available.</p>
           </div>
         </section>
       </main>
     )
   }
 
-  // 🔹 Get questions
- const { data: questions } = await supabase
-  .from("application_questions")
-  .select("*")
-  .eq("job_posting_id", id)
-  .order("display_order", { ascending: true })
-
   return (
     <main className="content">
       <section className="section">
-        <div className="container" style={{ maxWidth: "800px" }}>
-
-          <p className="section-label">Employment</p>
+        <div className="container" style={{ maxWidth: "700px" }}>
+          <p className="section-label">Apply Now</p>
           <h1>{job.title}</h1>
 
-          <p className="muted" style={{ marginBottom: "10px" }}>
-            {job.department} • {job.location} • {job.employment_type}
+          <p className="muted" style={{ marginBottom: "20px" }}>
+            {[job.department, job.location, job.employment_type]
+              .filter(Boolean)
+              .join(" • ")}
           </p>
 
-          {job.description && (
-            <div className="card" style={{ marginBottom: "24px" }}>
-              <p>{job.description}</p>
-            </div>
-          )}
-
-          {/* 🔴 APPLICATION CLOSED */}
           {!job.applications_open ? (
             <div className="card">
-              <h3>Applications are closed</h3>
+              <h3>Applications are currently closed</h3>
               <p>Please check back later.</p>
             </div>
           ) : (
             <div className="card">
-              <h3>Apply for this position</h3>
+              <h3>Application Form</h3>
 
-              <form
-                action="/api/applications"
-                method="POST"
-                style={{ marginTop: "16px" }}
-              >
-                <input type="hidden" name="job_posting_id" value={job.id} />
-
-                {/* Basic Info */}
+              <form onSubmit={handleSubmit}>
                 <input
-                  name="name"
+                  name="full_name"
                   placeholder="Full Name"
+                  value={form.full_name}
+                  onChange={handleChange}
                   required
                   style={inputStyle}
                 />
@@ -81,31 +175,47 @@ export default async function JobDetailPage({ params }) {
                 <input
                   name="email"
                   placeholder="Email"
-                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
                   required
                   style={inputStyle}
                 />
 
-                {/* Dynamic Questions */}
-                {questions?.map((q) => (
+                {questions.map((q) => (
                   <div key={q.id}>
                     <label style={labelStyle}>
-                      {q.question}
+                      {q.label}
                       {q.is_required && " *"}
                     </label>
 
+                    {q.help_text ? (
+                      <p className="muted" style={{ marginTop: "-4px", marginBottom: "8px" }}>
+                        {q.help_text}
+                      </p>
+                    ) : null}
+
                     <textarea
-                      name={`question_${q.id}`}
-                      required={q.is_required}
+                      required={!!q.is_required}
+                      onChange={(e) =>
+                        handleAnswerChange(q.id, e.target.value)
+                      }
                       style={textareaStyle}
                     />
                   </div>
                 ))}
 
-                <button type="submit" className="btn-primary">
-                  Submit Application
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={saving}
+                >
+                  {saving ? "Submitting..." : "Submit Application"}
                 </button>
               </form>
+
+              {message && (
+                <p style={{ marginTop: "12px" }}>{message}</p>
+              )}
             </div>
           )}
         </div>
@@ -116,7 +226,7 @@ export default async function JobDetailPage({ params }) {
 
 const inputStyle = {
   width: "100%",
-  marginBottom: "12px",
+  marginBottom: "10px",
   padding: "12px",
   borderRadius: "10px",
   border: "1px solid #cbd5e1",
@@ -124,8 +234,8 @@ const inputStyle = {
 
 const textareaStyle = {
   width: "100%",
-  minHeight: "110px",
-  marginBottom: "14px",
+  minHeight: "120px",
+  marginBottom: "10px",
   padding: "12px",
   borderRadius: "10px",
   border: "1px solid #cbd5e1",
