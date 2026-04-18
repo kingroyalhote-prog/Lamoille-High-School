@@ -68,7 +68,7 @@ export default function JobApplicationPage() {
     setSaving(true)
     setMessage("")
 
-    for (let q of questions) {
+    for (const q of questions) {
       if (q.is_required && !answers[q.id]?.trim()) {
         setMessage("Please answer all required questions.")
         setSaving(false)
@@ -90,7 +90,7 @@ export default function JobApplicationPage() {
 
     if (error) {
       console.log(error)
-      setMessage("Error submitting application.")
+      setMessage(error.message || "Error submitting application.")
       setSaving(false)
       return
     }
