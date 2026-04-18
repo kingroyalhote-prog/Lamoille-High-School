@@ -3,17 +3,20 @@ import { supabase } from "../../../lib/supabase"
 
 export const dynamic = "force-dynamic"
 
-export default async function JobsAdmin() {
-  const { data: jobs } = await supabase
-    .from("jobs")
+export default async function JobsAdminPage() {
+  const { data: jobs, error } = await supabase
+    .from("job_postings")
     .select("*")
     .order("created_at", { ascending: false })
+
+  if (error) {
+    console.log(error)
+  }
 
   return (
     <main className="content">
       <section className="section">
         <div className="container">
-
           <div className="section-head">
             <div>
               <p className="section-label">Admin</p>
@@ -25,23 +28,39 @@ export default async function JobsAdmin() {
             </Link>
           </div>
 
-          <div className="card-grid">
-            {jobs?.map((job) => (
-              <div key={job.id} className="card">
-                <h3>{job.title}</h3>
-                <p>{job.description?.slice(0, 100)}...</p>
+          <div className="card-grid" style={{ marginTop: "20px" }}>
+            {jobs?.length ? (
+              jobs.map((job) => (
+                <div key={job.id} className="card">
+                  <h3>{job.title}</h3>
 
-                <Link
-                  href={`/admin/jobs/${job.id}`}
-                  className="btn-primary"
-                  style={{ marginTop: "10px", display: "inline-block" }}
-                >
-                  Edit
-                </Link>
+                  <p className="muted" style={{ marginBottom: "10px" }}>
+                    {[job.department, job.location, job.employment_type]
+                      .filter(Boolean)
+                      .join(" • ")}
+                  </p>
+
+                  <p style={{ marginBottom: "12px" }}>
+                    {job.is_published ? "Published" : "Draft"} ·{" "}
+                    {job.applications_open ? "Applications Open" : "Applications Closed"}
+                  </p>
+
+                  <Link
+                    href={`/admin/jobs/${job.id}`}
+                    className="btn-primary"
+                    style={{ display: "inline-block" }}
+                  >
+                    Edit
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="card">
+                <h3>No job postings yet</h3>
+                <p>Create your first posting to get started.</p>
               </div>
-            ))}
+            )}
           </div>
-
         </div>
       </section>
     </main>
