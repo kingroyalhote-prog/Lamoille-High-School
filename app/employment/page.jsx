@@ -10,9 +10,7 @@ export default async function EmploymentPage() {
     .eq("is_published", true)
     .order("created_at", { ascending: false })
 
-  if (error) {
-    console.log(error)
-  }
+  if (error) console.log(error)
 
   return (
     <main className="content">
