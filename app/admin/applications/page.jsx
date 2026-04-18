@@ -4,23 +4,26 @@ import { supabase } from "../../../lib/supabase"
 export const dynamic = "force-dynamic"
 
 export default async function ApplicationsPage() {
-  const { data: applications } = await supabase
+  const { data: applications, error } = await supabase
     .from("applications")
     .select(`
       id,
       created_at,
       full_name,
       email,
-      job_id,
-      jobs ( title )
+      job_posting_id,
+      job_postings ( title )
     `)
     .order("created_at", { ascending: false })
+
+  if (error) {
+    console.log("Applications query error:", error)
+  }
 
   return (
     <main className="content">
       <section className="section">
         <div className="container">
-
           <div className="section-head">
             <div>
               <p className="section-label">Admin</p>
@@ -32,17 +35,18 @@ export default async function ApplicationsPage() {
             {applications?.length ? (
               applications.map((app) => (
                 <div key={app.id} className="card">
-
-                  <h3>{app.full_name}</h3>
-                  <p>{app.email}</p>
+                  <h3>{app.full_name || "Unnamed Applicant"}</h3>
+                  <p>{app.email || "No email provided"}</p>
 
                   <p style={{ marginTop: "6px" }}>
                     <strong>Position:</strong>{" "}
-                    {app.jobs?.title || "Unknown"}
+                    {app.job_postings?.title || "Unknown"}
                   </p>
 
                   <p className="muted" style={{ marginTop: "6px" }}>
-                    {new Date(app.created_at).toLocaleDateString()}
+                    {app.created_at
+                      ? new Date(app.created_at).toLocaleDateString()
+                      : "Unknown date"}
                   </p>
 
                   <Link
@@ -52,7 +56,6 @@ export default async function ApplicationsPage() {
                   >
                     View Application
                   </Link>
-
                 </div>
               ))
             ) : (
@@ -62,7 +65,6 @@ export default async function ApplicationsPage() {
               </div>
             )}
           </div>
-
         </div>
       </section>
     </main>
