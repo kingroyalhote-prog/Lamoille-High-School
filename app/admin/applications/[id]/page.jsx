@@ -7,50 +7,13 @@ export default async function ApplicationDetailPage({ params }) {
 
   const { data: application, error: applicationError } = await supabase
     .from("applications")
-    .select(`
-      id,
-      created_at,
-      full_name,
-      email,
-      discord_username,
-      roblox_username,
-      status,
-      job_posting_id,
-      job_postings ( title, department, location, employment_type )
-    `)
+    .select("*")
     .eq("id", id)
     .single()
 
   if (applicationError) {
     console.log("Application load error:", applicationError)
   }
-
-  const { data: answers, error: answersError } = await supabase
-    .from("application_answers")
-    .select(`
-      id,
-      answer,
-      question_id,
-      application_questions (
-        id,
-        label,
-        help_text,
-        is_required,
-        sort_order
-      )
-    `)
-    .eq("application_id", id)
-
-  if (answersError) {
-    console.log("Answers load error:", answersError)
-  }
-
-  const sortedAnswers =
-    answers?.sort((a, b) => {
-      const aOrder = a.application_questions?.sort_order ?? 0
-      const bOrder = b.application_questions?.sort_order ?? 0
-      return aOrder - bOrder
-    }) || []
 
   if (!application) {
     return (
@@ -64,6 +27,46 @@ export default async function ApplicationDetailPage({ params }) {
       </main>
     )
   }
+
+  const { data: job } = await supabase
+    .from("job_postings")
+    .select("title, department, location, employment_type")
+    .eq("id", application.job_posting_id)
+    .single()
+
+  const { data: answersRaw, error: answersError } = await supabase
+    .from("application_answers")
+    .select("*")
+    .eq("application_id", id)
+
+  if (answersError) {
+    console.log("Answers load error:", answersError)
+  }
+
+  const questionIds = (answersRaw || []).map((a) => a.question_id)
+
+  let questions = []
+  if (questionIds.length) {
+    const { data: questionsData } = await supabase
+      .from("application_questions")
+      .select("id, label, help_text, is_required, sort_order")
+      .in("id", questionIds)
+
+    questions = questionsData || []
+  }
+
+  const questionMap = new Map(questions.map((q) => [q.id, q]))
+
+  const sortedAnswers = (answersRaw || [])
+    .map((a) => ({
+      ...a,
+      question: questionMap.get(a.question_id) || null,
+    }))
+    .sort((a, b) => {
+      const aOrder = a.question?.sort_order ?? 0
+      const bOrder = b.question?.sort_order ?? 0
+      return aOrder - bOrder
+    })
 
   return (
     <main className="content">
@@ -101,16 +104,11 @@ export default async function ApplicationDetailPage({ params }) {
             </p>
 
             <p>
-              <strong>Position:</strong>{" "}
-              {application.job_postings?.title || "Unknown"}
+              <strong>Position:</strong> {job?.title || "Unknown"}
             </p>
 
             <p className="muted">
-              {[
-                application.job_postings?.department,
-                application.job_postings?.location,
-                application.job_postings?.employment_type,
-              ]
+              {[job?.department, job?.location, job?.employment_type]
                 .filter(Boolean)
                 .join(" • ")}
             </p>
@@ -129,13 +127,13 @@ export default async function ApplicationDetailPage({ params }) {
                   }}
                 >
                   <p style={{ fontWeight: 700, marginBottom: "6px" }}>
-                    {item.application_questions?.label || "Question"}
-                    {item.application_questions?.is_required ? " *" : ""}
+                    {item.question?.label || "Question"}
+                    {item.question?.is_required ? " *" : ""}
                   </p>
 
-                  {item.application_questions?.help_text ? (
+                  {item.question?.help_text ? (
                     <p className="muted" style={{ marginBottom: "8px" }}>
-                      {item.application_questions.help_text}
+                      {item.question.help_text}
                     </p>
                   ) : null}
 
