@@ -28,11 +28,15 @@ export default async function ApplicationDetailPage({ params }) {
     )
   }
 
-  const { data: job } = await supabase
+  const { data: job, error: jobError } = await supabase
     .from("job_postings")
     .select("title, department, location, employment_type")
     .eq("id", application.job_posting_id)
     .single()
+
+  if (jobError) {
+    console.log("Job load error:", jobError)
+  }
 
   const { data: answersRaw, error: answersError } = await supabase
     .from("application_answers")
@@ -47,10 +51,14 @@ export default async function ApplicationDetailPage({ params }) {
 
   let questions = []
   if (questionIds.length) {
-    const { data: questionsData } = await supabase
+    const { data: questionsData, error: questionsError } = await supabase
       .from("application_questions")
       .select("id, label, help_text, is_required, sort_order")
       .in("id", questionIds)
+
+    if (questionsError) {
+      console.log("Questions load error:", questionsError)
+    }
 
     questions = questionsData || []
   }
