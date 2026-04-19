@@ -1,23 +1,126 @@
-import { createClient } from "@supabase/supabase-js"
+"use client"
 
-export const dynamic = "force-dynamic"
+import { useEffect, useMemo, useState } from "react"
+import { useParams } from "next/navigation"
+import { supabase } from "../../../../lib/supabase"
 
-export default async function ApplicationDetailPage({ params }) {
+export default function ApplicationDetailPage() {
+  const params = useParams()
   const id = params?.id
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  )
+  const [loading, setLoading] = useState(true)
+  const [application, setApplication] = useState(null)
+  const [job, setJob] = useState(null)
+  const [answersRaw, setAnswersRaw] = useState([])
+  const [questions, setQuestions] = useState([])
+  const [errorMessage, setErrorMessage] = useState("")
 
-  const { data: application, error: applicationError } = await supabase
-    .from("applications")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle()
+  useEffect(() => {
+    if (id) {
+      loadApplication()
+    }
+  }, [id])
 
-  if (applicationError) {
-    console.log("Application load error:", applicationError)
+  async function loadApplication() {
+    setLoading(true)
+    setErrorMessage("")
+
+    const { data: applicationData, error: applicationError } = await supabase
+      .from("applications")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle()
+
+    console.log("applicationData:", applicationData)
+    console.log("applicationError:", applicationError)
+
+    if (applicationError) {
+      setErrorMessage(applicationError.message || "Could not load application.")
+      setLoading(false)
+      return
+    }
+
+    if (!applicationData) {
+      setErrorMessage("This application could not be loaded.")
+      setLoading(false)
+      return
+    }
+
+    setApplication(applicationData)
+
+    const { data: jobData, error: jobError } = await supabase
+      .from("job_postings")
+      .select("title, department, location, employment_type")
+      .eq("id", applicationData.job_posting_id)
+      .maybeSingle()
+
+    console.log("jobData:", jobData)
+    console.log("jobError:", jobError)
+
+    if (!jobError) {
+      setJob(jobData || null)
+    }
+
+    const { data: answersData, error: answersError } = await supabase
+      .from("application_answers")
+      .select("*")
+      .eq("application_id", id)
+
+    console.log("answersData:", answersData)
+    console.log("answersError:", answersError)
+
+    if (answersError) {
+      setErrorMessage(answersError.message || "Could not load answers.")
+      setLoading(false)
+      return
+    }
+
+    setAnswersRaw(answersData || [])
+
+    const questionIds = (answersData || []).map((a) => a.question_id)
+
+    if (questionIds.length > 0) {
+      const { data: questionsData, error: questionsError } = await supabase
+        .from("application_questions")
+        .select("id, label, help_text, is_required, sort_order")
+        .in("id", questionIds)
+
+      console.log("questionsData:", questionsData)
+      console.log("questionsError:", questionsError)
+
+      if (!questionsError) {
+        setQuestions(questionsData || [])
+      }
+    }
+
+    setLoading(false)
+  }
+
+  const sortedAnswers = useMemo(() => {
+    const questionMap = new Map((questions || []).map((q) => [q.id, q]))
+
+    return (answersRaw || [])
+      .map((a) => ({
+        ...a,
+        question: questionMap.get(a.question_id) || null,
+      }))
+      .sort((a, b) => {
+        const aOrder = a.question?.sort_order ?? 0
+        const bOrder = b.question?.sort_order ?? 0
+        return aOrder - bOrder
+      })
+  }, [answersRaw, questions])
+
+  if (loading) {
+    return (
+      <main className="content">
+        <section className="section">
+          <div className="container">
+            <p>Loading...</p>
+          </div>
+        </section>
+      </main>
+    )
   }
 
   if (!application) {
@@ -26,60 +129,12 @@ export default async function ApplicationDetailPage({ params }) {
         <section className="section">
           <div className="container">
             <h1>Application not found</h1>
-            <p className="muted">This application could not be loaded.</p>
+            <p className="muted">{errorMessage || "This application could not be loaded."}</p>
           </div>
         </section>
       </main>
     )
   }
-
-  const { data: job, error: jobError } = await supabase
-    .from("job_postings")
-    .select("title, department, location, employment_type")
-    .eq("id", application.job_posting_id)
-    .maybeSingle()
-
-  if (jobError) {
-    console.log("Job load error:", jobError)
-  }
-
-  const { data: answersRaw, error: answersError } = await supabase
-    .from("application_answers")
-    .select("*")
-    .eq("application_id", id)
-
-  if (answersError) {
-    console.log("Answers load error:", answersError)
-  }
-
-  const questionIds = (answersRaw || []).map((a) => a.question_id)
-
-  let questions = []
-  if (questionIds.length > 0) {
-    const { data: questionsData, error: questionsError } = await supabase
-      .from("application_questions")
-      .select("id, label, help_text, is_required, sort_order")
-      .in("id", questionIds)
-
-    if (questionsError) {
-      console.log("Questions load error:", questionsError)
-    }
-
-    questions = questionsData || []
-  }
-
-  const questionMap = new Map(questions.map((q) => [q.id, q]))
-
-  const sortedAnswers = (answersRaw || [])
-    .map((a) => ({
-      ...a,
-      question: questionMap.get(a.question_id) || null,
-    }))
-    .sort((a, b) => {
-      const aOrder = a.question?.sort_order ?? 0
-      const bOrder = b.question?.sort_order ?? 0
-      return aOrder - bOrder
-    })
 
   return (
     <main className="content">
@@ -87,6 +142,12 @@ export default async function ApplicationDetailPage({ params }) {
         <div className="container" style={{ maxWidth: "900px" }}>
           <p className="section-label">Admin</p>
           <h1>{application.full_name || "Applicant"}</h1>
+
+          {errorMessage ? (
+            <p className="muted" style={{ marginBottom: "16px" }}>
+              {errorMessage}
+            </p>
+          ) : null}
 
           <div className="card" style={{ marginTop: "20px" }}>
             <h3>Application Details</h3>
