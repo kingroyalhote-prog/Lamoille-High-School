@@ -25,49 +25,77 @@ export default async function AdminPage() {
       <section className="section">
         <div className="container">
 
-          <p className="section-label">Admin</p>
-          <h1>Admin Dashboard</h1>
-          <p className="muted">Manage your entire site from here.</p>
+          <div style={{ marginBottom: "30px" }}>
+            <p className="section-label">Admin</p>
+            <h1 style={{ marginBottom: "6px" }}>Dashboard</h1>
+            <p className="muted">Manage your entire site from one place.</p>
+          </div>
 
-          <div className="card-grid" style={{ marginTop: "30px" }}>
+          <div className="card-grid" style={{ marginTop: "20px" }}>
 
             {/* ANNOUNCEMENTS */}
-            <div className="card">
-              <h3>Announcements</h3>
-              <p>{announcementsCount || 0} total</p>
-
-              <Link href="/admin/announcements" className="btn-primary" style={{ marginTop: "10px", display: "inline-block" }}>
-                Manage
-              </Link>
-            </div>
+            <AdminCard
+              title="Announcements"
+              count={announcementsCount}
+              label="posts"
+              href="/admin/announcements"
+              button="Manage"
+            />
 
             {/* STAFF */}
-            <div className="card">
-              <h3>Staff Directory</h3>
-              <p>{staffCount || 0} staff</p>
-
-              <Link href="/admin/staff" className="btn-primary" style={{ marginTop: "10px", display: "inline-block" }}>
-                Manage
-              </Link>
-            </div>
+            <AdminCard
+              title="Staff Directory"
+              count={staffCount}
+              label="staff"
+              href="/admin/staff"
+              button="Manage"
+            />
 
             {/* JOBS */}
-            <div className="card">
-              <h3>Jobs</h3>
-              <p>{jobsCount || 0} postings</p>
-
-              <Link href="/admin/jobs" className="btn-primary" style={{ marginTop: "10px", display: "inline-block" }}>
-                Manage
-              </Link>
-            </div>
+            <AdminCard
+              title="Jobs"
+              count={jobsCount}
+              label="postings"
+              href="/admin/jobs"
+              button="Manage"
+            />
 
             {/* APPLICATIONS */}
-            <div className="card">
-              <h3>Applications</h3>
-              <p>{applicationsCount || 0} submitted</p>
+            <AdminCard
+              title="Applications"
+              count={applicationsCount}
+              label="submitted"
+              href="/admin/applications"
+              button="Review"
+            />
 
-              <Link href="/admin/applications" className="btn-primary" style={{ marginTop: "10px", display: "inline-block" }}>
-                Review
+            {/* ADMIN MANAGEMENT */}
+            <div
+              className="card"
+              style={{
+                background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                color: "white",
+              }}
+            >
+              <h3>Admin Controls</h3>
+              <p style={{ opacity: 0.85 }}>
+                Manage admin access and permissions
+              </p>
+
+              <Link
+                href="/admin/users"
+                style={{
+                  marginTop: "12px",
+                  display: "inline-block",
+                  background: "white",
+                  color: "#4f46e5",
+                  padding: "10px 16px",
+                  borderRadius: "999px",
+                  fontWeight: 700,
+                  textDecoration: "none",
+                }}
+              >
+                Manage Admins
               </Link>
             </div>
 
@@ -76,5 +104,37 @@ export default async function AdminPage() {
         </div>
       </section>
     </main>
+  )
+}
+
+/* reusable card component */
+function AdminCard({ title, count, label, href, button }) {
+  return (
+    <div
+      className="card"
+      style={{
+        transition: "all 0.2s ease",
+        border: "1px solid #e2e8f0",
+      }}
+    >
+      <h3>{title}</h3>
+
+      <p style={{ fontSize: "22px", fontWeight: 700, margin: "6px 0" }}>
+        {count || 0}
+      </p>
+
+      <p className="muted">{label}</p>
+
+      <Link
+        href={href}
+        className="btn-primary"
+        style={{
+          marginTop: "12px",
+          display: "inline-block",
+        }}
+      >
+        {button}
+      </Link>
+    </div>
   )
 }
