@@ -17,34 +17,61 @@ a {
 }
 
 /* ===== NAVBAR ===== */
-import Image from "next/image"
-import Link from "next/link"
 
-export default function Navbar() {
-  return (
-    <nav className="site-nav">
-      <div className="site-nav-inner">
-        <Link href="/" className="site-brand">
-          <Image
-            src="/images/lamoille-logo.png"
-            alt="Lamoille High School logo"
-            width={42}
-            height={42}
-          />
-          <span>Lamoille High School</span>
-        </Link>
+.site-nav {
+  width: 100%;
+  background: linear-gradient(90deg, #06101f, #0b1f3f);
+  padding: 14px 20px;
+}
 
-        <div className="site-nav-links">
-          <Link href="/about">About</Link>
-          <Link href="/staff-directory">Staff Directory</Link>
-          <Link href="/employment">Employment</Link>
-          <Link href="/login" className="site-nav-login">
-            Login
-          </Link>
-        </div>
-      </div>
-    </nav>
-  )
+.site-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* LEFT SIDE (LOGO + NAME) */
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: white;
+}
+
+.site-brand span {
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+/* RIGHT SIDE LINKS */
+.site-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.site-nav-links a {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.site-nav-links a:hover {
+  color: white;
+}
+
+/* LOGIN BUTTON */
+.site-nav-login {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.site-nav-login:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* ===== HERO ===== */
