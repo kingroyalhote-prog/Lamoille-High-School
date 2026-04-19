@@ -15,10 +15,14 @@ export default function Navbar() {
           <span>Lamoille High School</span>
         </Link>
 
-        <Link href="/about">About</Link>
-        <Link href="/staff-directory">Staff Directory</Link>
-        <Link href="/employment">Employment</Link>
-        <Link href="/login">Login</Link>
+        <div className="site-nav-links">
+          <Link href="/about">About</Link>
+          <Link href="/staff-directory">Staff Directory</Link>
+          <Link href="/employment">Employment</Link>
+          <Link href="/login" className="site-nav-login">
+            Login
+          </Link>
+        </div>
       </div>
     </nav>
   )
