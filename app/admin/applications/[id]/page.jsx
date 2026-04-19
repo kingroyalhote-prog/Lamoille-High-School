@@ -1,11 +1,12 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { supabase } from "../../../../lib/supabase"
 
 export default function ApplicationDetailPage() {
   const params = useParams()
+  const router = useRouter()
   const id = params?.id
 
   const [loading, setLoading] = useState(true)
@@ -14,6 +15,8 @@ export default function ApplicationDetailPage() {
   const [answersRaw, setAnswersRaw] = useState([])
   const [questions, setQuestions] = useState([])
   const [errorMessage, setErrorMessage] = useState("")
+  const [actionMessage, setActionMessage] = useState("")
+  const [working, setWorking] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -24,15 +27,13 @@ export default function ApplicationDetailPage() {
   async function loadApplication() {
     setLoading(true)
     setErrorMessage("")
+    setActionMessage("")
 
     const { data: applicationData, error: applicationError } = await supabase
       .from("applications")
       .select("*")
       .eq("id", id)
       .maybeSingle()
-
-    console.log("applicationData:", applicationData)
-    console.log("applicationError:", applicationError)
 
     if (applicationError) {
       setErrorMessage(applicationError.message || "Could not load application.")
@@ -48,26 +49,18 @@ export default function ApplicationDetailPage() {
 
     setApplication(applicationData)
 
-    const { data: jobData, error: jobError } = await supabase
+    const { data: jobData } = await supabase
       .from("job_postings")
       .select("title, department, location, employment_type")
       .eq("id", applicationData.job_posting_id)
       .maybeSingle()
 
-    console.log("jobData:", jobData)
-    console.log("jobError:", jobError)
-
-    if (!jobError) {
-      setJob(jobData || null)
-    }
+    setJob(jobData || null)
 
     const { data: answersData, error: answersError } = await supabase
       .from("application_answers")
       .select("*")
       .eq("application_id", id)
-
-    console.log("answersData:", answersData)
-    console.log("answersError:", answersError)
 
     if (answersError) {
       setErrorMessage(answersError.message || "Could not load answers.")
@@ -80,20 +73,72 @@ export default function ApplicationDetailPage() {
     const questionIds = (answersData || []).map((a) => a.question_id)
 
     if (questionIds.length > 0) {
-      const { data: questionsData, error: questionsError } = await supabase
+      const { data: questionsData } = await supabase
         .from("application_questions")
         .select("id, label, help_text, is_required, sort_order")
         .in("id", questionIds)
 
-      console.log("questionsData:", questionsData)
-      console.log("questionsError:", questionsError)
-
-      if (!questionsError) {
-        setQuestions(questionsData || [])
-      }
+      setQuestions(questionsData || [])
+    } else {
+      setQuestions([])
     }
 
     setLoading(false)
+  }
+
+  async function markAsReviewed() {
+    setWorking(true)
+    setActionMessage("")
+
+    const { error } = await supabase
+      .from("applications")
+      .update({ status: "reviewed" })
+      .eq("id", id)
+
+    if (error) {
+      setActionMessage(error.message || "Could not mark as reviewed.")
+      setWorking(false)
+      return
+    }
+
+    setApplication((prev) => ({ ...prev, status: "reviewed" }))
+    setActionMessage("Application marked as reviewed.")
+    setWorking(false)
+  }
+
+  async function deleteApplication() {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this application? This cannot be undone."
+    )
+
+    if (!confirmed) return
+
+    setWorking(true)
+    setActionMessage("")
+
+    const { error: answersError } = await supabase
+      .from("application_answers")
+      .delete()
+      .eq("application_id", id)
+
+    if (answersError) {
+      setActionMessage(answersError.message || "Could not delete answers.")
+      setWorking(false)
+      return
+    }
+
+    const { error: appError } = await supabase
+      .from("applications")
+      .delete()
+      .eq("id", id)
+
+    if (appError) {
+      setActionMessage(appError.message || "Could not delete application.")
+      setWorking(false)
+      return
+    }
+
+    router.push("/admin/applications")
   }
 
   const sortedAnswers = useMemo(() => {
@@ -149,6 +194,12 @@ export default function ApplicationDetailPage() {
             </p>
           ) : null}
 
+          {actionMessage ? (
+            <p className="muted" style={{ marginBottom: "16px" }}>
+              {actionMessage}
+            </p>
+          ) : null}
+
           <div className="card" style={{ marginTop: "20px" }}>
             <h3>Application Details</h3>
 
@@ -186,6 +237,32 @@ export default function ApplicationDetailPage() {
                 .filter(Boolean)
                 .join(" • ")}
             </p>
+
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "18px" }}>
+              <button
+                className="btn-primary"
+                onClick={markAsReviewed}
+                disabled={working || application.status === "reviewed"}
+              >
+                {application.status === "reviewed" ? "Reviewed" : "Mark as Reviewed"}
+              </button>
+
+              <button
+                onClick={deleteApplication}
+                disabled={working}
+                style={{
+                  border: "none",
+                  background: "#fee2e2",
+                  color: "#991b1b",
+                  padding: "12px 18px",
+                  borderRadius: "999px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Delete Application
+              </button>
+            </div>
           </div>
 
           <div className="card" style={{ marginTop: "20px" }}>
