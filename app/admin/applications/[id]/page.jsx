@@ -3,16 +3,18 @@ import { createClient } from "@supabase/supabase-js"
 export const dynamic = "force-dynamic"
 
 export default async function ApplicationDetailPage({ params }) {
-  const { id } = params
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-)
+  const id = params?.id
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  )
+
   const { data: application, error: applicationError } = await supabase
     .from("applications")
     .select("*")
     .eq("id", id)
-    .single()
+    .maybeSingle()
 
   if (applicationError) {
     console.log("Application load error:", applicationError)
@@ -35,7 +37,7 @@ const supabase = createClient(
     .from("job_postings")
     .select("title, department, location, employment_type")
     .eq("id", application.job_posting_id)
-    .single()
+    .maybeSingle()
 
   if (jobError) {
     console.log("Job load error:", jobError)
@@ -53,7 +55,7 @@ const supabase = createClient(
   const questionIds = (answersRaw || []).map((a) => a.question_id)
 
   let questions = []
-  if (questionIds.length) {
+  if (questionIds.length > 0) {
     const { data: questionsData, error: questionsError } = await supabase
       .from("application_questions")
       .select("id, label, help_text, is_required, sort_order")
