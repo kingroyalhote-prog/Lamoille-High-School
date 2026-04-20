@@ -5,6 +5,9 @@ import Footer from "../components/Footer"
 export const metadata = {
   title: "Lamoille High School",
   description: "Official website of Lamoille High School",
+  icons: {
+    icon: "/images/lamoille-logo.png",
+  },
 }
 
 export default function RootLayout({ children }) {
@@ -23,11 +26,4 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   )
-}
-export const metadata = {
-  title: "Lamoille High School",
-  description: "Official school website",
-  icons: {
-    icon: "/images/lamoille-logo.png",
-  },
 }
