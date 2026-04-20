@@ -24,3 +24,10 @@ export default function RootLayout({ children }) {
     </html>
   )
 }
+export const metadata = {
+  title: "Lamoille High School",
+  description: "Official school website",
+  icons: {
+    icon: "/images/lamoille-logo.png",
+  },
+}
