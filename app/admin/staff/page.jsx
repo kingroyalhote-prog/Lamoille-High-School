@@ -22,6 +22,7 @@ export default function AdminStaffPage() {
     bio: "",
     category: "Teachers",
     is_active: true,
+    image_url: "",
   })
 
   useEffect(() => {
@@ -90,15 +91,18 @@ export default function AdminStaffPage() {
     setSaving(true)
     setMessage("")
 
-    let imageUrl = null
+    let imageUrl = form.image_url || null
 
     if (photoFile) {
-      imageUrl = await uploadPhoto(photoFile)
-      if (!imageUrl) {
+      const uploadedUrl = await uploadPhoto(photoFile)
+
+      if (!uploadedUrl) {
         setMessage("Error uploading photo.")
         setSaving(false)
         return
       }
+
+      imageUrl = uploadedUrl
     }
 
     const { error } = await supabase.from("staff_members").insert([
@@ -132,6 +136,7 @@ export default function AdminStaffPage() {
       bio: "",
       category: "Teachers",
       is_active: true,
+      image_url: "",
     })
     setPhotoFile(null)
     await loadStaff()
@@ -252,12 +257,21 @@ export default function AdminStaffPage() {
                   style={textareaStyle}
                 />
 
-                <label style={labelStyle}>Photo</label>
+                <label style={labelStyle}>Photo Upload</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
                   style={{ marginBottom: "14px" }}
+                />
+
+                <label style={labelStyle}>Or Image URL</label>
+                <input
+                  name="image_url"
+                  value={form.image_url}
+                  onChange={handleChange}
+                  placeholder="https://example.com/photo.jpg"
+                  style={inputStyle}
                 />
 
                 <label
