@@ -74,6 +74,42 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* ANNOUNCEMENTS */}
+        <section className="section">
+          <div className="container" style={{ marginTop: "10px" }}>
+            <div className="section-head">
+              <div>
+                <p className="section-label">What’s New</p>
+                <h2>Recent Announcements</h2>
+              </div>
+
+              <span className="muted">Stay up to date with school news</span>
+            </div>
+
+            <div className="card-grid">
+              {announcements?.length ? (
+                announcements.map((item) => (
+                  <div key={item.id} className="card">
+                    <p className="card-date">
+                      {item.published_at
+                        ? new Date(item.published_at).toLocaleDateString()
+                        : "Recently posted"}
+                    </p>
+
+                    <h3>{item.title}</h3>
+                    <p>{item.summary || "No summary provided yet."}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="card empty">
+                  <h3>No announcements yet</h3>
+                  <p>They will appear here once added.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* ABOUT */}
         <section className="section">
           <div className="container">
@@ -109,42 +145,6 @@ export default async function Home() {
                   <p>Students are given meaningful opportunities to prepare for the future.</p>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ANNOUNCEMENTS */}
-        <section className="section">
-          <div className="container">
-            <div className="section-head">
-              <div>
-                <p className="section-label">Latest Updates</p>
-                <h2>Recent Announcements</h2>
-              </div>
-
-              <span className="muted">Stay up to date with school news</span>
-            </div>
-
-            <div className="card-grid">
-              {announcements?.length ? (
-                announcements.map((item) => (
-                  <div key={item.id} className="card">
-                    <p className="card-date">
-                      {item.published_at
-                        ? new Date(item.published_at).toLocaleDateString()
-                        : "Recently posted"}
-                    </p>
-
-                    <h3>{item.title}</h3>
-                    <p>{item.summary || "No summary provided yet."}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="card empty">
-                  <h3>No announcements yet</h3>
-                  <p>They will appear here once added.</p>
-                </div>
-              )}
             </div>
           </div>
         </section>
