@@ -13,81 +13,116 @@ export default async function Home() {
 
   return (
     <main>
-
       {/* HERO */}
-<section className="hero">
-  <div className="hero-bg-orb hero-orb-one" />
-  <div className="hero-bg-orb hero-orb-two" />
-  <div className="hero-bg-grid" />
+      <section className="hero">
+        <div className="hero-bg-orb hero-orb-one" />
+        <div className="hero-bg-orb hero-orb-two" />
+        <div className="hero-bg-grid" />
 
-  <div className="hero-inner">
-    <p className="hero-eyebrow">Lamoille High School</p>
+        <div className="hero-inner">
+          <p className="hero-eyebrow">Lamoille High School</p>
 
-    <h1>
-      Welcome to
-      <span className="hero-break">Lamoille High School</span>
-    </h1>
+          <h1>
+            Welcome to
+            <span className="hero-break">Lamoille High School</span>
+          </h1>
 
-    <p className="hero-tagline">
-      Excellence. Community. Opportunity.
-    </p>
+          <p className="hero-tagline">
+            Excellence. Community. Opportunity.
+          </p>
 
-    <p className="hero-subtext">
-      A modern school community focused on leadership, belonging, and
-      meaningful opportunity for every student.
-    </p>
+          <p className="hero-subtext">
+            A modern school community focused on leadership, belonging, and
+            meaningful opportunity for every student.
+          </p>
 
-    <div className="hero-actions">
-      <Link href="/employment" className="btn-primary">
-        Apply Now
-      </Link>
+          <div className="hero-actions">
+            <Link href="/employment" className="btn-primary">
+              Apply Now
+            </Link>
 
-      <Link href="/staff-directory" className="btn-secondary">
-        Meet Our Staff
-      </Link>
-    </div>
-  </div>
-</section>
+            <Link href="/staff-directory" className="btn-secondary">
+              Meet Our Staff
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      {/* WHITE CONTENT AREA */}
       <div className="content">
+        {/* QUICK LINKS */}
+        <section className="section">
+          <div className="container">
+            <div className="quick-links-grid">
+              <Link href="/about" className="quick-link-card">
+                <span className="quick-link-label">Learn More</span>
+                <h3>About Lamoille</h3>
+                <p>See our mission, values, and school community focus.</p>
+              </Link>
+
+              <Link href="/staff-directory" className="quick-link-card">
+                <span className="quick-link-label">Directory</span>
+                <h3>Meet Our Staff</h3>
+                <p>Browse teachers, administration, and support staff.</p>
+              </Link>
+
+              <Link href="/employment" className="quick-link-card">
+                <span className="quick-link-label">Careers</span>
+                <h3>Employment</h3>
+                <p>Explore job openings and apply to join our team.</p>
+              </Link>
+            </div>
+          </div>
+        </section>
 
         {/* ABOUT */}
         <section className="section">
           <div className="container">
-            <p className="section-label">About Us</p>
+            <div className="home-feature-card">
+              <div className="home-feature-copy">
+                <p className="section-label">About Us</p>
+                <h2>Building a Stronger School Community</h2>
 
-            <h2>Building a Stronger School Community</h2>
+                <p>
+                  Lamoille High School is dedicated to creating a supportive and engaging
+                  environment where students can grow academically, socially, and personally.
+                </p>
 
-            <p>
-              Lamoille High School is dedicated to creating a supportive and engaging
-              environment where students can grow academically, socially, and personally.
-            </p>
+                <p>
+                  Our staff is committed to helping every student feel valued,
+                  challenged, and inspired every day.
+                </p>
+              </div>
 
-            <p>
-              Our staff is committed to helping every student feel valued,
-              challenged, and inspired every day.
-            </p>
+              <div className="home-feature-points">
+                <div className="home-point-card">
+                  <h3>Supportive Environment</h3>
+                  <p>Students are encouraged to grow in a welcoming and inclusive community.</p>
+                </div>
 
-            <ul>
-              <li>✔ Supportive and inclusive environment</li>
-              <li>✔ Strong leadership and student involvement</li>
-              <li>✔ Real opportunities for growth</li>
-            </ul>
+                <div className="home-point-card">
+                  <h3>Strong Leadership</h3>
+                  <p>We promote responsibility, involvement, and student voice across campus.</p>
+                </div>
+
+                <div className="home-point-card">
+                  <h3>Real Opportunity</h3>
+                  <p>Students are given meaningful opportunities to prepare for the future.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* ANNOUNCEMENTS */}
         <section className="section">
           <div className="container">
-
             <div className="section-head">
               <div>
                 <p className="section-label">Latest Updates</p>
                 <h2>Recent Announcements</h2>
               </div>
 
-              <span className="muted">More coming soon</span>
+              <span className="muted">Stay up to date with school news</span>
             </div>
 
             <div className="card-grid">
@@ -101,7 +136,7 @@ export default async function Home() {
                     </p>
 
                     <h3>{item.title}</h3>
-                    <p>{item.summary}</p>
+                    <p>{item.summary || "No summary provided yet."}</p>
                   </div>
                 ))
               ) : (
@@ -111,12 +146,9 @@ export default async function Home() {
                 </div>
               )}
             </div>
-
           </div>
         </section>
-
       </div>
-
     </main>
   )
 }
