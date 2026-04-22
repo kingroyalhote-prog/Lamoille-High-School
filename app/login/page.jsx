@@ -13,8 +13,7 @@ export default function LoginPage() {
     e.preventDefault()
     setMessage("")
 
-    // 🔐 Sign in with Supabase Auth
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -24,42 +23,14 @@ export default function LoginPage() {
       return
     }
 
-    const user = data.user
-
-    if (!user) {
-      setMessage("Login failed.")
-      return
-    }
-
-    // 🔒 Check role from profiles table
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single()
-
-    if (profileError || !profile) {
-      setMessage("Access denied.")
-      await supabase.auth.signOut()
-      return
-    }
-
-    const allowedRoles = ["staff_admin", "master_admin"]
-
-    if (!allowedRoles.includes(profile.role)) {
-      setMessage("You do not have admin access.")
-      await supabase.auth.signOut()
-      return
-    }
-
-    // 🧠 Optional: "remember me" behavior
+    // 🧠 optional "remember me"
     if (!remember) {
       window.addEventListener("beforeunload", async () => {
         await supabase.auth.signOut()
       })
     }
 
-    // ✅ Redirect to admin
+    // ✅ JUST redirect
     window.location.href = "/admin"
   }
 
@@ -90,7 +61,6 @@ export default function LoginPage() {
             style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
           />
 
-          {/* ✅ Keep me signed in */}
           <label
             style={{
               display: "flex",
