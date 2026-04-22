@@ -10,40 +10,39 @@ export default function AdminLayout({ children }) {
   const [allowed, setAllowed] = useState(false)
 
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        // 🚫 Not logged in
-        if (!session) {
-          router.replace("/login")
-          return
-        }
+    async function checkAccess() {
+      // ⚡ FAST: get session immediately
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
 
-        const user = session.user
-
-        // 🔒 Check role
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .single()
-
-        const allowedRoles = ["staff_admin", "master_admin"]
-
-        if (!profile || !allowedRoles.includes(profile.role)) {
-          await supabase.auth.signOut()
-          router.replace("/login")
-          return
-        }
-
-        // ✅ Allow access
-        setAllowed(true)
-        setLoading(false)
+      if (!session) {
+        router.replace("/login")
+        return
       }
-    )
 
-    return () => {
-      listener.subscription.unsubscribe()
+      const user = session.user
+
+      // 🔒 check role
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single()
+
+      const allowedRoles = ["staff_admin", "master_admin"]
+
+      if (!profile || !allowedRoles.includes(profile.role)) {
+        await supabase.auth.signOut()
+        router.replace("/login")
+        return
+      }
+
+      setAllowed(true)
+      setLoading(false)
     }
+
+    checkAccess()
   }, [router])
 
   if (loading) {
@@ -51,7 +50,7 @@ export default function AdminLayout({ children }) {
       <main className="content">
         <section className="section">
           <div className="container">
-            <p>Checking access...</p>
+            <p>Loading admin...</p>
           </div>
         </section>
       </main>
