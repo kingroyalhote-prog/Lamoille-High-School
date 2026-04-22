@@ -13,18 +13,21 @@ export default async function AdminPage() {
     .select("*", { count: "exact", head: true })
 
   const { count: jobsCount } = await supabase
-    .from("jobs")
+    .from("job_postings")
     .select("*", { count: "exact", head: true })
 
   const { count: applicationsCount } = await supabase
     .from("applications")
     .select("*", { count: "exact", head: true })
 
+  const { count: eventsCount } = await supabase
+    .from("events")
+    .select("*", { count: "exact", head: true })
+
   return (
     <main className="content">
       <section className="section">
         <div className="container">
-
           <div style={{ marginBottom: "30px" }}>
             <p className="section-label">Admin</p>
             <h1 style={{ marginBottom: "6px" }}>Dashboard</h1>
@@ -32,8 +35,6 @@ export default async function AdminPage() {
           </div>
 
           <div className="card-grid" style={{ marginTop: "20px" }}>
-
-            {/* ANNOUNCEMENTS */}
             <AdminCard
               title="Announcements"
               count={announcementsCount}
@@ -42,7 +43,6 @@ export default async function AdminPage() {
               button="Manage"
             />
 
-            {/* STAFF */}
             <AdminCard
               title="Staff Directory"
               count={staffCount}
@@ -51,7 +51,6 @@ export default async function AdminPage() {
               button="Manage"
             />
 
-            {/* JOBS */}
             <AdminCard
               title="Jobs"
               count={jobsCount}
@@ -60,7 +59,6 @@ export default async function AdminPage() {
               button="Manage"
             />
 
-            {/* APPLICATIONS */}
             <AdminCard
               title="Applications"
               count={applicationsCount}
@@ -69,7 +67,14 @@ export default async function AdminPage() {
               button="Review"
             />
 
-            {/* ADMIN MANAGEMENT */}
+            <AdminCard
+              title="Calendar"
+              count={eventsCount}
+              label="events"
+              href="/admin/calendar"
+              button="Manage"
+            />
+
             <div
               className="card"
               style={{
@@ -98,16 +103,13 @@ export default async function AdminPage() {
                 Manage Admins
               </Link>
             </div>
-
           </div>
-
         </div>
       </section>
     </main>
   )
 }
 
-/* reusable card component */
 function AdminCard({ title, count, label, href, button }) {
   return (
     <div
