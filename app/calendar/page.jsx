@@ -2,6 +2,20 @@ import { supabase } from "../../lib/supabase"
 
 export const dynamic = "force-dynamic"
 
+/* 🕒 NEW: format time to AM/PM */
+function formatTime(time) {
+  if (!time) return ""
+
+  const [hourStr, minute] = time.split(":")
+  let hour = parseInt(hourStr, 10)
+
+  const ampm = hour >= 12 ? "PM" : "AM"
+  hour = hour % 12
+  if (hour === 0) hour = 12
+
+  return `${hour}:${minute} ${ampm}`
+}
+
 function addDays(dateStr, days) {
   const d = new Date(dateStr + "T00:00:00")
   d.setDate(d.getDate() + days)
@@ -137,7 +151,11 @@ export default async function CalendarPage() {
                         <p className="muted" style={{ margin: "0 0 8px" }}>
                           {event.is_all_day
                             ? "All Day"
-                            : `${event.start_time || ""}${event.end_time ? ` – ${event.end_time}` : ""}`}
+                            : `${formatTime(event.start_time)}${
+                                event.end_time
+                                  ? ` – ${formatTime(event.end_time)}`
+                                  : ""
+                              }`}
                           {event.location ? ` • ${event.location}` : ""}
                         </p>
 
