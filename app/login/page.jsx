@@ -23,14 +23,14 @@ export default function LoginPage() {
       return
     }
 
-    // 🧠 optional "remember me"
+    // optional "remember me"
     if (!remember) {
       window.addEventListener("beforeunload", async () => {
         await supabase.auth.signOut()
       })
     }
 
-    // ✅ JUST redirect
+    // ✅ just redirect
     window.location.href = "/admin"
   }
 
