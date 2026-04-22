@@ -10,17 +10,19 @@ export default function AdminLayout({ children }) {
 
   useEffect(() => {
     async function checkAccess() {
-      // 🔐 Get current user session
+      // 🔥 FIX: use session instead of getUser
       const {
-        data: { user },
-      } = await supabase.auth.getUser()
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      const user = session?.user
 
       if (!user) {
         router.replace("/login")
         return
       }
 
-      // 🔒 Get role from profiles
+      // 🔒 Get role
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
@@ -35,14 +37,12 @@ export default function AdminLayout({ children }) {
 
       const allowedRoles = ["staff_admin", "master_admin"]
 
-      // 🚫 Block unauthorized users
       if (!allowedRoles.includes(profile.role)) {
         await supabase.auth.signOut()
         router.replace("/login")
         return
       }
 
-      // ✅ Allow access
       setStatus("allowed")
     }
 
@@ -61,7 +61,6 @@ export default function AdminLayout({ children }) {
     )
   }
 
-  // safety fallback (prevents weird blank states)
   if (status !== "allowed") return null
 
   return children
