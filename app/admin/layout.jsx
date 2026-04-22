@@ -6,30 +6,33 @@ import { supabase } from "../../lib/supabase"
 
 export default function AdminLayout({ children }) {
   const router = useRouter()
-  const [status, setStatus] = useState("checking")
+  const [loading, setLoading] = useState(true)
+  const [allowed, setAllowed] = useState(false)
 
   useEffect(() => {
     async function checkAccess() {
-      // 🔥 FIX: use session instead of getUser
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
+      // 🔥 Wait for session properly
+      const { data } = await supabase.auth.getSession()
+      const session = data.session
 
-      const user = session?.user
-
-      if (!user) {
+      if (!session) {
         router.replace("/login")
         return
       }
 
-      // 🔒 Get role
-      const { data: profile } = await supabase
+      const user = session.user
+
+      // 🔒 Get profile
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single()
 
-      if (!profile) {
+      console.log("USER ID:", user.id)
+      console.log("PROFILE:", profile)
+
+      if (error || !profile) {
         await supabase.auth.signOut()
         router.replace("/login")
         return
@@ -43,13 +46,14 @@ export default function AdminLayout({ children }) {
         return
       }
 
-      setStatus("allowed")
+      setAllowed(true)
+      setLoading(false)
     }
 
     checkAccess()
   }, [router])
 
-  if (status === "checking") {
+  if (loading) {
     return (
       <main className="content">
         <section className="section">
@@ -61,7 +65,7 @@ export default function AdminLayout({ children }) {
     )
   }
 
-  if (status !== "allowed") return null
+  if (!allowed) return null
 
   return children
 }
