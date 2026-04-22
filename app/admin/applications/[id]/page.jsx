@@ -4,6 +4,29 @@ import { useEffect, useMemo, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { supabase } from "../../../../lib/supabase"
 
+function getStatusStyles(status) {
+  switch (status) {
+    case "accepted":
+      return {
+        label: "Accepted",
+        background: "#dcfce7",
+        color: "#166534",
+      }
+    case "denied":
+      return {
+        label: "Denied",
+        background: "#fee2e2",
+        color: "#991b1b",
+      }
+    default:
+      return {
+        label: "Not Reviewed",
+        background: "#e2e8f0",
+        color: "#334155",
+      }
+  }
+}
+
 export default function ApplicationDetailPage() {
   const params = useParams()
   const router = useRouter()
@@ -86,23 +109,31 @@ export default function ApplicationDetailPage() {
     setLoading(false)
   }
 
-  async function markAsReviewed() {
+  async function updateStatus(nextStatus) {
     setWorking(true)
     setActionMessage("")
 
     const { error } = await supabase
       .from("applications")
-      .update({ status: "reviewed" })
+      .update({ status: nextStatus })
       .eq("id", id)
 
     if (error) {
-      setActionMessage(error.message || "Could not mark as reviewed.")
+      setActionMessage(error.message || "Could not update application status.")
       setWorking(false)
       return
     }
 
-    setApplication((prev) => ({ ...prev, status: "reviewed" }))
-    setActionMessage("Application marked as reviewed.")
+    setApplication((prev) => ({ ...prev, status: nextStatus }))
+
+    if (nextStatus === "accepted") {
+      setActionMessage("Application marked as accepted.")
+    } else if (nextStatus === "denied") {
+      setActionMessage("Application marked as denied.")
+    } else {
+      setActionMessage("Application marked as not reviewed.")
+    }
+
     setWorking(false)
   }
 
@@ -174,12 +205,16 @@ export default function ApplicationDetailPage() {
         <section className="section">
           <div className="container">
             <h1>Application not found</h1>
-            <p className="muted">{errorMessage || "This application could not be loaded."}</p>
+            <p className="muted">
+              {errorMessage || "This application could not be loaded."}
+            </p>
           </div>
         </section>
       </main>
     )
   }
+
+  const statusStyles = getStatusStyles(application.status)
 
   return (
     <main className="content">
@@ -218,7 +253,23 @@ export default function ApplicationDetailPage() {
             </p>
 
             <p>
-              <strong>Status:</strong> {application.status || "pending"}
+              <strong>Status:</strong>{" "}
+              <span
+                style={{
+                  display: "inline-block",
+                  marginLeft: "6px",
+                  background: statusStyles.background,
+                  color: statusStyles.color,
+                  padding: "4px 10px",
+                  borderRadius: "999px",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  letterSpacing: "0.03em",
+                  verticalAlign: "middle",
+                }}
+              >
+                {statusStyles.label}
+              </span>
             </p>
 
             <p>
@@ -238,13 +289,60 @@ export default function ApplicationDetailPage() {
                 .join(" • ")}
             </p>
 
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "18px" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                flexWrap: "wrap",
+                marginTop: "18px",
+              }}
+            >
               <button
-                className="btn-primary"
-                onClick={markAsReviewed}
-                disabled={working || application.status === "reviewed"}
+                onClick={() => updateStatus("accepted")}
+                disabled={working}
+                style={{
+                  border: "none",
+                  background: "#dcfce7",
+                  color: "#166534",
+                  padding: "12px 18px",
+                  borderRadius: "999px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
               >
-                {application.status === "reviewed" ? "Reviewed" : "Mark as Reviewed"}
+                Accept
+              </button>
+
+              <button
+                onClick={() => updateStatus("denied")}
+                disabled={working}
+                style={{
+                  border: "none",
+                  background: "#fee2e2",
+                  color: "#991b1b",
+                  padding: "12px 18px",
+                  borderRadius: "999px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Deny
+              </button>
+
+              <button
+                onClick={() => updateStatus("not_reviewed")}
+                disabled={working}
+                style={{
+                  border: "none",
+                  background: "#e2e8f0",
+                  color: "#334155",
+                  padding: "12px 18px",
+                  borderRadius: "999px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Mark Not Reviewed
               </button>
 
               <button
@@ -252,8 +350,8 @@ export default function ApplicationDetailPage() {
                 disabled={working}
                 style={{
                   border: "none",
-                  background: "#fee2e2",
-                  color: "#991b1b",
+                  background: "#1e293b",
+                  color: "white",
                   padding: "12px 18px",
                   borderRadius: "999px",
                   fontWeight: 700,
