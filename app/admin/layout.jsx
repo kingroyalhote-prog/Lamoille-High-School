@@ -10,47 +10,40 @@ export default function AdminLayout({ children }) {
   const [allowed, setAllowed] = useState(false)
 
   useEffect(() => {
-    async function checkAccess() {
-      // 🔥 Wait for session properly
-      const { data } = await supabase.auth.getSession()
-      const session = data.session
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        // 🚫 Not logged in
+        if (!session) {
+          router.replace("/login")
+          return
+        }
 
-      if (!session) {
-        router.replace("/login")
-        return
+        const user = session.user
+
+        // 🔒 Check role
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single()
+
+        const allowedRoles = ["staff_admin", "master_admin"]
+
+        if (!profile || !allowedRoles.includes(profile.role)) {
+          await supabase.auth.signOut()
+          router.replace("/login")
+          return
+        }
+
+        // ✅ Allow access
+        setAllowed(true)
+        setLoading(false)
       }
+    )
 
-      const user = session.user
-
-      // 🔒 Get profile
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single()
-
-      console.log("USER ID:", user.id)
-      console.log("PROFILE:", profile)
-
-      if (error || !profile) {
-        await supabase.auth.signOut()
-        router.replace("/login")
-        return
-      }
-
-      const allowedRoles = ["staff_admin", "master_admin"]
-
-      if (!allowedRoles.includes(profile.role)) {
-        await supabase.auth.signOut()
-        router.replace("/login")
-        return
-      }
-
-      setAllowed(true)
-      setLoading(false)
+    return () => {
+      listener.subscription.unsubscribe()
     }
-
-    checkAccess()
   }, [router])
 
   if (loading) {
