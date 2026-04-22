@@ -13,6 +13,7 @@ export default function LoginPage() {
     e.preventDefault()
     setMessage("")
 
+    // 🔐 Sign in with Supabase Auth
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -25,12 +26,17 @@ export default function LoginPage() {
 
     const user = data.user
 
-    // 🔒 check role
+    if (!user) {
+      setMessage("Login failed.")
+      return
+    }
+
+    // 🔒 Check role from profiles table
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
-      .maybeSingle()
+      .single()
 
     if (profileError || !profile) {
       setMessage("Access denied.")
@@ -38,25 +44,31 @@ export default function LoginPage() {
       return
     }
 
-    if (profile.role === "staff_admin" || profile.role === "master_admin") {
-      // OPTIONAL: if not "remember me", clear session on tab close
-      if (!remember) {
-        // this makes session behave more like "temporary"
-        window.addEventListener("beforeunload", async () => {
-          await supabase.auth.signOut()
-        })
-      }
+    const allowedRoles = ["staff_admin", "master_admin"]
 
-      window.location.href = "/admin"
-    } else {
+    if (!allowedRoles.includes(profile.role)) {
       setMessage("You do not have admin access.")
       await supabase.auth.signOut()
+      return
     }
+
+    // 🧠 Optional: "remember me" behavior
+    if (!remember) {
+      window.addEventListener("beforeunload", async () => {
+        await supabase.auth.signOut()
+      })
+    }
+
+    // ✅ Redirect to admin
+    window.location.href = "/admin"
   }
 
   return (
     <main className="page-shell">
-      <div className="content-card" style={{ maxWidth: "400px", margin: "0 auto" }}>
+      <div
+        className="content-card"
+        style={{ maxWidth: "400px", margin: "0 auto" }}
+      >
         <h2>Admin Login</h2>
 
         <form onSubmit={handleLogin}>
@@ -78,7 +90,7 @@ export default function LoginPage() {
             style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
           />
 
-          {/* ✅ KEEP ME SIGNED IN */}
+          {/* ✅ Keep me signed in */}
           <label
             style={{
               display: "flex",
@@ -97,15 +109,17 @@ export default function LoginPage() {
             Keep me signed in
           </label>
 
-          <button type="submit" className="btn btn-primary" style={{ width: "100%" }}>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            style={{ width: "100%" }}
+          >
             Login
           </button>
         </form>
 
         {message && (
-          <p style={{ marginTop: "10px", color: "red" }}>
-            {message}
-          </p>
+          <p style={{ marginTop: "10px", color: "red" }}>{message}</p>
         )}
       </div>
     </main>
