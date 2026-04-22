@@ -37,7 +37,8 @@ export default function AdminLayout({ children }) {
         return
       }
 
-      if (profile.role !== "admin" && profile.role !== "master_admin") {
+      // ✅ FIXED ROLE CHECK
+      if (profile.role !== "staff_admin" && profile.role !== "master_admin") {
         router.replace("/login")
         return
       }
