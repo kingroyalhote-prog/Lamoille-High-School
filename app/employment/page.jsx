@@ -41,7 +41,7 @@ export default async function EmploymentPage() {
                     className="btn-primary"
                     style={{ marginTop: "10px", display: "inline-block" }}
                   >
-                    {job.applications_open ? "Apply" : "View"}
+                    {job.applications_open ? "Apply" : "Application Closed"}
                   </Link>
                 </div>
               ))
