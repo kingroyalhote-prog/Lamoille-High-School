@@ -294,6 +294,15 @@ export default function ApplicationDetailPage() {
               </span>
             </p>
 
+            {application.denial_reason && (
+              <div className="review-log-box">
+                <strong>Denial Reason:</strong>
+                <p style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
+                  {application.denial_reason}
+                </p>
+              </div>
+            )}
+
             <p>
               <strong>Submitted:</strong>{" "}
               {application.created_at
@@ -303,7 +312,6 @@ export default function ApplicationDetailPage() {
 
             <p><strong>Position:</strong> {job?.title || "Unknown"}</p>
 
-            {/* ✅ UPDATED BUTTONS */}
             <div className="admin-action-row">
               <button onClick={() => handleDecision("accepted")} disabled={working} className="admin-action-btn admin-accept">
                 Accept
