@@ -109,6 +109,50 @@ export default function ApplicationDetailPage() {
     setLoading(false)
   }
 
+  // ✅ NEW: uses API (sends email)
+  async function handleDecision(status) {
+    let denialReason = ""
+
+    if (status === "denied") {
+      denialReason = prompt("Enter the reason for denial:")
+
+      if (!denialReason || !denialReason.trim()) {
+        setActionMessage("Denial reason is required.")
+        return
+      }
+    }
+
+    setWorking(true)
+    setActionMessage("")
+
+    const res = await fetch(`/api/applications/${id}/decision`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status,
+        denialReason,
+      }),
+    })
+
+    const data = await res.json()
+
+    setWorking(false)
+
+    if (!res.ok) {
+      setActionMessage(data.error || "Something went wrong.")
+      return
+    }
+
+    setApplication((prev) => ({
+      ...prev,
+      status,
+    }))
+
+    setActionMessage(data.message || `Application ${status}.`)
+  }
+
   async function updateStatus(nextStatus) {
     setWorking(true)
     setActionMessage("")
@@ -126,14 +170,7 @@ export default function ApplicationDetailPage() {
 
     setApplication((prev) => ({ ...prev, status: nextStatus }))
 
-    if (nextStatus === "accepted") {
-      setActionMessage("Application marked as accepted.")
-    } else if (nextStatus === "denied") {
-      setActionMessage("Application marked as denied.")
-    } else {
-      setActionMessage("Application marked as not reviewed.")
-    }
-
+    setActionMessage("Application updated.")
     setWorking(false)
   }
 
@@ -223,40 +260,29 @@ export default function ApplicationDetailPage() {
           <p className="section-label">Admin</p>
           <h1>{application.full_name || "Applicant"}</h1>
 
-          {errorMessage ? (
+          {errorMessage && (
             <p className="muted" style={{ marginBottom: "16px" }}>
               {errorMessage}
             </p>
-          ) : null}
+          )}
 
-          {actionMessage ? (
+          {actionMessage && (
             <p className="muted" style={{ marginBottom: "16px" }}>
               {actionMessage}
             </p>
-          ) : null}
+          )}
 
           <div className="card" style={{ marginTop: "20px" }}>
             <h3>Application Details</h3>
 
-            <p>
-              <strong>Email:</strong> {application.email || "Not provided"}
-            </p>
+            <p><strong>Email:</strong> {application.email || "Not provided"}</p>
+            <p><strong>Discord Username:</strong> {application.discord_username || "Not provided"}</p>
+            <p><strong>Roblox Username:</strong> {application.roblox_username || "Not provided"}</p>
 
             <p>
-              <strong>Discord Username:</strong>{" "}
-              {application.discord_username || "Not provided"}
-            </p>
-
-            <p>
-              <strong>Roblox Username:</strong>{" "}
-              {application.roblox_username || "Not provided"}
-            </p>
-
-            <p>
-              <strong>Status:</strong>{" "}
+              <strong>Status:</strong>
               <span
                 style={{
-                  display: "inline-block",
                   marginLeft: "6px",
                   background: statusStyles.background,
                   color: statusStyles.color,
@@ -264,8 +290,6 @@ export default function ApplicationDetailPage() {
                   borderRadius: "999px",
                   fontSize: "12px",
                   fontWeight: 700,
-                  letterSpacing: "0.03em",
-                  verticalAlign: "middle",
                 }}
               >
                 {statusStyles.label}
@@ -279,86 +303,24 @@ export default function ApplicationDetailPage() {
                 : "Unknown"}
             </p>
 
-            <p>
-              <strong>Position:</strong> {job?.title || "Unknown"}
-            </p>
+            <p><strong>Position:</strong> {job?.title || "Unknown"}</p>
 
-            <p className="muted">
-              {[job?.department, job?.location, job?.employment_type]
-                .filter(Boolean)
-                .join(" • ")}
-            </p>
-
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                flexWrap: "wrap",
-                marginTop: "18px",
-              }}
-            >
-              <button
-                onClick={() => updateStatus("accepted")}
-                disabled={working}
-                style={{
-                  border: "none",
-                  background: "#dcfce7",
-                  color: "#166534",
-                  padding: "12px 18px",
-                  borderRadius: "999px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-              >
+            {/* ✅ UPDATED BUTTONS */}
+            <div style={{ display: "flex", gap: "10px", marginTop: "18px" }}>
+              <button onClick={() => handleDecision("accepted")} disabled={working}>
                 Accept
               </button>
 
-              <button
-                onClick={() => updateStatus("denied")}
-                disabled={working}
-                style={{
-                  border: "none",
-                  background: "#fee2e2",
-                  color: "#991b1b",
-                  padding: "12px 18px",
-                  borderRadius: "999px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-              >
+              <button onClick={() => handleDecision("denied")} disabled={working}>
                 Deny
               </button>
 
-              <button
-                onClick={() => updateStatus("not_reviewed")}
-                disabled={working}
-                style={{
-                  border: "none",
-                  background: "#e2e8f0",
-                  color: "#334155",
-                  padding: "12px 18px",
-                  borderRadius: "999px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-              >
+              <button onClick={() => updateStatus("not_reviewed")} disabled={working}>
                 Mark Not Reviewed
               </button>
 
-              <button
-                onClick={deleteApplication}
-                disabled={working}
-                style={{
-                  border: "none",
-                  background: "#1e293b",
-                  color: "white",
-                  padding: "12px 18px",
-                  borderRadius: "999px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-              >
-                Delete Application
+              <button onClick={deleteApplication} disabled={working}>
+                Delete
               </button>
             </div>
           </div>
@@ -368,31 +330,13 @@ export default function ApplicationDetailPage() {
 
             {sortedAnswers.length ? (
               sortedAnswers.map((item) => (
-                <div
-                  key={item.id}
-                  style={{
-                    padding: "14px 0",
-                    borderBottom: "1px solid #e2e8f0",
-                  }}
-                >
-                  <p style={{ fontWeight: 700, marginBottom: "6px" }}>
-                    {item.question?.label || "Question"}
-                    {item.question?.is_required ? " *" : ""}
-                  </p>
-
-                  {item.question?.help_text ? (
-                    <p className="muted" style={{ marginBottom: "8px" }}>
-                      {item.question.help_text}
-                    </p>
-                  ) : null}
-
-                  <p style={{ whiteSpace: "pre-wrap" }}>
-                    {item.answer || "No response provided"}
-                  </p>
+                <div key={item.id} style={{ padding: "14px 0", borderBottom: "1px solid #e2e8f0" }}>
+                  <p style={{ fontWeight: 700 }}>{item.question?.label}</p>
+                  <p style={{ whiteSpace: "pre-wrap" }}>{item.answer}</p>
                 </div>
               ))
             ) : (
-              <p className="muted">No answers found for this application.</p>
+              <p className="muted">No answers found.</p>
             )}
           </div>
         </div>
