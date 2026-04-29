@@ -129,6 +129,24 @@ a {
   font-weight: 800;
 }
 
+.hero-tagline {
+  margin: 20px 0;
+  font-weight: 600;
+}
+
+.hero-subtext {
+  max-width: 650px;
+  margin: 0 auto 25px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 /* ===== BUTTONS ===== */
 .btn-primary {
   padding: 12px 22px;
@@ -146,7 +164,63 @@ a {
   box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
 }
 
-/* ===== ADMIN ACTION BUTTONS ===== */
+.btn-secondary {
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: white;
+  color: #0f172a;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+}
+
+/* ===== CONTENT ===== */
+.content {
+  padding-top: 40px;
+}
+
+/* ===== SECTION ===== */
+.section {
+  padding: 50px 20px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  color: #6366f1;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.muted {
+  color: #475569;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== NEW ADMIN STYLES (SAFE ADDITION) ===== */
 .admin-action-row {
   display: flex;
   gap: 12px;
@@ -158,19 +232,19 @@ a {
   border: none;
   padding: 11px 18px;
   border-radius: 999px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 14px;
+  transition: 0.2s ease;
+  font-size: 0.95rem;
+  font-family: inherit;
 }
 
 .admin-action-btn:hover {
-  transform: translateY(-1px);
-  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 .admin-action-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
@@ -194,9 +268,8 @@ a {
   color: white;
 }
 
-/* ===== REVIEW LOGS UI ===== */
 .review-log-box {
-  margin-top: 20px;
+  margin-top: 18px;
   padding: 16px;
   border-radius: 16px;
   background: #f8fafc;
@@ -210,29 +283,4 @@ a {
 
 .review-log-item:last-child {
   border-bottom: none;
-}
-
-.review-log-action {
-  font-weight: 700;
-}
-
-.review-log-time {
-  font-size: 12px;
-  color: #64748b;
-}
-
-/* ===== CARDS ===== */
-.card {
-  background: white;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-}
-
-/* ===== LOADING ===== */
-.loading-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
