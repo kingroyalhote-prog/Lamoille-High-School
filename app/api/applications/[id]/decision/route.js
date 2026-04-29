@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server"
 import { Resend } from "resend"
-import { supabase } from "../../../../../lib/supabase"
+import { createClient } from "@supabase/supabase-js"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+)
 
 export async function POST(request, { params }) {
   try {
@@ -20,7 +25,7 @@ export async function POST(request, { params }) {
       )
     }
 
-    const { data: application, error: fetchError } = await supabase
+    const { data: application, error: fetchError } = await supabaseAdmin
       .from("applications")
       .select("*")
       .eq("id", id)
@@ -33,8 +38,7 @@ export async function POST(request, { params }) {
       )
     }
 
-    // ✅ Update application
-    const { error: updateError } = await supabase
+    const { data: updatedApplication, error: updateError } = await supabaseAdmin
       .from("applications")
       .update({
         status,
@@ -42,16 +46,17 @@ export async function POST(request, { params }) {
         reviewed_at: new Date().toISOString(),
       })
       .eq("id", id)
+      .select("id, status, denial_reason, reviewed_at")
+      .single()
 
-    if (updateError) {
+    if (updateError || !updatedApplication) {
       return NextResponse.json(
-        { error: updateError.message },
+        { error: updateError?.message || "Application status did not update." },
         { status: 500 }
       )
     }
 
-    // ✅ Insert audit log
-    await supabase.from("application_review_logs").insert({
+    await supabaseAdmin.from("application_review_logs").insert({
       application_id: id,
       action: status,
       reason: status === "denied" ? denialReason : null,
