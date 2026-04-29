@@ -145,10 +145,8 @@ export default function ApplicationDetailPage() {
       return
     }
 
-    setApplication((prev) => ({
-      ...prev,
-      status,
-    }))
+    // ✅ FIXED HERE
+    await loadApplication()
 
     setActionMessage(data.message || `Application ${status}.`)
   }
@@ -294,14 +292,14 @@ export default function ApplicationDetailPage() {
               </span>
             </p>
 
-           {application.status === "denied" && (
-  <div className="review-log-box">
-    <strong>Denial Reason:</strong>
-    <p style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
-      {application.denial_reason || "No denial reason saved."}
-    </p>
-  </div>
-)}
+            {application.status === "denied" && (
+              <div className="review-log-box">
+                <strong>Denial Reason:</strong>
+                <p style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
+                  {application.denial_reason || "No denial reason saved."}
+                </p>
+              </div>
+            )}
 
             <p>
               <strong>Submitted:</strong>{" "}
