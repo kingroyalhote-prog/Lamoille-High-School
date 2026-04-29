@@ -36,6 +36,7 @@ export default async function ApplicationsPage() {
       full_name,
       email,
       status,
+      denial_reason,
       job_posting_id,
       job_postings ( title )
     `)
@@ -91,6 +92,15 @@ export default async function ApplicationsPage() {
                       <strong>Position:</strong>{" "}
                       {app.job_postings?.title || "Unknown"}
                     </p>
+
+                    {app.status === "denied" && (
+                      <div className="review-log-box">
+                        <strong>Denial Reason:</strong>
+                        <p style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
+                          {app.denial_reason || "No denial reason saved."}
+                        </p>
+                      </div>
+                    )}
 
                     <p className="muted" style={{ marginTop: "6px" }}>
                       {app.created_at
