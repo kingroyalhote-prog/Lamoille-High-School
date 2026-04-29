@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { supabase } from "../../../lib/supabase"
+import ApplicationDecisionButtons from "./ApplicationDecisionButtons"
 
 export const dynamic = "force-dynamic"
 
@@ -104,6 +105,8 @@ export default async function ApplicationsPage() {
                     >
                       View Application
                     </Link>
+
+                    <ApplicationDecisionButtons applicationId={app.id} />
                   </div>
                 )
               })
