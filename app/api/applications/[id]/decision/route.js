@@ -6,9 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request, { params }) {
   try {
-    // ✅ FIX HERE
     const { id } = await params
-
     const { status, denialReason } = await request.json()
 
     if (!["accepted", "denied"].includes(status)) {
@@ -35,6 +33,7 @@ export async function POST(request, { params }) {
       )
     }
 
+    // ✅ Update application
     const { error: updateError } = await supabase
       .from("applications")
       .update({
@@ -50,6 +49,13 @@ export async function POST(request, { params }) {
         { status: 500 }
       )
     }
+
+    // ✅ Insert audit log
+    await supabase.from("application_review_logs").insert({
+      application_id: id,
+      action: status,
+      reason: status === "denied" ? denialReason : null,
+    })
 
     const applicantEmail =
       application.email ||
@@ -95,12 +101,19 @@ ${denialReason}
 Thank you,
 Lamoille High School`
 
-    await resend.emails.send({
+    const emailResult = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL,
       to: applicantEmail,
       subject,
       text,
     })
+
+    if (emailResult.error) {
+      return NextResponse.json(
+        { error: emailResult.error.message || "Email failed to send." },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({
       success: true,
