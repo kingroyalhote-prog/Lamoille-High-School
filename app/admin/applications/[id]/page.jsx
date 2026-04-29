@@ -70,7 +70,6 @@ export default function ApplicationDetailPage() {
       return
     }
 
-    // ✅ FIX HERE
     setApplication(applicationData)
     setErrorMessage("")
 
@@ -282,17 +281,15 @@ export default function ApplicationDetailPage() {
 
             <p>
               <strong>Status:</strong>
-              <span
-                style={{
-                  marginLeft: "6px",
-                  background: statusStyles.background,
-                  color: statusStyles.color,
-                  padding: "4px 10px",
-                  borderRadius: "999px",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                }}
-              >
+              <span style={{
+                marginLeft: "6px",
+                background: statusStyles.background,
+                color: statusStyles.color,
+                padding: "4px 10px",
+                borderRadius: "999px",
+                fontSize: "12px",
+                fontWeight: 700,
+              }}>
                 {statusStyles.label}
               </span>
             </p>
@@ -306,20 +303,21 @@ export default function ApplicationDetailPage() {
 
             <p><strong>Position:</strong> {job?.title || "Unknown"}</p>
 
-            <div style={{ display: "flex", gap: "10px", marginTop: "18px" }}>
-              <button onClick={() => handleDecision("accepted")} disabled={working}>
+            {/* ✅ UPDATED BUTTONS */}
+            <div className="admin-action-row">
+              <button onClick={() => handleDecision("accepted")} disabled={working} className="admin-action-btn admin-accept">
                 Accept
               </button>
 
-              <button onClick={() => handleDecision("denied")} disabled={working}>
+              <button onClick={() => handleDecision("denied")} disabled={working} className="admin-action-btn admin-deny">
                 Deny
               </button>
 
-              <button onClick={() => updateStatus("not_reviewed")} disabled={working}>
+              <button onClick={() => updateStatus("not_reviewed")} disabled={working} className="admin-action-btn admin-neutral">
                 Mark Not Reviewed
               </button>
 
-              <button onClick={deleteApplication} disabled={working}>
+              <button onClick={deleteApplication} disabled={working} className="admin-action-btn admin-delete">
                 Delete
               </button>
             </div>
