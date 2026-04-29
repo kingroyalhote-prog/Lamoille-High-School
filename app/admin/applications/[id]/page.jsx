@@ -70,7 +70,9 @@ export default function ApplicationDetailPage() {
       return
     }
 
+    // ✅ FIX HERE
     setApplication(applicationData)
+    setErrorMessage("")
 
     const { data: jobData } = await supabase
       .from("job_postings")
@@ -109,7 +111,6 @@ export default function ApplicationDetailPage() {
     setLoading(false)
   }
 
-  // ✅ NEW: uses API (sends email)
   async function handleDecision(status) {
     let denialReason = ""
 
@@ -305,7 +306,6 @@ export default function ApplicationDetailPage() {
 
             <p><strong>Position:</strong> {job?.title || "Unknown"}</p>
 
-            {/* ✅ UPDATED BUTTONS */}
             <div style={{ display: "flex", gap: "10px", marginTop: "18px" }}>
               <button onClick={() => handleDecision("accepted")} disabled={working}>
                 Accept
