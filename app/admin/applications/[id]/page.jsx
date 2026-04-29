@@ -294,14 +294,14 @@ export default function ApplicationDetailPage() {
               </span>
             </p>
 
-            {application.denial_reason && (
-              <div className="review-log-box">
-                <strong>Denial Reason:</strong>
-                <p style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
-                  {application.denial_reason}
-                </p>
-              </div>
-            )}
+           {application.status === "denied" && (
+  <div className="review-log-box">
+    <strong>Denial Reason:</strong>
+    <p style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
+      {application.denial_reason || "No denial reason saved."}
+    </p>
+  </div>
+)}
 
             <p>
               <strong>Submitted:</strong>{" "}
