@@ -3,6 +3,7 @@ import { supabaseAdmin } from "../../../lib/supabaseAdmin"
 
 const GROUP_ID = "1048796934"
 
+// Role → Category mapping (ONLY staff roles)
 const ROLE_MAP = {
   "Principal": "Ownership",
   "Assistant Principal": "Ownership",
@@ -35,8 +36,8 @@ export async function GET() {
   try {
     do {
       const url = cursor
-        ? `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=100&cursor=${encodeURIComponent(cursor)}`
-        : `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=10`
+        ? `https://groups.roproxy.com/v1/groups/${GROUP_ID}/users?limit=10&cursor=${encodeURIComponent(cursor)}`
+        : `https://groups.roproxy.com/v1/groups/${GROUP_ID}/users?limit=10`
 
       console.log("ROBLOX URL:", url)
 
@@ -66,7 +67,7 @@ export async function GET() {
 
         const category = getCategory(role.name)
 
-        // Skip regular group members who are not staff roles
+        // Skip non-staff roles
         if (!category) continue
 
         const userId = user.userId || user.id
