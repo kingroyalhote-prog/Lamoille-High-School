@@ -49,7 +49,6 @@ export default function Navbar() {
         {/* LINKS */}
         <div className="site-nav-links">
           <Link href="/about">About</Link>
-          <Link href="/staff-directory">Staff Directory</Link>
           <Link href="/employment">Employment</Link>
           <Link href="/calendar">Calendar</Link>
 
