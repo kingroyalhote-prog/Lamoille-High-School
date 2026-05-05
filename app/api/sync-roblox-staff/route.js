@@ -22,6 +22,7 @@ const ROLE_MAP = {
 
 export async function GET() {
   let synced = 0
+  const skippedRoles = []
 
   try {
     const rolesRes = await fetch(
@@ -40,19 +41,15 @@ export async function GET() {
 
       do {
         const url = cursor
-          ? `https://groups.roblox.com/v1/groups/${GROUP_ID}/roles/${role.id}/users?limit=100&cursor=${encodeURIComponent(cursor)}`
-          : `https://groups.roblox.com/v1/groups/${GROUP_ID}/roles/${role.id}/users?limit=100`
+          ? `https://groups.roblox.com/v1/groups/${GROUP_ID}/roles/${role.id}/users?limit=10&cursor=${encodeURIComponent(cursor)}`
+          : `https://groups.roblox.com/v1/groups/${GROUP_ID}/roles/${role.id}/users?limit=10`
 
         const usersRes = await fetch(url, { cache: "no-store" })
         const usersJson = await usersRes.json()
 
         if (usersJson.errors) {
-          return NextResponse.json({
-            success: false,
-            role: role.name,
-            urlUsed: url,
-            robloxResponse: usersJson,
-          })
+          skippedRoles.push(role.name)
+          break
         }
 
         const users = usersJson.data || []
@@ -89,6 +86,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       synced,
+      skippedRoles,
     })
   } catch (err) {
     return NextResponse.json({
