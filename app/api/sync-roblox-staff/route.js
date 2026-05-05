@@ -3,7 +3,6 @@ import { supabaseAdmin } from "../../../lib/supabaseAdmin"
 
 const GROUP_ID = "1048796934"
 
-// Your exact role → category mapping
 const ROLE_MAP = {
   "Principal": "Ownership",
   "Assistant Principal": "Ownership",
@@ -30,27 +29,41 @@ function getCategory(roleName) {
 }
 
 export async function GET() {
-  let cursor = ""
+  let cursor = null
   let synced = 0
 
   try {
     do {
-      const res = await fetch(
-        `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=100${
-          cursor ? `&cursor=${cursor}` : ""
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0",
-          },
-          cache: "no-store",
-        }
-      )
+      let url = `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?sortOrder=Asc&limit=100`
+
+      if (cursor) {
+        url += `&cursor=${encodeURIComponent(cursor)}`
+      }
+
+      console.log("ROBLOX URL:", url)
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+        },
+        cache: "no-store",
+      })
 
       const json = await res.json()
-      console.log("ROBLOX RESPONSE:", json)
+
+      console.log("ROBLOX RESPONSE:", JSON.stringify(json))
+
+      if (!res.ok || json.errors) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Roblox returned an error",
+            robloxResponse: json,
+          },
+          { status: 500 }
+        )
+      }
 
       const members = json.data || []
 
@@ -58,13 +71,13 @@ export async function GET() {
         const user = member.user
         const role = member.role
 
-        // Fix for Roblox field variations
-        if (!user || !role || !(user.userId || user.id)) continue
+        if (!user || !role) continue
 
         const userId = user.userId || user.id
         const username = user.username || user.name
-        const displayName =
-          user.displayName || user.name || user.username
+        const displayName = user.displayName || user.name || user.username
+
+        if (!userId || !username) continue
 
         const category = getCategory(role.name)
 
@@ -74,7 +87,7 @@ export async function GET() {
             roblox_username: username,
             full_name: displayName,
             title: role.name,
-            category: category,
+            category,
             is_active: true,
             image_url: `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=180&height=180&format=png`,
           },
@@ -97,7 +110,10 @@ export async function GET() {
     console.error("SYNC ERROR:", err)
 
     return NextResponse.json(
-      { error: err.message },
+      {
+        success: false,
+        error: err.message,
+      },
       { status: 500 }
     )
   }
