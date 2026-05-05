@@ -25,7 +25,7 @@ const ROLE_MAP = {
 }
 
 function getCategory(roleName) {
-  return ROLE_MAP[roleName] || "Faculty"
+  return ROLE_MAP[roleName] || null
 }
 
 export async function GET() {
@@ -34,19 +34,13 @@ export async function GET() {
 
   try {
     do {
-      let url = `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?sortOrder=Asc&limit=100`
-
-      if (cursor) {
-        url += `&cursor=${encodeURIComponent(cursor)}`
-      }
+      const url = cursor
+        ? `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=100&cursor=${encodeURIComponent(cursor)}`
+        : `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=100`
 
       console.log("ROBLOX URL:", url)
 
       const res = await fetch(url, {
-        method: "GET",
-        headers: {
-          "User-Agent": "Mozilla/5.0",
-        },
         cache: "no-store",
       })
 
@@ -54,15 +48,12 @@ export async function GET() {
 
       console.log("ROBLOX RESPONSE:", JSON.stringify(json))
 
-      if (!res.ok || json.errors) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: "Roblox returned an error",
-            robloxResponse: json,
-          },
-          { status: 500 }
-        )
+      if (json.errors) {
+        return NextResponse.json({
+          success: false,
+          urlUsed: url,
+          robloxResponse: json,
+        })
       }
 
       const members = json.data || []
@@ -73,15 +64,18 @@ export async function GET() {
 
         if (!user || !role) continue
 
+        const category = getCategory(role.name)
+
+        // Skip regular group members who are not staff roles
+        if (!category) continue
+
         const userId = user.userId || user.id
         const username = user.username || user.name
         const displayName = user.displayName || user.name || user.username
 
         if (!userId || !username) continue
 
-        const category = getCategory(role.name)
-
-        await supabaseAdmin.from("staff_members").upsert(
+        const { error } = await supabaseAdmin.from("staff_members").upsert(
           {
             roblox_user_id: userId,
             roblox_username: username,
@@ -96,7 +90,11 @@ export async function GET() {
           }
         )
 
-        synced++
+        if (error) {
+          console.error("SUPABASE ERROR:", error)
+        } else {
+          synced++
+        }
       }
 
       cursor = json.nextPageCursor
@@ -107,14 +105,9 @@ export async function GET() {
       synced,
     })
   } catch (err) {
-    console.error("SYNC ERROR:", err)
-
-    return NextResponse.json(
-      {
-        success: false,
-        error: err.message,
-      },
-      { status: 500 }
-    )
+    return NextResponse.json({
+      success: false,
+      error: err.message,
+    })
   }
 }
