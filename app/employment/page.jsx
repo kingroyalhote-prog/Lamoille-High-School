@@ -12,6 +12,13 @@ export default async function EmploymentPage() {
 
   if (error) console.log(error)
 
+  const openJobs = jobs?.filter((job) => job.applications_open)
+  const closedJobs = jobs?.filter((job) => !job.applications_open)
+
+  const sortedJobs = [...(openJobs || []), ...(closedJobs || [])]
+
+  const hasOpenJobs = openJobs && openJobs.length > 0
+
   return (
     <main className="content">
       <section className="section">
@@ -22,9 +29,28 @@ export default async function EmploymentPage() {
             Join our team and help shape the future of our students.
           </p>
 
+          {/* 🔥 No open applications message */}
+          {!hasOpenJobs && (
+            <div
+              className="card"
+              style={{
+                marginTop: "25px",
+                background: "#f8fafc",
+                border: "1px solid #e2e8f0",
+              }}
+            >
+              <h3>No Open Applications</h3>
+              <p>
+                There are no open applications at this time. Thank you for your
+                interest in joining Lamoille High School — we encourage you to
+                check back soon for future opportunities.
+              </p>
+            </div>
+          )}
+
           <div className="card-grid" style={{ marginTop: "30px" }}>
-            {jobs?.length ? (
-              jobs.map((job) => (
+            {sortedJobs?.length ? (
+              sortedJobs.map((job) => (
                 <div key={job.id} className="card">
                   <h3>{job.title}</h3>
 
@@ -41,7 +67,7 @@ export default async function EmploymentPage() {
                     className="btn-primary"
                     style={{ marginTop: "10px", display: "inline-block" }}
                   >
-                    {job.applications_open ? "Apply" : "Application Closed"}
+                    {job.applications_open ? "Apply Now" : "Application Closed"}
                   </Link>
                 </div>
               ))
