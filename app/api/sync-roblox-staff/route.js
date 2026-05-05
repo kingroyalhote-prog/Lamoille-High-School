@@ -36,7 +36,7 @@ export async function GET() {
     do {
       const url = cursor
         ? `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=100&cursor=${encodeURIComponent(cursor)}`
-        : `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=100`
+        : `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=10`
 
       console.log("ROBLOX URL:", url)
 
