@@ -15,10 +15,6 @@ export default async function Home() {
     <main>
       {/* HERO */}
       <section className="hero">
-        <div className="hero-bg-orb hero-orb-one" />
-        <div className="hero-bg-orb hero-orb-two" />
-        <div className="hero-bg-grid" />
-
         <div className="hero-inner">
           <p className="hero-eyebrow">Lamoille High School</p>
 
@@ -40,10 +36,6 @@ export default async function Home() {
             <Link href="/employment" className="btn-primary">
               Apply Now
             </Link>
-
-            <Link href="/staff-directory" className="btn-secondary">
-              Meet Our Staff
-            </Link>
           </div>
         </div>
       </section>
@@ -59,10 +51,12 @@ export default async function Home() {
                 <p>See our mission, values, and school community focus.</p>
               </Link>
 
-              <Link href="/staff-directory" className="quick-link-card">
-                <span className="quick-link-label">Directory</span>
-                <h3>Meet Our Staff</h3>
-                <p>Browse teachers, administration, and support staff.</p>
+              <Link href="/calendar" className="quick-link-card">
+                <span className="quick-link-label">Events</span>
+                <h3>School Calendar</h3>
+                <p>
+                  View upcoming school events, schedules, and important dates.
+                </p>
               </Link>
 
               <Link href="/employment" className="quick-link-card">
@@ -119,8 +113,9 @@ export default async function Home() {
                 <h2>Building a Stronger School Community</h2>
 
                 <p>
-                  Lamoille High School is dedicated to creating a supportive and engaging
-                  environment where students can grow academically, socially, and personally.
+                  Lamoille High School is dedicated to creating a supportive and
+                  engaging environment where students can grow academically,
+                  socially, and personally.
                 </p>
 
                 <p>
@@ -132,17 +127,26 @@ export default async function Home() {
               <div className="home-feature-points">
                 <div className="home-point-card">
                   <h3>Supportive Environment</h3>
-                  <p>Students are encouraged to grow in a welcoming and inclusive community.</p>
+                  <p>
+                    Students are encouraged to grow in a welcoming and inclusive
+                    community.
+                  </p>
                 </div>
 
                 <div className="home-point-card">
                   <h3>Strong Leadership</h3>
-                  <p>We promote responsibility, involvement, and student voice across campus.</p>
+                  <p>
+                    We promote responsibility, involvement, and student voice
+                    across campus.
+                  </p>
                 </div>
 
                 <div className="home-point-card">
                   <h3>Real Opportunity</h3>
-                  <p>Students are given meaningful opportunities to prepare for the future.</p>
+                  <p>
+                    Students are given meaningful opportunities to prepare for
+                    the future.
+                  </p>
                 </div>
               </div>
             </div>
