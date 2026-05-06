@@ -8,10 +8,6 @@ export default async function AdminPage() {
     .from("announcements")
     .select("*", { count: "exact", head: true })
 
-  const { count: staffCount } = await supabase
-    .from("staff_members")
-    .select("*", { count: "exact", head: true })
-
   const { count: jobsCount } = await supabase
     .from("job_postings")
     .select("*", { count: "exact", head: true })
@@ -22,6 +18,10 @@ export default async function AdminPage() {
 
   const { count: eventsCount } = await supabase
     .from("events")
+    .select("*", { count: "exact", head: true })
+
+  const { count: clubsCount } = await supabase
+    .from("clubs")
     .select("*", { count: "exact", head: true })
 
   return (
@@ -44,10 +44,10 @@ export default async function AdminPage() {
             />
 
             <AdminCard
-              title="Staff Directory"
-              count={staffCount}
-              label="staff"
-              href="/admin/staff"
+              title="Clubs"
+              count={clubsCount}
+              label="clubs"
+              href="/admin/clubs"
               button="Manage"
             />
 
