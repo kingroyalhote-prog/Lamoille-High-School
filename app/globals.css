@@ -8,6 +8,7 @@ body {
   font-family: "Inter", Arial, sans-serif;
   background: #f4f7fb;
   color: #0f172a;
+  overflow-x: hidden;
 }
 
 a {
@@ -125,8 +126,8 @@ a {
       rgba(23, 59, 133, 0.72)
     ),
     url("/images/LHS.png") center / cover no-repeat;
-  filter: blur(10px);
-  transform: scale(1.08);
+  filter: blur(4px);
+  transform: scale(1.03);
   z-index: 0;
 }
 
@@ -191,6 +192,70 @@ a {
   gap: 14px;
   flex-wrap: wrap;
 }
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  font-weight: 600;
+  transition: 0.25s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+}
+
+.btn-secondary {
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: white;
+  color: #0f172a;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+}
+
+/* ===== CONTENT ===== */
+.content {
+  padding-top: 40px;
+  overflow-x: hidden;
+}
+
+/* ===== SECTION ===== */
+.section {
+  padding: 50px 20px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  color: #6366f1;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.section h2 {
+  margin: 0;
+}
+
+.muted {
+  color: #475569;
+}
+
 /* ===== SECTION HEAD ===== */
 .section-head {
   display: flex;
@@ -209,8 +274,8 @@ a {
 .card {
   background: white;
   padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
   transition: 0.25s;
   height: 100%;
   display: flex;
@@ -246,16 +311,17 @@ a {
 /* ===== QUICK LINKS ===== */
 .quick-links-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
 .quick-link-card {
   background: white;
   padding: 22px;
-  border-radius: 18px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
   transition: 0.25s;
+  min-width: 0;
 }
 
 .quick-link-card:hover {
@@ -265,7 +331,7 @@ a {
 .quick-link-label {
   font-size: 0.75rem;
   color: #4f46e5;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .quick-link-card h3 {
@@ -284,8 +350,8 @@ a {
   gap: 20px;
   background: white;
   padding: 24px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
 .home-feature-points {
@@ -296,7 +362,7 @@ a {
 .home-point-card {
   background: #f8fafc;
   padding: 16px;
-  border-radius: 14px;
+  border-radius: 16px;
 }
 
 .home-point-card h3 {
@@ -355,6 +421,10 @@ a {
     grid-template-columns: 1fr;
   }
 
+  .quick-links-grid {
+    grid-template-columns: 1fr;
+  }
+
   .site-nav-inner {
     flex-direction: column;
     align-items: flex-start;
@@ -372,6 +442,7 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
 /* ===== ADMIN BUTTONS ===== */
 .admin-action-row {
   display: flex;
