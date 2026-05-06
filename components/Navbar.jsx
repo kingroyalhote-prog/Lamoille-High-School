@@ -50,6 +50,7 @@ export default function Navbar() {
         <div className="site-nav-links">
           <Link href="/about">About</Link>
           <Link href="/employment">Employment</Link>
+          <Link href="/clubs">Clubs</Link>
           <Link href="/calendar">Calendar</Link>
 
           {user ? (
