@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
 import { supabase } from "../../../../lib/supabase"
 
 const STATUS_OPTIONS = [
@@ -10,29 +11,36 @@ const STATUS_OPTIONS = [
   "Club On Hold",
 ]
 
-export default function EditClubPage({ params }) {
+export default function EditClubPage() {
+  const params = useParams()
+  const id = params?.id
+
   const [club, setClub] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
 
   useEffect(() => {
     async function loadClub() {
+      if (!id) return
+
       const { data, error } = await supabase
         .from("clubs")
         .select("*")
-        .eq("id", params.id)
+        .eq("id", id)
         .single()
 
       if (error) {
         setMessage("Error loading club: " + error.message)
-        return
+      } else {
+        setClub(data)
       }
 
-      setClub(data)
+      setLoading(false)
     }
 
     loadClub()
-  }, [params.id])
+  }, [id])
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -55,7 +63,7 @@ export default function EditClubPage({ params }) {
     const { error } = await supabase
       .from("clubs")
       .update(updatedClub)
-      .eq("id", params.id)
+      .eq("id", id)
 
     setSaving(false)
 
@@ -74,10 +82,7 @@ export default function EditClubPage({ params }) {
 
     if (!confirmed) return
 
-    const { error } = await supabase
-      .from("clubs")
-      .delete()
-      .eq("id", params.id)
+    const { error } = await supabase.from("clubs").delete().eq("id", id)
 
     if (error) {
       setMessage("Error deleting club: " + error.message)
@@ -87,13 +92,27 @@ export default function EditClubPage({ params }) {
     window.location.href = "/admin/clubs"
   }
 
-  if (!club) {
+  if (loading) {
     return (
       <main className="content">
         <section className="section">
           <div className="container">
             <p>Loading club...</p>
-            {message && <p style={{ color: "#b91c1c" }}>{message}</p>}
+          </div>
+        </section>
+      </main>
+    )
+  }
+
+  if (!club) {
+    return (
+      <main className="content">
+        <section className="section">
+          <div className="container">
+            <div className="card">
+              <h1>Club Not Found</h1>
+              {message && <p style={{ color: "#b91c1c" }}>{message}</p>}
+            </div>
           </div>
         </section>
       </main>
@@ -110,50 +129,22 @@ export default function EditClubPage({ params }) {
 
           <form onSubmit={handleSubmit} className="card" style={{ marginTop: "24px" }}>
             <label>Club Title</label>
-            <input
-              name="title"
-              required
-              defaultValue={club.title || ""}
-              style={inputStyle}
-            />
+            <input name="title" required defaultValue={club.title || ""} style={inputStyle} />
 
             <label>Picture URL</label>
-            <input
-              name="image_url"
-              defaultValue={club.image_url || ""}
-              placeholder="/images/club-photo.png or image URL"
-              style={inputStyle}
-            />
+            <input name="image_url" defaultValue={club.image_url || ""} style={inputStyle} />
 
             <label>Short Summary</label>
-            <textarea
-              name="summary"
-              rows="3"
-              defaultValue={club.summary || ""}
-              style={inputStyle}
-            />
+            <textarea name="summary" rows="3" defaultValue={club.summary || ""} style={inputStyle} />
 
             <label>More Information</label>
-            <textarea
-              name="description"
-              rows="6"
-              defaultValue={club.description || ""}
-              style={inputStyle}
-            />
+            <textarea name="description" rows="6" defaultValue={club.description || ""} style={inputStyle} />
 
             <label>Club Advisor</label>
-            <input
-              name="advisor"
-              defaultValue={club.advisor || ""}
-              style={inputStyle}
-            />
+            <input name="advisor" defaultValue={club.advisor || ""} style={inputStyle} />
 
             <label>Club Status</label>
-            <select
-              name="status"
-              defaultValue={club.status || "Club Active"}
-              style={inputStyle}
-            >
+            <select name="status" defaultValue={club.status || "Club Active"} style={inputStyle}>
               {STATUS_OPTIONS.map((status) => (
                 <option key={status} value={status}>
                   {status}
@@ -162,19 +153,10 @@ export default function EditClubPage({ params }) {
             </select>
 
             <label>Display Order</label>
-            <input
-              name="display_order"
-              type="number"
-              defaultValue={club.display_order || 0}
-              style={inputStyle}
-            />
+            <input name="display_order" type="number" defaultValue={club.display_order || 0} style={inputStyle} />
 
             <label style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              <input
-                name="is_published"
-                type="checkbox"
-                defaultChecked={club.is_published}
-              />
+              <input name="is_published" type="checkbox" defaultChecked={club.is_published} />
               Show on public clubs page
             </label>
 
@@ -189,11 +171,7 @@ export default function EditClubPage({ params }) {
                 {saving ? "Saving..." : "Save Changes"}
               </button>
 
-              <button
-                type="button"
-                onClick={handleDelete}
-                className="admin-action-btn admin-delete"
-              >
+              <button type="button" onClick={handleDelete} className="admin-action-btn admin-delete">
                 Delete Club
               </button>
             </div>
