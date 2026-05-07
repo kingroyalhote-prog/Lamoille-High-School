@@ -3,16 +3,19 @@
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
-import { supabase } from "../../../lib/supabase"
+import { supabase } from "../../../../lib/supabase"
 
 function getStatusStyles(status) {
   switch (status) {
     case "Sport Active":
       return { background: "#dcfce7", color: "#166534" }
+
     case "Off Season":
       return { background: "#fef3c7", color: "#92400e" }
+
     case "Sport Suspended":
       return { background: "#fee2e2", color: "#991b1b" }
+
     default:
       return { background: "#e2e8f0", color: "#334155" }
   }
@@ -103,12 +106,18 @@ export default function SportDetailsPage() {
           <div className="container">
             <div className="card">
               <h1>Sport Not Found</h1>
-              {message && <p style={{ color: "#b91c1c" }}>{message}</p>}
+
+              {message && (
+                <p style={{ color: "#b91c1c" }}>{message}</p>
+              )}
 
               <Link
                 href="/athletics"
                 className="btn-primary"
-                style={{ marginTop: "16px", display: "inline-block" }}
+                style={{
+                  marginTop: "16px",
+                  display: "inline-block",
+                }}
               >
                 Back to Athletics
               </Link>
@@ -206,6 +215,7 @@ export default function SportDetailsPage() {
                     required
                     style={{ marginTop: "4px" }}
                   />
+
                   <span>
                     I understand that I must be able to attend sports events to
                     stay on the team.
@@ -215,7 +225,9 @@ export default function SportDetailsPage() {
                 {message && (
                   <p
                     style={{
-                      color: message.includes("Error") ? "#b91c1c" : "#166534",
+                      color: message.includes("Error")
+                        ? "#b91c1c"
+                        : "#166534",
                       marginTop: "14px",
                     }}
                   >
@@ -229,7 +241,9 @@ export default function SportDetailsPage() {
                   disabled={submitting}
                   style={{ marginTop: "18px" }}
                 >
-                  {submitting ? "Submitting..." : "Submit Registration"}
+                  {submitting
+                    ? "Submitting..."
+                    : "Submit Registration"}
                 </button>
               </form>
             ) : (
