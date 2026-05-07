@@ -1,28 +1,60 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { supabase } from "../../../../lib/supabase"
 
-export const dynamic = "force-dynamic"
+export default function AthleticRegistrationsPage() {
+  const [registrations, setRegistrations] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [message, setMessage] = useState("")
 
-async function deleteRegistration(formData) {
-  "use server"
+  async function loadRegistrations() {
+    const { data, error } = await supabase
+      .from("athletic_registrations")
+      .select(`
+        *,
+        athletics (
+          name
+        )
+      `)
+      .order("created_at", { ascending: false })
 
-  const id = formData.get("id")
+    if (error) {
+      setMessage("Error loading registrations: " + error.message)
+    } else {
+      setRegistrations(data || [])
+    }
 
-  await supabase
-    .from("athletic_registrations")
-    .delete()
-    .eq("id", id)
-}
+    setLoading(false)
+  }
 
-export default async function AthleticRegistrationsPage() {
-  const { data: registrations } = await supabase
-    .from("athletic_registrations")
-    .select(`
-      *,
-      athletics (
-        name
-      )
-    `)
-    .order("created_at", { ascending: false })
+  useEffect(() => {
+    loadRegistrations()
+  }, [])
+
+  async function deleteRegistration(id) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this registration?"
+    )
+
+    if (!confirmed) return
+
+    const { error } = await supabase
+      .from("athletic_registrations")
+      .delete()
+      .eq("id", id)
+
+    if (error) {
+      setMessage("Error deleting registration: " + error.message)
+      return
+    }
+
+    setRegistrations((current) =>
+      current.filter((registration) => registration.id !== id)
+    )
+
+    setMessage("Registration deleted successfully.")
+  }
 
   return (
     <main className="content">
@@ -35,15 +67,32 @@ export default async function AthleticRegistrationsPage() {
             Review student athletic sign-ups and registration submissions.
           </p>
 
+          {message && (
+            <p
+              style={{
+                marginTop: "18px",
+                color: message.includes("Error") ? "#b91c1c" : "#166534",
+              }}
+            >
+              {message}
+            </p>
+          )}
+
           <div style={{ marginTop: "30px" }}>
-            {registrations?.length ? (
+            {loading ? (
+              <div className="card">
+                <h3>Loading registrations...</h3>
+              </div>
+            ) : registrations.length ? (
               registrations.map((registration) => (
                 <div
                   key={registration.id}
                   className="card"
                   style={{ marginBottom: "18px" }}
                 >
-                  <h3>{registration.athletics?.name || "Unknown Sport"}</h3>
+                  <h3>
+                    {registration.athletics?.name || "Unknown Sport"}
+                  </h3>
 
                   <p>
                     <strong>Roblox Username:</strong>{" "}
@@ -63,19 +112,18 @@ export default async function AthleticRegistrationsPage() {
                   </p>
 
                   <p className="muted" style={{ marginTop: "10px" }}>
-                    Submitted {new Date(registration.created_at).toLocaleString()}
+                    Submitted{" "}
+                    {new Date(registration.created_at).toLocaleString()}
                   </p>
 
-                  <form action={deleteRegistration} style={{ marginTop: "16px" }}>
-                    <input type="hidden" name="id" value={registration.id} />
-
-                    <button
-                      type="submit"
-                      className="admin-action-btn admin-delete"
-                    >
-                      Delete Registration
-                    </button>
-                  </form>
+                  <button
+                    type="button"
+                    onClick={() => deleteRegistration(registration.id)}
+                    className="admin-action-btn admin-delete"
+                    style={{ marginTop: "16px", width: "fit-content" }}
+                  >
+                    Delete Registration
+                  </button>
                 </div>
               ))
             ) : (
