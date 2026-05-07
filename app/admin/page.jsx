@@ -28,6 +28,10 @@ export default async function AdminPage() {
     .from("athletics")
     .select("*", { count: "exact", head: true })
 
+  const { count: athleticRegistrationsCount } = await supabase
+    .from("athletic_registrations")
+    .select("*", { count: "exact", head: true })
+
   return (
     <main className="content">
       <section className="section">
@@ -44,6 +48,8 @@ export default async function AdminPage() {
             <AdminCard title="Clubs" count={clubsCount} label="clubs" href="/admin/clubs" button="Manage" />
 
             <AdminCard title="Athletics" count={athleticsCount} label="sports" href="/admin/athletics" button="Manage" />
+
+            <AdminCard title="Athletic Registrations" count={athleticRegistrationsCount} label="submissions" href="/admin/athletics/registrations" button="View" />
 
             <AdminCard title="Jobs" count={jobsCount} label="postings" href="/admin/jobs" button="Manage" />
 
