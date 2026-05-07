@@ -24,6 +24,10 @@ export default async function AdminPage() {
     .from("clubs")
     .select("*", { count: "exact", head: true })
 
+  const { count: athleticsCount } = await supabase
+    .from("athletics")
+    .select("*", { count: "exact", head: true })
+
   return (
     <main className="content">
       <section className="section">
@@ -35,45 +39,17 @@ export default async function AdminPage() {
           </div>
 
           <div className="card-grid" style={{ marginTop: "20px" }}>
-            <AdminCard
-              title="Announcements"
-              count={announcementsCount}
-              label="posts"
-              href="/admin/announcements"
-              button="Manage"
-            />
+            <AdminCard title="Announcements" count={announcementsCount} label="posts" href="/admin/announcements" button="Manage" />
 
-            <AdminCard
-              title="Clubs"
-              count={clubsCount}
-              label="clubs"
-              href="/admin/clubs"
-              button="Manage"
-            />
+            <AdminCard title="Clubs" count={clubsCount} label="clubs" href="/admin/clubs" button="Manage" />
 
-            <AdminCard
-              title="Jobs"
-              count={jobsCount}
-              label="postings"
-              href="/admin/jobs"
-              button="Manage"
-            />
+            <AdminCard title="Athletics" count={athleticsCount} label="sports" href="/admin/athletics" button="Manage" />
 
-            <AdminCard
-              title="Applications"
-              count={applicationsCount}
-              label="submitted"
-              href="/admin/applications"
-              button="Review"
-            />
+            <AdminCard title="Jobs" count={jobsCount} label="postings" href="/admin/jobs" button="Manage" />
 
-            <AdminCard
-              title="Calendar"
-              count={eventsCount}
-              label="events"
-              href="/admin/calendar"
-              button="Manage"
-            />
+            <AdminCard title="Applications" count={applicationsCount} label="submitted" href="/admin/applications" button="Review" />
+
+            <AdminCard title="Calendar" count={eventsCount} label="events" href="/admin/calendar" button="Manage" />
 
             <div
               className="card"
