@@ -2,6 +2,17 @@ import { supabase } from "../../../../lib/supabase"
 
 export const dynamic = "force-dynamic"
 
+async function deleteRegistration(formData) {
+  "use server"
+
+  const id = formData.get("id")
+
+  await supabase
+    .from("athletic_registrations")
+    .delete()
+    .eq("id", id)
+}
+
 export default async function AthleticRegistrationsPage() {
   const { data: registrations } = await supabase
     .from("athletic_registrations")
@@ -18,7 +29,6 @@ export default async function AthleticRegistrationsPage() {
       <section className="section">
         <div className="container">
           <p className="section-label">Admin</p>
-
           <h1>Athletic Registrations</h1>
 
           <p className="muted">
@@ -33,9 +43,7 @@ export default async function AthleticRegistrationsPage() {
                   className="card"
                   style={{ marginBottom: "18px" }}
                 >
-                  <h3>
-                    {registration.athletics?.name || "Unknown Sport"}
-                  </h3>
+                  <h3>{registration.athletics?.name || "Unknown Sport"}</h3>
 
                   <p>
                     <strong>Roblox Username:</strong>{" "}
@@ -55,17 +63,24 @@ export default async function AthleticRegistrationsPage() {
                   </p>
 
                   <p className="muted" style={{ marginTop: "10px" }}>
-                    Submitted{" "}
-                    {new Date(
-                      registration.created_at
-                    ).toLocaleString()}
+                    Submitted {new Date(registration.created_at).toLocaleString()}
                   </p>
+
+                  <form action={deleteRegistration} style={{ marginTop: "16px" }}>
+                    <input type="hidden" name="id" value={registration.id} />
+
+                    <button
+                      type="submit"
+                      className="admin-action-btn admin-delete"
+                    >
+                      Delete Registration
+                    </button>
+                  </form>
                 </div>
               ))
             ) : (
               <div className="card">
                 <h3>No Registrations Yet</h3>
-
                 <p>
                   Athletic registrations submitted by students will appear here.
                 </p>
