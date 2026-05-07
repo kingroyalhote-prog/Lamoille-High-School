@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { supabase } from "../../lib/supabase"
+import { supabase } from "../../../lib/supabase"
 
 export const dynamic = "force-dynamic"
 
@@ -7,10 +7,13 @@ function getStatusStyles(status) {
   switch (status) {
     case "Sport Active":
       return { background: "#dcfce7", color: "#166534" }
+
     case "Off Season":
       return { background: "#fef3c7", color: "#92400e" }
+
     case "Sport Suspended":
       return { background: "#fee2e2", color: "#991b1b" }
+
     default:
       return { background: "#e2e8f0", color: "#334155" }
   }
@@ -28,11 +31,16 @@ export default async function AthleticsPage() {
       <section className="hero">
         <div className="hero-inner">
           <p className="hero-eyebrow">Athletics</p>
+
           <h1>
             Lamoille
             <span className="hero-break">Athletics</span>
           </h1>
-          <p className="hero-tagline">Teamwork. Dedication. School Spirit.</p>
+
+          <p className="hero-tagline">
+            Teamwork. Dedication. School Spirit.
+          </p>
+
           <p className="hero-subtext">
             Explore athletic programs, meet coaches, and register for sports at
             Lamoille High School.
@@ -48,6 +56,7 @@ export default async function AthleticsPage() {
                 <p className="section-label">Sports</p>
                 <h2>Athletic Programs</h2>
               </div>
+
               <span className="muted">
                 Registration availability may vary by sport.
               </span>
