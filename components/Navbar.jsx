@@ -51,6 +51,7 @@ export default function Navbar() {
           <Link href="/about">About</Link>
           <Link href="/employment">Employment</Link>
           <Link href="/clubs">Clubs</Link>
+          <Link href="/athletics">Athletics</Link>
           <Link href="/calendar">Calendar</Link>
 
           {user ? (
