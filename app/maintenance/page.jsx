@@ -7,7 +7,7 @@ export default function MaintenancePage() {
         <h1>Website Down for Maintenance</h1>
         <p>We will be back soon. Thank you for your patience.</p>
 
-        <Link href="/admin/login" className="adminLoginBtn">
+        <Link href="/admin" className="adminLoginBtn">
           Admin Login
         </Link>
       </div>
