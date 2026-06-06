@@ -949,3 +949,99 @@ body:has(.maintenancePage) main {
     grid-template-columns: 1fr;
   }
 }
+/* ===== DISTRICT HEADER ===== */
+
+.district-header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.district-topbar {
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.district-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.district-brand h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #06101f;
+  font-weight: 900;
+}
+
+.district-brand p {
+  margin: 2px 0 0;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.district-nav {
+  background: linear-gradient(
+    90deg,
+    #06101f,
+    #0b1f3f,
+    #0f3d46
+  );
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  padding: 16px;
+}
+
+.district-nav a {
+  color: white;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.district-nav a:hover {
+  opacity: 0.8;
+}
+
+.district-login-btn,
+.district-admin-btn {
+  background: #0f3d46;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.district-logout-btn {
+  margin-left: 10px;
+  border: none;
+  background: #ef4444;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .district-topbar {
+    flex-direction: column;
+    gap: 14px;
+    text-align: center;
+  }
+
+  .district-nav {
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .district-brand h1 {
+    font-size: 1.5rem;
+  }
+}
