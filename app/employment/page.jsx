@@ -1,3 +1,6 @@
+/*
+OLD EMPLOYMENT SYSTEM BACKUP
+
 import Link from "next/link"
 import { supabase } from "../../lib/supabase"
 
@@ -19,64 +22,42 @@ export default async function EmploymentPage() {
 
   const hasOpenJobs = openJobs && openJobs.length > 0
 
+  return null
+}
+*/
+
+export const dynamic = "force-dynamic"
+
+export default function EmploymentPage() {
   return (
-    <main className="content">
-      <section className="section">
-        <div className="container">
-          <p className="section-label">Careers</p>
-          <h1>Employment Opportunities</h1>
-          <p className="muted">
-            Join our team and help shape the future of our students.
-          </p>
+    <main className="employment-page">
+      <section className="employment-hero">
+        <div className="employment-bg-orb orb-one"></div>
+        <div className="employment-bg-orb orb-two"></div>
+        <div className="employment-bg-orb orb-three"></div>
 
-          {/* 🔥 No open applications message */}
-          {!hasOpenJobs && (
-            <div
-              className="card"
-              style={{
-                marginTop: "25px",
-                background: "#f8fafc",
-                border: "1px solid #e2e8f0",
-              }}
+        <div className="employment-wrap">
+          <div className="employment-header">
+            <p className="employment-pill">Lamoille High School</p>
+            <h1>Employment Application</h1>
+            <p>
+              Interested in joining the Lamoille High School staff team?
+              Complete the application below and our leadership team will review
+              your submission.
+            </p>
+          </div>
+
+          <div className="employment-form-card">
+            <iframe
+              src="https://docs.google.com/forms/d/e/1FAIpQLSccCZgXiBrMM0uMAm4isK7uXSq2fQIu9tOICO6eLkJsDZKgqQ/viewform?embedded=true"
+              width="100%"
+              height="1763"
+              frameBorder="0"
+              marginHeight="0"
+              marginWidth="0"
             >
-              <h3>No Open Applications</h3>
-              <p>
-                There are no open applications at this time. Thank you for your
-                interest in joining Lamoille High School — we encourage you to
-                check back soon for future opportunities.
-              </p>
-            </div>
-          )}
-
-          <div className="card-grid" style={{ marginTop: "30px" }}>
-            {sortedJobs?.length ? (
-              sortedJobs.map((job) => (
-                <div key={job.id} className="card">
-                  <h3>{job.title}</h3>
-
-                  <p className="muted" style={{ marginBottom: "10px" }}>
-                    {[job.department, job.location, job.employment_type]
-                      .filter(Boolean)
-                      .join(" • ")}
-                  </p>
-
-                  {job.description ? <p>{job.description}</p> : null}
-
-                  <Link
-                    href={`/employment/${job.id}`}
-                    className="btn-primary"
-                    style={{ marginTop: "10px", display: "inline-block" }}
-                  >
-                    {job.applications_open ? "Apply Now" : "Application Closed"}
-                  </Link>
-                </div>
-              ))
-            ) : (
-              <div className="card">
-                <h3>No openings right now</h3>
-                <p>Please check back later.</p>
-              </div>
-            )}
+              Loading…
+            </iframe>
           </div>
         </div>
       </section>
