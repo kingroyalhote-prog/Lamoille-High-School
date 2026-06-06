@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
-export async function proxy(request: NextRequest) {
+export async function proxy(request) {
   const pathname = request.nextUrl.pathname
 
   if (
@@ -17,8 +16,8 @@ export async function proxy(request: NextRequest) {
   }
 
   const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   )
 
   const { data } = await supabase
