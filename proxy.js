@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-export function proxy(request) {
+export async function proxy(request) {
   const pathname = request.nextUrl.pathname
 
   if (
@@ -14,7 +14,31 @@ export function proxy(request) {
     return NextResponse.next()
   }
 
-  return NextResponse.redirect(new URL("/maintenance", request.url))
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/site_settings?id=eq.1&select=maintenance_mode`,
+      {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+        cache: "no-store",
+      }
+    )
+
+    const data = await response.json()
+
+    if (data?.[0]?.maintenance_mode === true) {
+      return NextResponse.redirect(new URL("/maintenance", request.url))
+    }
+  } catch (error) {
+    console.error(error)
+  }
+
+  return NextResponse.next()
 }
 
 export const config = {
