@@ -3,41 +3,6 @@ import { NextResponse } from "next/server"
 export async function proxy(request) {
   const pathname = request.nextUrl.pathname
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (pathname === "/debug-maintenance") {
-    let result = {}
-
-    try {
-      const response = await fetch(
-        `${supabaseUrl}/rest/v1/site_settings?select=maintenance_mode&id=eq.1`,
-        {
-          headers: {
-            apikey: supabaseKey,
-            Authorization: `Bearer ${supabaseKey}`,
-          },
-          cache: "no-store",
-        }
-      )
-
-      result = {
-        hasUrl: !!supabaseUrl,
-        hasKey: !!supabaseKey,
-        status: response.status,
-        data: await response.json(),
-      }
-    } catch (error) {
-      result = {
-        hasUrl: !!supabaseUrl,
-        hasKey: !!supabaseKey,
-        error: String(error),
-      }
-    }
-
-    return NextResponse.json(result)
-  }
-
   if (
     pathname.startsWith("/admin") ||
     pathname.startsWith("/maintenance") ||
@@ -49,25 +14,24 @@ export async function proxy(request) {
     return NextResponse.next()
   }
 
-  try {
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/site_settings?select=maintenance_mode&id=eq.1`,
-      {
-        headers: {
-          apikey: supabaseKey,
-          Authorization: `Bearer ${supabaseKey}`,
-        },
-        cache: "no-store",
-      }
-    )
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-    const data = await response.json()
-
-    if (data?.[0]?.maintenance_mode === true) {
-      return NextResponse.redirect(new URL("/maintenance", request.url))
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/site_settings?select=maintenance_mode&id=eq.1`,
+    {
+      headers: {
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+      },
+      cache: "no-store",
     }
-  } catch (error) {
-    console.error("Maintenance check failed:", error)
+  )
+
+  const data = await response.json()
+
+  if (data?.[0]?.maintenance_mode === true) {
+    return NextResponse.redirect(new URL("/maintenance", request.url))
   }
 
   return NextResponse.next()
