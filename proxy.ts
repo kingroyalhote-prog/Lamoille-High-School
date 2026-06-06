@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   if (
@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/maintenance") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
+    pathname.startsWith("/images") ||
     pathname.includes("favicon")
   ) {
     return NextResponse.next()
@@ -31,4 +32,8 @@ export async function middleware(request: NextRequest) {
   }
 
   return NextResponse.next()
+}
+
+export const config = {
+  matcher: ["/((?!_next/static|_next/image).*)"],
 }
