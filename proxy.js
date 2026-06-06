@@ -15,19 +15,23 @@ export async function proxy(request) {
     return NextResponse.next()
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  )
+  try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    )
 
-  const { data } = await supabase
-    .from("site_settings")
-    .select("maintenance_mode")
-    .eq("id", 1)
-    .single()
+    const { data } = await supabase
+      .from("site_settings")
+      .select("maintenance_mode")
+      .eq("id", 1)
+      .single()
 
-  if (data?.maintenance_mode === true) {
-    return NextResponse.redirect(new URL("/maintenance", request.url))
+    if (data?.maintenance_mode === true) {
+      return NextResponse.redirect(new URL("/maintenance", request.url))
+    }
+  } catch (error) {
+    console.error("Maintenance mode check failed:", error)
   }
 
   return NextResponse.next()
