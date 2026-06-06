@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { supabase } from "../../lib/supabase"
+import MaintenanceSwitch from "../../components/MaintenanceSwitch"
 
 export const dynamic = "force-dynamic"
 
@@ -43,19 +44,64 @@ export default async function AdminPage() {
           </div>
 
           <div className="card-grid" style={{ marginTop: "20px" }}>
-            <AdminCard title="Announcements" count={announcementsCount} label="posts" href="/admin/announcements" button="Manage" />
 
-            <AdminCard title="Clubs" count={clubsCount} label="clubs" href="/admin/clubs" button="Manage" />
+            <MaintenanceSwitch />
 
-            <AdminCard title="Athletics" count={athleticsCount} label="sports" href="/admin/athletics" button="Manage" />
+            <AdminCard
+              title="Announcements"
+              count={announcementsCount}
+              label="posts"
+              href="/admin/announcements"
+              button="Manage"
+            />
 
-            <AdminCard title="Athletic Registrations" count={athleticRegistrationsCount} label="submissions" href="/admin/athletics/registrations" button="View" />
+            <AdminCard
+              title="Clubs"
+              count={clubsCount}
+              label="clubs"
+              href="/admin/clubs"
+              button="Manage"
+            />
 
-            <AdminCard title="Jobs" count={jobsCount} label="postings" href="/admin/jobs" button="Manage" />
+            <AdminCard
+              title="Athletics"
+              count={athleticsCount}
+              label="sports"
+              href="/admin/athletics"
+              button="Manage"
+            />
 
-            <AdminCard title="Applications" count={applicationsCount} label="submitted" href="/admin/applications" button="Review" />
+            <AdminCard
+              title="Athletic Registrations"
+              count={athleticRegistrationsCount}
+              label="submissions"
+              href="/admin/athletics/registrations"
+              button="View"
+            />
 
-            <AdminCard title="Calendar" count={eventsCount} label="events" href="/admin/calendar" button="Manage" />
+            <AdminCard
+              title="Jobs"
+              count={jobsCount}
+              label="postings"
+              href="/admin/jobs"
+              button="Manage"
+            />
+
+            <AdminCard
+              title="Applications"
+              count={applicationsCount}
+              label="submitted"
+              href="/admin/applications"
+              button="Review"
+            />
+
+            <AdminCard
+              title="Calendar"
+              count={eventsCount}
+              label="events"
+              href="/admin/calendar"
+              button="Manage"
+            />
 
             <div
               className="card"
@@ -65,6 +111,7 @@ export default async function AdminPage() {
               }}
             >
               <h3>Admin Controls</h3>
+
               <p style={{ opacity: 0.85 }}>
                 Manage admin access and permissions
               </p>
@@ -85,6 +132,7 @@ export default async function AdminPage() {
                 Manage Admins
               </Link>
             </div>
+
           </div>
         </div>
       </section>
@@ -103,7 +151,13 @@ function AdminCard({ title, count, label, href, button }) {
     >
       <h3>{title}</h3>
 
-      <p style={{ fontSize: "22px", fontWeight: 700, margin: "6px 0" }}>
+      <p
+        style={{
+          fontSize: "22px",
+          fontWeight: 700,
+          margin: "6px 0",
+        }}
+      >
         {count || 0}
       </p>
 
