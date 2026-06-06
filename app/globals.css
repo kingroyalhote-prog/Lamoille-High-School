@@ -577,3 +577,134 @@ body:has(.maintenancePage) .site-footer {
 body:has(.maintenancePage) main {
   flex: 1;
 }
+/* ===== EMPLOYMENT GOOGLE FORM PAGE ===== */
+.employment-page {
+  min-height: 100vh;
+  overflow: hidden;
+  background: #06101f;
+}
+
+.employment-hero {
+  position: relative;
+  min-height: 100vh;
+  padding: 70px 20px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.32), transparent 28%),
+    radial-gradient(circle at 80% 10%, rgba(20, 184, 166, 0.28), transparent 30%),
+    linear-gradient(135deg, #06101f, #0b1f3f 52%, #0f3d46);
+  color: white;
+}
+
+.employment-wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.employment-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.employment-pill {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-weight: 800;
+  backdrop-filter: blur(12px);
+}
+
+.employment-header h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, 4.8rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.employment-header p {
+  max-width: 680px;
+  margin: 18px auto 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.08rem;
+  line-height: 1.6;
+}
+
+.employment-form-card {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 30px;
+  padding: 18px;
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(18px);
+}
+
+.employment-form-card iframe {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  background: white;
+}
+
+.employment-bg-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(8px);
+  opacity: 0.55;
+  animation: floatOrb 9s ease-in-out infinite;
+}
+
+.orb-one {
+  width: 180px;
+  height: 180px;
+  background: rgba(99, 102, 241, 0.55);
+  top: 110px;
+  left: 7%;
+}
+
+.orb-two {
+  width: 240px;
+  height: 240px;
+  background: rgba(20, 184, 166, 0.45);
+  right: 6%;
+  top: 260px;
+  animation-delay: 2s;
+}
+
+.orb-three {
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.22);
+  left: 15%;
+  bottom: 160px;
+  animation-delay: 4s;
+}
+
+@keyframes floatOrb {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+
+  50% {
+    transform: translateY(-24px) translateX(18px);
+  }
+}
+
+@media (max-width: 768px) {
+  .employment-hero {
+    padding: 45px 14px;
+  }
+
+  .employment-form-card {
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .employment-form-card iframe {
+    border-radius: 16px;
+  }
+}
