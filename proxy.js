@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
 
 export async function proxy(request) {
   const pathname = request.nextUrl.pathname
@@ -15,21 +14,32 @@ export async function proxy(request) {
     return NextResponse.next()
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  )
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  const { data, error } = await supabase
-    .from("site_settings")
-    .select("maintenance_mode")
-    .eq("id", 1)
-    .single()
+    if (!supabaseUrl || !supabaseKey) {
+      return NextResponse.next()
+    }
 
-  console.log("Maintenance check:", data, error)
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/site_settings?id=eq.1&select=maintenance_mode`,
+      {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+        cache: "no-store",
+      }
+    )
 
-  if (data?.maintenance_mode === true) {
-    return NextResponse.redirect(new URL("/maintenance", request.url))
+    const data = await response.json()
+
+    if (data?.[0]?.maintenance_mode === true) {
+      return NextResponse.redirect(new URL("/maintenance", request.url))
+    }
+  } catch (error) {
+    console.error("Maintenance proxy failed:", error)
   }
 
   return NextResponse.next()
