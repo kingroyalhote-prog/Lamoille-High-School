@@ -9,21 +9,17 @@ export default function Navbar() {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    // get current session
     supabase.auth.getUser().then(({ data }) => {
       setUser(data?.user || null)
     })
 
-    // listen for login/logout
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user || null)
       }
     )
 
-    return () => {
-      listener.subscription.unsubscribe()
-    }
+    return () => listener.subscription.unsubscribe()
   }, [])
 
   async function handleLogout() {
@@ -32,45 +28,51 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="site-nav">
-      <div className="site-nav-inner">
-
-        {/* LOGO */}
-        <Link href="/" className="site-brand">
+    <header className="district-header">
+      <div className="district-topbar">
+        <div className="district-brand">
           <Image
             src="/images/lamoille-logo.png"
-            alt="Lamoille High School logo"
-            width={42}
-            height={42}
+            alt="Lamoille High School"
+            width={64}
+            height={64}
           />
-          <span>Lamoille High School</span>
-        </Link>
 
-        {/* LINKS */}
-        <div className="site-nav-links">
-          <Link href="/about">About</Link>
-          <Link href="/employment">Employment</Link>
-          <Link href="/clubs">Clubs</Link>
-          <Link href="/athletics">Athletics</Link>
-          <Link href="/calendar">Calendar</Link>
+          <div>
+            <h1>Lamoille High School</h1>
+            <p>Where Ambition Meets Opportunity</p>
+          </div>
+        </div>
 
+        <div className="district-actions">
           {user ? (
             <>
-              <Link href="/admin" className="site-nav-admin">
-                Admin
+              <Link href="/admin" className="district-admin-btn">
+                Admin Dashboard
               </Link>
 
-              <button onClick={handleLogout} className="site-nav-logout">
+              <button
+                onClick={handleLogout}
+                className="district-logout-btn"
+              >
                 Logout
               </button>
             </>
           ) : (
-            <Link href="/login" className="site-nav-login">
+            <Link href="/login" className="district-login-btn">
               Login
             </Link>
           )}
         </div>
       </div>
-    </nav>
+
+      <nav className="district-nav">
+        <Link href="/about">About</Link>
+        <Link href="/employment">Employment</Link>
+        <Link href="/clubs">Clubs</Link>
+        <Link href="/athletics">Athletics</Link>
+        <Link href="/calendar">Calendar</Link>
+      </nav>
+    </header>
   )
 }
