@@ -346,63 +346,103 @@ a {
 /* ===== QUICK LINKS ===== */
 .quick-links-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
 }
 
 .quick-link-card {
   background: white;
-  padding: 22px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-  transition: 0.25s;
-  min-width: 0;
+  padding: 30px;
+  border-radius: 0;
+  box-shadow: none;
+  transition: 0.25s ease;
+  border-right: 1px solid #e2e8f0;
+}
+
+.quick-link-card:last-child {
+  border-right: none;
 }
 
 .quick-link-card:hover {
-  transform: translateY(-5px);
+  transform: none;
+  background: #f8fafc;
 }
 
 .quick-link-label {
-  font-size: 0.75rem;
-  color: #4f46e5;
-  font-weight: 700;
+  font-size: 0.72rem;
+  color: #0f3d46;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .quick-link-card h3 {
-  margin: 8px 0;
+  margin: 10px 0 8px;
+  font-size: 1.45rem;
+  color: #06101f;
 }
 
 .quick-link-card p {
   margin: 0;
   color: #475569;
+  line-height: 1.5;
 }
 
 /* ===== ABOUT FEATURE ===== */
 .home-feature-card {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 0;
   background: white;
-  padding: 24px;
-  border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+  padding: 0;
+}
+
+.home-feature-card > div:first-child {
+  padding: 40px;
+  border-right: 1px solid #e2e8f0;
+}
+
+.home-feature-card h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+  color: #06101f;
+}
+
+.home-feature-card p {
+  color: #334155;
+  line-height: 1.65;
 }
 
 .home-feature-points {
   display: grid;
-  gap: 12px;
+  gap: 0;
+  background: #f8fafc;
 }
 
 .home-point-card {
-  background: #f8fafc;
-  padding: 16px;
-  border-radius: 16px;
+  background: transparent;
+  border-radius: 0;
+  padding: 28px 32px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.home-point-card:last-child {
+  border-bottom: none;
 }
 
 .home-point-card h3 {
-  margin-top: 0;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
+  color: #06101f;
+  font-size: 1.25rem;
 }
 
 .home-point-card p {
