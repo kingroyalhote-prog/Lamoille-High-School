@@ -783,3 +783,169 @@ body:has(.maintenancePage) main {
     border-radius: 16px;
   }
 }
+/* ===== SCHOOL HOMEPAGE LAYOUT ===== */
+.school-link-bar {
+  max-width: 1180px;
+  margin: -48px auto 0;
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: #06101f;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22);
+}
+
+.school-link-bar a {
+  color: white;
+  text-align: center;
+  padding: 28px 18px;
+  font-weight: 800;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  transition: 0.2s ease;
+}
+
+.school-link-bar a:last-child {
+  border-right: none;
+}
+
+.school-link-bar a:hover {
+  background: #0f3d46;
+}
+
+.school-home-section {
+  padding: 70px 20px;
+  background: #f4f7fb;
+}
+
+.school-home-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.6fr 0.8fr;
+  gap: 34px;
+}
+
+.school-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  border-left: 5px solid #0f3d46;
+  padding-left: 18px;
+}
+
+.school-section-title h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #06101f;
+}
+
+.school-section-title a {
+  font-weight: 800;
+  color: #0f3d46;
+}
+
+.school-news-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.school-news-card,
+.school-event-card {
+  background: white;
+  border-radius: 0;
+  padding: 28px;
+  border-top: 4px solid #0f3d46;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.school-news-card h3 {
+  margin: 8px 0 12px;
+  font-size: 1.45rem;
+  color: #06101f;
+}
+
+.school-news-card p,
+.school-event-card p,
+.school-event-card span {
+  color: #475569;
+  line-height: 1.5;
+}
+
+.school-date {
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #0f3d46 !important;
+  text-transform: uppercase;
+}
+
+.school-events-panel {
+  background: #e9eef5;
+  padding: 30px;
+  border-radius: 0;
+}
+
+.school-event-card {
+  margin-bottom: 22px;
+}
+
+.school-event-card strong {
+  display: block;
+  font-size: 1.35rem;
+  color: #06101f;
+  margin-bottom: 8px;
+}
+
+.school-about-strip {
+  max-width: 1180px;
+  margin: 0 auto 70px;
+  background: white;
+  padding: 42px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 30px;
+  border-left: 8px solid #0f3d46;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+}
+
+.school-about-strip h2 {
+  margin: 0 0 12px;
+  color: #06101f;
+  font-size: 2.2rem;
+}
+
+.school-about-strip p {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.school-about-points {
+  display: grid;
+  gap: 12px;
+}
+
+.school-about-points span {
+  background: #f1f5f9;
+  padding: 18px;
+  font-weight: 800;
+  color: #06101f;
+  border-left: 4px solid #0f3d46;
+}
+
+@media (max-width: 900px) {
+  .school-link-bar {
+    grid-template-columns: 1fr;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .school-home-grid,
+  .school-news-grid,
+  .school-about-strip {
+    grid-template-columns: 1fr;
+  }
+}
