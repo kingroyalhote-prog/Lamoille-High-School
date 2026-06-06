@@ -5,30 +5,51 @@ import { supabase } from "../lib/supabase"
 
 export default function MaintenanceSwitch() {
   const [enabled, setEnabled] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    async function load() {
-      const { data } = await supabase
-        .from("site_settings")
-        .select("maintenance_mode")
-        .eq("id", 1)
-        .single()
-
-      setEnabled(data?.maintenance_mode || false)
-    }
-
-    load()
+    loadSetting()
   }, [])
 
-  async function handleSwitch() {
-    const newValue = !enabled
-    setEnabled(newValue)
-
-    await supabase
+  async function loadSetting() {
+    const { data, error } = await supabase
       .from("site_settings")
-      .update({ maintenance_mode: newValue })
+      .select("maintenance_mode")
       .eq("id", 1)
+      .single()
+
+    if (!error) {
+      setEnabled(data?.maintenance_mode === true)
+    }
+
+    setLoading(false)
   }
+
+  async function handleSwitch() {
+    setSaving(true)
+
+    const newValue = !enabled
+
+    const { error } = await supabase
+      .from("site_settings")
+      .update({
+        maintenance_mode: newValue,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", 1)
+
+    if (!error) {
+      setEnabled(newValue)
+    } else {
+      alert("Could not save website status.")
+      console.error(error)
+    }
+
+    setSaving(false)
+  }
+
+  if (loading) return null
 
   return (
     <div className="card">
@@ -42,12 +63,17 @@ export default function MaintenanceSwitch() {
           type="checkbox"
           checked={enabled}
           onChange={handleSwitch}
+          disabled={saving}
         />
         <span className="maintenance-slider"></span>
       </label>
 
       <p style={{ marginTop: "12px", fontWeight: 700 }}>
-        {enabled ? "Website is OFF" : "Website is ON"}
+        {saving
+          ? "Saving..."
+          : enabled
+          ? "Website is OFF"
+          : "Website is ON"}
       </p>
     </div>
   )
