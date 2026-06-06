@@ -15,28 +15,26 @@ export async function proxy(request) {
     return NextResponse.next()
   }
 
-  try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    )
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  )
 
-    const { data } = await supabase
-      .from("site_settings")
-      .select("maintenance_mode")
-      .eq("id", 1)
-      .single()
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("maintenance_mode")
+    .eq("id", 1)
+    .single()
 
-    if (data?.maintenance_mode === true) {
-      return NextResponse.redirect(new URL("/maintenance", request.url))
-    }
-  } catch (error) {
-    console.error("Maintenance mode check failed:", error)
+  console.log("Maintenance check:", data, error)
+
+  if (data?.maintenance_mode === true) {
+    return NextResponse.redirect(new URL("/maintenance", request.url))
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 }
