@@ -14,28 +14,32 @@ export async function proxy(request) {
     return NextResponse.next()
   }
 
-  try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/site_settings?id=eq.1&select=maintenance_mode`,
-      {
-        headers: {
-          apikey: supabaseKey,
-          Authorization: `Bearer ${supabaseKey}`,
-        },
-        cache: "no-store",
-      }
-    )
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.next()
+  }
 
-    const data = await response.json()
-
-    if (data?.[0]?.maintenance_mode === true) {
-      return NextResponse.redirect(new URL("/maintenance", request.url))
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/site_settings?select=maintenance_mode&id=eq.1`,
+    {
+      headers: {
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+      },
+      cache: "no-store",
     }
-  } catch (error) {
-    console.error(error)
+  )
+
+  if (!response.ok) {
+    return NextResponse.next()
+  }
+
+  const data = await response.json()
+
+  if (data && data.length > 0 && data[0].maintenance_mode === true) {
+    return NextResponse.redirect(new URL("/maintenance", request.url))
   }
 
   return NextResponse.next()
