@@ -30,7 +30,8 @@ export default function Navbar() {
   return (
     <header className="district-header">
       <div className="district-topbar">
-        <div className="district-brand">
+
+        <Link href="/" className="district-brand">
           <Image
             src="/images/lamoille-logo.png"
             alt="Lamoille High School"
@@ -42,7 +43,7 @@ export default function Navbar() {
             <h1>Lamoille High School</h1>
             <p>Where Ambition Meets Opportunity</p>
           </div>
-        </div>
+        </Link>
 
         <div className="district-actions">
           {user ? (
