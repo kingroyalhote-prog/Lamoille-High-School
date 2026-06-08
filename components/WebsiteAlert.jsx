@@ -27,11 +27,29 @@ export default function WebsiteAlert() {
 
   return (
     <div className="website-alert">
-      <div className="website-alert-icon">!</div>
+
+      <div className="website-alert-icon">
+        !
+      </div>
 
       <div className="website-alert-text">
-        <strong>{alert.alert_title}</strong>
+
+        <div className="website-alert-header">
+          <span className="website-alert-label">
+            ALERT
+          </span>
+
+          <span className="website-alert-divider">
+            |
+          </span>
+
+          <span className="website-alert-title">
+            {alert.alert_title}
+          </span>
+        </div>
+
         <p>{alert.alert_message}</p>
+
       </div>
 
       <button
@@ -41,6 +59,7 @@ export default function WebsiteAlert() {
       >
         ×
       </button>
+
     </div>
   )
 }
