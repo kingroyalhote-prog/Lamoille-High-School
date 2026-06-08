@@ -1,6 +1,7 @@
 import "./globals.css"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
+import SummerSemesterPopup from "../components/SummerSemesterPopup"
 
 export const metadata = {
   title: "Lamoille High School",
@@ -14,6 +15,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body style={{ margin: 0 }}>
+        <SummerSemesterPopup />
+
         <div
           style={{
             minHeight: "100vh",
