@@ -1238,6 +1238,7 @@ body:has(.maintenancePage) main {
 }
 
 /* ===== WEBSITE ALERT ADMIN ===== */
+
 .alert-admin-toggle {
   display: flex;
   align-items: center;
@@ -1258,10 +1259,26 @@ body:has(.maintenancePage) main {
   padding: 13px 14px;
   border-radius: 14px;
   border: 1px solid #cbd5e1;
+  background: white;
+  color: #0f172a;
   font-family: inherit;
   font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.alert-admin-input:focus,
+.alert-admin-textarea:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
 }
 
 .alert-admin-textarea {
   resize: vertical;
+  min-height: 110px;
+}
+
+.alert-admin-input::placeholder,
+.alert-admin-textarea::placeholder {
+  color: #94a3b8;
 }
