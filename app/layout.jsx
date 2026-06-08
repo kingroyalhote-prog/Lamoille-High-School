@@ -2,6 +2,7 @@ import "./globals.css"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import SummerSemesterPopup from "../components/SummerSemesterPopup"
+import WebsiteAlert from "../components/WebsiteAlert"
 
 export const metadata = {
   title: "Lamoille High School",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body style={{ margin: 0 }}>
         <SummerSemesterPopup />
+        <WebsiteAlert />
 
         <div
           style={{
