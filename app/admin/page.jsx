@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { supabase } from "../../lib/supabase"
 import MaintenanceSwitch from "../../components/MaintenanceSwitch"
+import WebsiteAlertAdmin from "../../components/WebsiteAlertAdmin"
 
 export const dynamic = "force-dynamic"
 
@@ -40,12 +41,16 @@ export default async function AdminPage() {
           <div style={{ marginBottom: "30px" }}>
             <p className="section-label">Admin</p>
             <h1 style={{ marginBottom: "6px" }}>Dashboard</h1>
-            <p className="muted">Manage your entire site from one place.</p>
+            <p className="muted">
+              Manage your entire site from one place.
+            </p>
           </div>
 
           <div className="card-grid" style={{ marginTop: "20px" }}>
 
             <MaintenanceSwitch />
+
+            <WebsiteAlertAdmin />
 
             <AdminCard
               title="Announcements"
@@ -106,7 +111,8 @@ export default async function AdminPage() {
             <div
               className="card"
               style={{
-                background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                background:
+                  "linear-gradient(135deg, #4f46e5, #7c3aed)",
                 color: "white",
               }}
             >
@@ -140,7 +146,13 @@ export default async function AdminPage() {
   )
 }
 
-function AdminCard({ title, count, label, href, button }) {
+function AdminCard({
+  title,
+  count,
+  label,
+  href,
+  button,
+}) {
   return (
     <div
       className="card"
