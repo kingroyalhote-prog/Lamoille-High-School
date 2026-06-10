@@ -27,22 +27,17 @@ export default function StaffDatabasePage() {
     setLoading(false)
   }
 
-  const activeCount =
-    staff.filter((s) => s.status === "active").length || 0
+  const activeStaff = staff.filter((s) => s.status === "active")
 
-  const blacklistedCount =
-    staff.filter(
-      (s) =>
-        s.status === "employment_blacklisted" ||
-        s.do_not_hire === true
-    ).length || 0
+  const activeCount = activeStaff.length
 
-  const formerCount =
-    staff.filter(
-      (s) =>
-        s.status === "terminated" ||
-        s.status === "resigned"
-    ).length || 0
+  const blacklistedCount = staff.filter(
+    (s) => s.status === "employment_blacklisted" || s.do_not_hire === true
+  ).length
+
+  const formerCount = staff.filter(
+    (s) => s.status === "terminated" || s.status === "resigned"
+  ).length
 
   return (
     <main className="content">
@@ -97,9 +92,17 @@ export default function StaffDatabasePage() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: 20,
+                gap: 12,
+                flexWrap: "wrap",
               }}
             >
-              <h3 style={{ margin: 0 }}>Staff Profiles</h3>
+              <div>
+                <h3 style={{ margin: 0 }}>Active Staff Profiles</h3>
+                <p className="muted" style={{ marginTop: 6 }}>
+                  Only currently active staff are shown here. Use search to find
+                  former or blacklisted staff.
+                </p>
+              </div>
 
               <Link href="/admin/staff/new" className="btn-primary">
                 Create Profile
@@ -107,8 +110,8 @@ export default function StaffDatabasePage() {
             </div>
 
             <div style={{ display: "grid", gap: 12 }}>
-              {staff.length ? (
-                staff.map((person) => (
+              {activeStaff.length ? (
+                activeStaff.map((person) => (
                   <Link
                     key={person.id}
                     href={`/admin/staff/${person.id}`}
@@ -125,6 +128,7 @@ export default function StaffDatabasePage() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        gap: 12,
                       }}
                     >
                       <div>
@@ -135,36 +139,23 @@ export default function StaffDatabasePage() {
                         </div>
                       </div>
 
-                      <div style={{ display: "flex", gap: 10 }}>
-                        {person.do_not_hire && (
-                          <span
-                            style={{
-                              background: "#fee2e2",
-                              color: "#991b1b",
-                              padding: "4px 10px",
-                              borderRadius: 999,
-                              fontSize: 12,
-                              fontWeight: 800,
-                            }}
-                          >
-                            DO NOT HIRE
-                          </span>
-                        )}
-
-                        <span
-                          style={{
-                            fontWeight: 700,
-                            textTransform: "capitalize",
-                          }}
-                        >
-                          {person.status}
-                        </span>
-                      </div>
+                      <span
+                        style={{
+                          background: "#dcfce7",
+                          color: "#166534",
+                          padding: "4px 10px",
+                          borderRadius: 999,
+                          fontSize: 12,
+                          fontWeight: 800,
+                        }}
+                      >
+                        ACTIVE
+                      </span>
                     </div>
                   </Link>
                 ))
               ) : (
-                <p>No staff profiles found.</p>
+                <p>No active staff profiles found.</p>
               )}
             </div>
           </div>
