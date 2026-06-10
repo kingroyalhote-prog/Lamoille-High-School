@@ -48,6 +48,49 @@ export default async function AdminPage() {
 
           <div className="card-grid" style={{ marginTop: "20px" }}>
 
+            {/* STAFF DATABASE */}
+            <div
+              className="card"
+              style={{
+                background: "linear-gradient(135deg, #0f172a, #1e293b)",
+                color: "white",
+                border: "none",
+                boxShadow: "0 15px 40px rgba(15, 23, 42, 0.25)",
+              }}
+            >
+              <h3 style={{ marginBottom: "10px" }}>
+                👥 Staff Database
+              </h3>
+
+              <p
+                style={{
+                  opacity: 0.9,
+                  lineHeight: 1.6,
+                  marginBottom: "18px",
+                }}
+              >
+                Manage employee records, warnings, notes,
+                performance, hiring eligibility, suspensions,
+                resignations, terminations, employment
+                blacklists, and staff history.
+              </p>
+
+              <Link
+                href="/admin/staff"
+                style={{
+                  display: "inline-block",
+                  background: "white",
+                  color: "#0f172a",
+                  padding: "10px 18px",
+                  borderRadius: "999px",
+                  fontWeight: 700,
+                  textDecoration: "none",
+                }}
+              >
+                Open Staff Database
+              </Link>
+            </div>
+
             <MaintenanceSwitch />
 
             <WebsiteAlertAdmin />
