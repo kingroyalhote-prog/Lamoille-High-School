@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { supabase } from "../../../lib/supabase"
+import StaffUsernameSearch from "../../../components/StaffUsernameSearch"
 
 export const dynamic = "force-dynamic"
 
@@ -13,7 +14,11 @@ export default async function StaffDatabasePage() {
     staff?.filter((s) => s.status === "active").length || 0
 
   const blacklistedCount =
-    staff?.filter((s) => s.status === "employment_blacklisted").length || 0
+    staff?.filter(
+      (s) =>
+        s.status === "employment_blacklisted" ||
+        s.do_not_hire === true
+    ).length || 0
 
   const formerCount =
     staff?.filter(
@@ -29,17 +34,22 @@ export default async function StaffDatabasePage() {
 
           <div style={{ marginBottom: 30 }}>
             <p className="section-label">Staff Database</p>
+
             <h1>Staff Records</h1>
+
             <p className="muted">
               Manage employment history, warnings,
-              performance, and hiring eligibility.
+              performance, hiring eligibility,
+              disciplinary records, and staffing decisions.
             </p>
           </div>
 
+          {/* STAT CARDS */}
           <div className="card-grid">
 
             <div className="card">
               <h3>Active Staff</h3>
+
               <p
                 style={{
                   fontSize: 32,
@@ -53,6 +63,7 @@ export default async function StaffDatabasePage() {
 
             <div className="card">
               <h3>Former Staff</h3>
+
               <p
                 style={{
                   fontSize: 32,
@@ -66,6 +77,7 @@ export default async function StaffDatabasePage() {
 
             <div className="card">
               <h3>Blacklisted</h3>
+
               <p
                 style={{
                   fontSize: 32,
@@ -87,6 +99,10 @@ export default async function StaffDatabasePage() {
 
           </div>
 
+          {/* SEARCH BY ROBLOX USERNAME */}
+          <StaffUsernameSearch />
+
+          {/* STAFF PROFILES */}
           <div
             className="card"
             style={{ marginTop: 30 }}
@@ -135,6 +151,7 @@ export default async function StaffDatabasePage() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        transition: "all .2s ease",
                       }}
                     >
                       <div>
@@ -154,11 +171,34 @@ export default async function StaffDatabasePage() {
 
                       <div
                         style={{
-                          fontWeight: 700,
-                          textTransform: "capitalize",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
                         }}
                       >
-                        {person.status}
+                        {person.do_not_hire && (
+                          <span
+                            style={{
+                              background: "#fee2e2",
+                              color: "#991b1b",
+                              padding: "4px 10px",
+                              borderRadius: 999,
+                              fontSize: 12,
+                              fontWeight: 800,
+                            }}
+                          >
+                            DO NOT HIRE
+                          </span>
+                        )}
+
+                        <span
+                          style={{
+                            fontWeight: 700,
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          {person.status}
+                        </span>
                       </div>
                     </div>
                   </Link>
