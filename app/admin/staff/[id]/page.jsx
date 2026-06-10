@@ -293,281 +293,276 @@ export default function StaffProfilePage() {
       <section className="section">
         <div className="container">
 
-          <div className="card" style={{ marginBottom: 24 }}>
-            <p className="section-label">Staff Profile</p>
+          <button
+            className="admin-action-btn admin-neutral"
+            onClick={() => router.back()}
+            style={{ marginBottom: 18 }}
+          >
+            ← Back
+          </button>
 
-            <h1>{profile.roblox_username}</h1>
-
-            {doNotHire && (
-              <div
-                style={{
-                  background: "#fee2e2",
-                  color: "#991b1b",
-                  padding: 16,
-                  borderRadius: 16,
-                  fontWeight: 800,
-                  marginBottom: 16,
-                }}
-              >
-                🚫 DO NOT HIRE
-                {profile.blacklist_reason && (
-                  <p style={{ marginTop: 8 }}>
-                    Reason: {profile.blacklist_reason}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {cooldownActive && !doNotHire && (
-              <div
-                style={{
-                  background: "#fef3c7",
-                  color: "#92400e",
-                  padding: 16,
-                  borderRadius: 16,
-                  fontWeight: 800,
-                  marginBottom: 16,
-                }}
-              >
-                ⏳ Employment Cooldown Active Until {profile.cooldown_until}
-              </div>
-            )}
-
-            <div className="card-grid">
-              <input
-                className="alert-admin-input"
-                value={profile.roblox_username || ""}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    roblox_username: e.target.value,
-                  })
-                }
-                placeholder="Roblox Username"
-              />
-
-              <input
-                className="alert-admin-input"
-                value={profile.display_name || ""}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    display_name: e.target.value,
-                  })
-                }
-                placeholder="Display Name"
-              />
-
-              <input
-                className="alert-admin-input"
-                value={profile.position || ""}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    position: e.target.value,
-                  })
-                }
-                placeholder="Position"
-              />
-
-              <input
-                className="alert-admin-input"
-                value={profile.department || ""}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    department: e.target.value,
-                  })
-                }
-                placeholder="Department"
-              />
-
-              <input
-                className="alert-admin-input"
-                value={profile.performance || ""}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    performance: e.target.value,
-                  })
-                }
-                placeholder="Performance"
-              />
-
-              <input
-                className="alert-admin-input"
-                value={profile.status || ""}
-                disabled
-              />
+          <div className="staff-profile-hero">
+            <div>
+              <p className="section-label">Staff Profile</p>
+              <h1>{profile.roblox_username}</h1>
+              <p>
+                {profile.position || "No Position"} •{" "}
+                {profile.department || "No Department"}
+              </p>
             </div>
 
-            <textarea
-              className="alert-admin-textarea"
-              value={profile.notes || ""}
-              onChange={(e) =>
-                setProfile({
-                  ...profile,
-                  notes: e.target.value,
-                })
-              }
-              placeholder="Internal notes"
-              style={{ marginTop: 14 }}
-            />
-
-            <button
-              className="btn-primary"
-              onClick={saveProfile}
-              disabled={saving}
-              style={{ marginTop: 16 }}
-            >
-              {saving ? "Saving..." : "Save Profile"}
-            </button>
+            <div className={`staff-status-badge status-${profile.status}`}>
+              {profile.status || "active"}
+            </div>
           </div>
 
-          <div className="card" style={{ marginBottom: 24 }}>
-            <h3>Quick Actions</h3>
-
-            <div className="admin-action-row">
-              <button className="admin-action-btn admin-neutral" onClick={() => setStatus("active")}>
-                Set Active
-              </button>
-
-              <button className="admin-action-btn admin-neutral" onClick={() => setStatus("suspended")}>
-                Suspend
-              </button>
-
-              <button className="admin-action-btn admin-deny" onClick={() => setStatus("terminated")}>
-                Terminate
-              </button>
-
-              <button className="admin-action-btn admin-neutral" onClick={() => setStatus("resigned")}>
-                Mark Resigned
-              </button>
-
-              <button className="admin-action-btn admin-deny" onClick={blacklist}>
-                Employment Blacklist
-              </button>
-
-              {profile.do_not_hire && (
-                <button className="admin-action-btn admin-accept" onClick={revokeBlacklist}>
-                  Revoke Blacklist
-                </button>
+          {doNotHire && (
+            <div className="staff-danger-banner">
+              🚫 DO NOT HIRE
+              {profile.blacklist_reason && (
+                <p>Reason: {profile.blacklist_reason}</p>
               )}
-
-              <button className="admin-action-btn admin-delete" onClick={deleteProfile}>
-                Delete Profile
-              </button>
             </div>
-          </div>
+          )}
 
-          <div className="card" style={{ marginBottom: 24 }}>
-            <h3>Add Log Entry</h3>
+          {cooldownActive && !doNotHire && (
+            <div className="staff-warning-banner">
+              ⏳ Employment Cooldown Active Until {profile.cooldown_until}
+            </div>
+          )}
 
-            <select
-              className="alert-admin-input"
-              value={logForm.log_type}
-              onChange={(e) =>
-                setLogForm({
-                  ...logForm,
-                  log_type: e.target.value,
-                })
-              }
-            >
-              <option>Note</option>
-              <option>Warning</option>
-              <option>Performance Review</option>
-              <option>Suspension</option>
-              <option>Termination</option>
-              <option>Resignation</option>
-              <option>Promotion</option>
-              <option>Demotion</option>
-              <option>Blacklist</option>
-              <option>Other</option>
-            </select>
+          <div className="staff-profile-layout">
+            <div className="staff-main-column">
+              <div className="card compact-card">
+                <h3>Profile Information</h3>
 
-            <input
-              className="alert-admin-input"
-              placeholder="Log Title"
-              value={logForm.title}
-              onChange={(e) =>
-                setLogForm({
-                  ...logForm,
-                  title: e.target.value,
-                })
-              }
-            />
+                <div className="staff-form-grid">
+                  <input
+                    className="alert-admin-input"
+                    value={profile.roblox_username || ""}
+                    onChange={(e) =>
+                      setProfile({ ...profile, roblox_username: e.target.value })
+                    }
+                    placeholder="Roblox Username"
+                  />
 
-            <textarea
-              className="alert-admin-textarea"
-              placeholder="Description"
-              value={logForm.description}
-              onChange={(e) =>
-                setLogForm({
-                  ...logForm,
-                  description: e.target.value,
-                })
-              }
-            />
+                  <input
+                    className="alert-admin-input"
+                    value={profile.display_name || ""}
+                    onChange={(e) =>
+                      setProfile({ ...profile, display_name: e.target.value })
+                    }
+                    placeholder="Display Name"
+                  />
 
-            <input
-              className="alert-admin-input"
-              placeholder="Created By"
-              value={logForm.created_by}
-              onChange={(e) =>
-                setLogForm({
-                  ...logForm,
-                  created_by: e.target.value,
-                })
-              }
-            />
+                  <input
+                    className="alert-admin-input"
+                    value={profile.position || ""}
+                    onChange={(e) =>
+                      setProfile({ ...profile, position: e.target.value })
+                    }
+                    placeholder="Position"
+                  />
 
-            <button
-              className="btn-primary"
-              onClick={() => addLog()}
-              style={{ marginTop: 16 }}
-            >
-              Add Log
-            </button>
-          </div>
+                  <input
+                    className="alert-admin-input"
+                    value={profile.department || ""}
+                    onChange={(e) =>
+                      setProfile({ ...profile, department: e.target.value })
+                    }
+                    placeholder="Department"
+                  />
 
-          <div className="card">
-            <h3>Employment Logs</h3>
+                  <input
+                    className="alert-admin-input"
+                    value={profile.performance || ""}
+                    onChange={(e) =>
+                      setProfile({ ...profile, performance: e.target.value })
+                    }
+                    placeholder="Performance"
+                  />
 
-            {logs.length ? (
-              logs.map((log) => (
-                <div
-                  key={log.id}
-                  style={{
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 16,
-                    padding: 16,
-                    marginTop: 14,
-                  }}
+                  <input
+                    className="alert-admin-input"
+                    value={profile.status || ""}
+                    disabled
+                  />
+                </div>
+
+                <textarea
+                  className="alert-admin-textarea"
+                  value={profile.notes || ""}
+                  onChange={(e) =>
+                    setProfile({ ...profile, notes: e.target.value })
+                  }
+                  placeholder="Internal notes"
+                />
+
+                <button
+                  className="btn-primary"
+                  onClick={saveProfile}
+                  disabled={saving}
+                  style={{ marginTop: 14 }}
                 >
-                  <p className="section-label">{log.log_type}</p>
-                  <h3>{log.title}</h3>
+                  {saving ? "Saving..." : "Save Profile"}
+                </button>
+              </div>
 
-                  <p className="muted">
-                    {log.description || "No description provided."}
-                  </p>
+              <div className="card compact-card">
+                <h3>Add Log Entry</h3>
 
-                  <p className="muted" style={{ marginTop: 8 }}>
-                    Created by {log.created_by || "Admin"} •{" "}
-                    {new Date(log.created_at).toLocaleString()}
-                  </p>
-
-                  <button
-                    className="admin-action-btn admin-delete"
-                    onClick={() => deleteLog(log.id)}
-                    style={{ marginTop: 10 }}
+                <div className="staff-form-grid">
+                  <select
+                    className="alert-admin-input"
+                    value={logForm.log_type}
+                    onChange={(e) =>
+                      setLogForm({ ...logForm, log_type: e.target.value })
+                    }
                   >
-                    Delete Log
+                    <option>Note</option>
+                    <option>Warning</option>
+                    <option>Performance Review</option>
+                    <option>Suspension</option>
+                    <option>Termination</option>
+                    <option>Resignation</option>
+                    <option>Promotion</option>
+                    <option>Demotion</option>
+                    <option>Blacklist</option>
+                    <option>Other</option>
+                  </select>
+
+                  <input
+                    className="alert-admin-input"
+                    placeholder="Created By"
+                    value={logForm.created_by}
+                    onChange={(e) =>
+                      setLogForm({ ...logForm, created_by: e.target.value })
+                    }
+                  />
+                </div>
+
+                <input
+                  className="alert-admin-input"
+                  placeholder="Log Title"
+                  value={logForm.title}
+                  onChange={(e) =>
+                    setLogForm({ ...logForm, title: e.target.value })
+                  }
+                />
+
+                <textarea
+                  className="alert-admin-textarea"
+                  placeholder="Description"
+                  value={logForm.description}
+                  onChange={(e) =>
+                    setLogForm({ ...logForm, description: e.target.value })
+                  }
+                />
+
+                <button
+                  className="btn-primary"
+                  onClick={() => addLog()}
+                  style={{ marginTop: 14 }}
+                >
+                  Add Log
+                </button>
+              </div>
+            </div>
+
+            <aside className="staff-side-column">
+              <div className="card compact-card">
+                <h3>Quick Actions</h3>
+
+                <div className="staff-action-stack">
+                  <button className="admin-action-btn admin-neutral" onClick={() => setStatus("active")}>
+                    Set Active
+                  </button>
+
+                  <button className="admin-action-btn admin-neutral" onClick={() => setStatus("suspended")}>
+                    Suspend
+                  </button>
+
+                  <button className="admin-action-btn admin-deny" onClick={() => setStatus("terminated")}>
+                    Terminate
+                  </button>
+
+                  <button className="admin-action-btn admin-neutral" onClick={() => setStatus("resigned")}>
+                    Mark Resigned
+                  </button>
+
+                  <button className="admin-action-btn admin-deny" onClick={blacklist}>
+                    Employment Blacklist
+                  </button>
+
+                  {profile.do_not_hire && (
+                    <button className="admin-action-btn admin-accept" onClick={revokeBlacklist}>
+                      Revoke Blacklist
+                    </button>
+                  )}
+
+                  <button className="admin-action-btn admin-delete" onClick={deleteProfile}>
+                    Delete Profile
                   </button>
                 </div>
-              ))
-            ) : (
-              <p className="muted">No logs found for this profile.</p>
-            )}
+              </div>
+
+              <div className="card compact-card">
+                <h3>Snapshot</h3>
+
+                <div className="staff-snapshot">
+                  <span>Logs</span>
+                  <strong>{logs.length}</strong>
+                </div>
+
+                <div className="staff-snapshot">
+                  <span>Performance</span>
+                  <strong>{profile.performance || "None"}</strong>
+                </div>
+
+                <div className="staff-snapshot">
+                  <span>Cooldown</span>
+                  <strong>{profile.cooldown_until || "None"}</strong>
+                </div>
+
+                <div className="staff-snapshot">
+                  <span>Hire Status</span>
+                  <strong>{doNotHire ? "Do Not Hire" : "Eligible"}</strong>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div className="card compact-card" style={{ marginTop: 24 }}>
+            <h3>Employment Logs</h3>
+
+            <div className="staff-log-grid">
+              {logs.length ? (
+                logs.map((log) => (
+                  <div key={log.id} className="staff-log-card">
+                    <p className="section-label">{log.log_type}</p>
+                    <h3>{log.title}</h3>
+
+                    <p className="muted">
+                      {log.description || "No description provided."}
+                    </p>
+
+                    <p className="muted">
+                      {log.created_by || "Admin"} •{" "}
+                      {new Date(log.created_at).toLocaleString()}
+                    </p>
+
+                    <button
+                      className="admin-action-btn admin-delete"
+                      onClick={() => deleteLog(log.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="muted">No logs found for this profile.</p>
+              )}
+            </div>
           </div>
 
         </div>
