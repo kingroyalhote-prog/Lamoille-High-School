@@ -1301,3 +1301,141 @@ body:has(.maintenancePage) main {
 .alert-admin-textarea::placeholder {
   color: #94a3b8;
 }
+/* ===== STAFF PROFILE PAGE ===== */
+.staff-profile-hero {
+  background: linear-gradient(135deg, #06101f, #0b1f3f, #0f3d46);
+  color: white;
+  padding: 30px;
+  border-radius: 26px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+
+.staff-profile-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  letter-spacing: -0.04em;
+}
+
+.staff-profile-hero p {
+  margin: 8px 0 0;
+  opacity: 0.85;
+}
+
+.staff-status-badge {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: white;
+  color: #06101f;
+  font-weight: 900;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.staff-danger-banner,
+.staff-warning-banner {
+  padding: 16px 18px;
+  border-radius: 18px;
+  font-weight: 900;
+  margin-bottom: 18px;
+}
+
+.staff-danger-banner {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.staff-warning-banner {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.staff-danger-banner p {
+  margin: 8px 0 0;
+}
+
+.staff-profile-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.staff-main-column,
+.staff-side-column {
+  display: grid;
+  gap: 20px;
+}
+
+.compact-card {
+  padding: 22px;
+}
+
+.staff-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.staff-action-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.staff-action-stack button {
+  width: 100%;
+}
+
+.staff-snapshot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.staff-snapshot:last-child {
+  border-bottom: none;
+}
+
+.staff-snapshot span {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.staff-snapshot strong {
+  text-align: right;
+}
+
+.staff-log-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.staff-log-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 18px;
+  background: #f8fafc;
+}
+
+.staff-log-card h3 {
+  margin: 4px 0 8px;
+}
+
+@media (max-width: 950px) {
+  .staff-profile-layout,
+  .staff-log-grid,
+  .staff-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .staff-profile-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
