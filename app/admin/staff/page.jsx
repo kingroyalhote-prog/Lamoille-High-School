@@ -1,31 +1,44 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { supabase } from "../../../lib/supabase"
 import StaffUsernameSearch from "../../../components/StaffUsernameSearch"
 
-export const dynamic = "force-dynamic"
+export default function StaffDatabasePage() {
+  const [staff, setStaff] = useState([])
+  const [loading, setLoading] = useState(true)
 
-export default async function StaffDatabasePage() {
-  const { data: staff, error } = await supabase
-    .from("staff_profiles")
-    .select("*")
-    .order("roblox_username", { ascending: true })
+  useEffect(() => {
+    loadStaff()
+  }, [])
 
-  if (error) {
-    console.log("Staff Database Error:", error)
+  async function loadStaff() {
+    const { data, error } = await supabase
+      .from("staff_profiles")
+      .select("*")
+      .order("roblox_username", { ascending: true })
+
+    if (error) {
+      console.error("Staff Database Error:", error)
+    }
+
+    setStaff(data || [])
+    setLoading(false)
   }
 
   const activeCount =
-    staff?.filter((s) => s.status === "active").length || 0
+    staff.filter((s) => s.status === "active").length || 0
 
   const blacklistedCount =
-    staff?.filter(
+    staff.filter(
       (s) =>
         s.status === "employment_blacklisted" ||
         s.do_not_hire === true
     ).length || 0
 
   const formerCount =
-    staff?.filter(
+    staff.filter(
       (s) =>
         s.status === "terminated" ||
         s.status === "resigned"
@@ -35,60 +48,34 @@ export default async function StaffDatabasePage() {
     <main className="content">
       <section className="section">
         <div className="container">
-
           <div style={{ marginBottom: 30 }}>
             <p className="section-label">Staff Database</p>
-
             <h1>Staff Records</h1>
-
             <p className="muted">
-              Manage employment history, warnings,
-              performance, hiring eligibility,
-              disciplinary records, and staffing decisions.
+              Manage employment history, warnings, performance, hiring
+              eligibility, disciplinary records, and staffing decisions.
             </p>
           </div>
 
           <div className="card-grid">
-
             <div className="card">
               <h3>Active Staff</h3>
-
-              <p
-                style={{
-                  fontSize: 32,
-                  fontWeight: 800,
-                  color: "#16a34a",
-                }}
-              >
-                {activeCount}
+              <p style={{ fontSize: 32, fontWeight: 800, color: "#16a34a" }}>
+                {loading ? "..." : activeCount}
               </p>
             </div>
 
             <div className="card">
               <h3>Former Staff</h3>
-
-              <p
-                style={{
-                  fontSize: 32,
-                  fontWeight: 800,
-                  color: "#64748b",
-                }}
-              >
-                {formerCount}
+              <p style={{ fontSize: 32, fontWeight: 800, color: "#64748b" }}>
+                {loading ? "..." : formerCount}
               </p>
             </div>
 
             <div className="card">
               <h3>Blacklisted</h3>
-
-              <p
-                style={{
-                  fontSize: 32,
-                  fontWeight: 800,
-                  color: "#dc2626",
-                }}
-              >
-                {blacklistedCount}
+              <p style={{ fontSize: 32, fontWeight: 800, color: "#dc2626" }}>
+                {loading ? "..." : blacklistedCount}
               </p>
 
               <Link
@@ -99,15 +86,11 @@ export default async function StaffDatabasePage() {
                 View Blacklist
               </Link>
             </div>
-
           </div>
 
           <StaffUsernameSearch />
 
-          <div
-            className="card"
-            style={{ marginTop: 30 }}
-          >
+          <div className="card" style={{ marginTop: 30 }}>
             <div
               style={{
                 display: "flex",
@@ -116,25 +99,15 @@ export default async function StaffDatabasePage() {
                 marginBottom: 20,
               }}
             >
-              <h3 style={{ margin: 0 }}>
-                Staff Profiles
-              </h3>
+              <h3 style={{ margin: 0 }}>Staff Profiles</h3>
 
-              <Link
-                href="/admin/staff/new"
-                className="btn-primary"
-              >
+              <Link href="/admin/staff/new" className="btn-primary">
                 Create Profile
               </Link>
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gap: 12,
-              }}
-            >
-              {staff?.length ? (
+            <div style={{ display: "grid", gap: 12 }}>
+              {staff.length ? (
                 staff.map((person) => (
                   <Link
                     key={person.id}
@@ -152,31 +125,17 @@ export default async function StaffDatabasePage() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        transition: "all .2s ease",
                       }}
                     >
                       <div>
-                        <strong>
-                          {person.roblox_username}
-                        </strong>
+                        <strong>{person.roblox_username}</strong>
 
-                        <div
-                          style={{
-                            color: "#64748b",
-                            marginTop: 4,
-                          }}
-                        >
+                        <div style={{ color: "#64748b", marginTop: 4 }}>
                           {person.position || "No Position"}
                         </div>
                       </div>
 
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 10,
-                        }}
-                      >
+                      <div style={{ display: "flex", gap: 10 }}>
                         {person.do_not_hire && (
                           <span
                             style={{
@@ -209,7 +168,6 @@ export default async function StaffDatabasePage() {
               )}
             </div>
           </div>
-
         </div>
       </section>
     </main>
