@@ -5,10 +5,14 @@ import StaffUsernameSearch from "../../../components/StaffUsernameSearch"
 export const dynamic = "force-dynamic"
 
 export default async function StaffDatabasePage() {
-  const { data: staff } = await supabase
+  const { data: staff, error } = await supabase
     .from("staff_profiles")
     .select("*")
-    .order("roblox_username")
+    .order("roblox_username", { ascending: true })
+
+  if (error) {
+    console.log("Staff Database Error:", error)
+  }
 
   const activeCount =
     staff?.filter((s) => s.status === "active").length || 0
@@ -44,7 +48,6 @@ export default async function StaffDatabasePage() {
             </p>
           </div>
 
-          {/* STAT CARDS */}
           <div className="card-grid">
 
             <div className="card">
@@ -99,10 +102,8 @@ export default async function StaffDatabasePage() {
 
           </div>
 
-          {/* SEARCH BY ROBLOX USERNAME */}
           <StaffUsernameSearch />
 
-          {/* STAFF PROFILES */}
           <div
             className="card"
             style={{ marginTop: 30 }}
