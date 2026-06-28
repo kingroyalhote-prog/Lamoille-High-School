@@ -586,10 +586,14 @@ a {
 /* ===== MAINTENANCE PAGE ===== */
 .maintenancePage {
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
   background:
-    radial-gradient(circle at top left, rgba(99, 102, 241, 0.25), transparent 32%),
-    radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.22), transparent 34%),
-    linear-gradient(135deg, #06101f, #0b1f3f);
+    linear-gradient(120deg, rgba(20, 184, 166, 0.16), transparent 34%),
+    linear-gradient(240deg, rgba(99, 102, 241, 0.18), transparent 38%),
+    linear-gradient(135deg, #06101f, #0b1f3f 58%, #0f3d46);
+  background-size: 160% 160%;
+  animation: maintenanceBgMove 12s ease-in-out infinite;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -597,16 +601,79 @@ a {
   color: white;
 }
 
+.maintenancePage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+  animation: maintenanceGridDrift 18s linear infinite;
+  pointer-events: none;
+}
+
+.maintenancePage::after {
+  content: "";
+  position: absolute;
+  width: 42vw;
+  height: 160vh;
+  top: -30vh;
+  left: -55vw;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  transform: rotate(18deg);
+  animation: maintenanceLightSweep 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
 .maintenanceCard {
   width: 100%;
-  max-width: 560px;
+  max-width: 620px;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
   text-align: center;
-  padding: 44px 34px;
+  padding: 52px 38px;
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(18px);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+  background: rgba(15, 23, 42, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  animation: maintenanceCardFloat 5s ease-in-out infinite;
+}
+
+.maintenanceCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent),
+    linear-gradient(135deg, rgba(20, 184, 166, 0.18), transparent 42%, rgba(99, 102, 241, 0.16));
+  transform: translateX(-100%);
+  animation: maintenanceCardShine 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.maintenanceCard::after {
+  content: "SYSTEM UPDATE IN PROGRESS";
+  display: inline-block;
+  margin-top: 26px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(20, 184, 166, 0.14);
+  border: 1px solid rgba(45, 212, 191, 0.34);
+  color: rgba(204, 251, 241, 0.94);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
 }
 
 .maintenanceCard img {
@@ -617,32 +684,39 @@ a {
 }
 
 .maintenanceCard h1 {
-  margin: 0 0 12px;
-  font-size: clamp(2rem, 5vw, 3rem);
-  letter-spacing: -0.04em;
+  position: relative;
+  margin: 0 0 14px;
+  font-size: clamp(2.25rem, 5vw, 3.45rem);
+  line-height: 1.04;
+  letter-spacing: 0;
+  color: white;
+  text-shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
 }
 
 .maintenanceCard p {
-  margin: 0 0 28px;
-  font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.88);
+  position: relative;
+  margin: 0 0 30px;
+  font-size: 1.08rem;
+  color: rgba(255, 255, 255, 0.86);
   line-height: 1.6;
 }
 
 .adminLoginBtn {
+  position: relative;
   display: inline-block;
-  padding: 13px 24px;
+  padding: 14px 26px;
   border-radius: 999px;
   background: white;
   color: #06101f;
-  font-weight: 800;
+  font-weight: 900;
   text-decoration: none;
   transition: 0.2s ease;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
 }
 
 .adminLoginBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
 }
 
 body:has(.maintenancePage) .district-header,
@@ -652,6 +726,62 @@ body:has(.maintenancePage) .site-footer {
 
 body:has(.maintenancePage) main {
   flex: 1;
+}
+
+@keyframes maintenanceBgMove {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes maintenanceGridDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(54px, 54px, 0);
+  }
+}
+
+@keyframes maintenanceLightSweep {
+  0%, 42% {
+    left: -55vw;
+    opacity: 0;
+  }
+
+  52% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 115vw;
+    opacity: 0;
+  }
+}
+
+@keyframes maintenanceCardFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes maintenanceCardShine {
+  0%, 45% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }
 /* ===== EMPLOYMENT GOOGLE FORM PAGE ===== */
 .employment-page {
