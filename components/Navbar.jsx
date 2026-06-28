@@ -28,9 +28,8 @@ export default function Navbar() {
   }
 
   return (
-    <header className="district-header">
+    <header className="district-header site-nav">
       <div className="district-topbar">
-
         <Link href="/" className="district-brand">
           <Image
             src="/images/lamoille-logo.png"
@@ -52,10 +51,7 @@ export default function Navbar() {
                 Admin Dashboard
               </Link>
 
-              <button
-                onClick={handleLogout}
-                className="district-logout-btn"
-              >
+              <button onClick={handleLogout} className="district-logout-btn">
                 Logout
               </button>
             </>
@@ -63,6 +59,20 @@ export default function Navbar() {
             <Link href="/login" className="district-login-btn">
               Login
             </Link>
+          )}
+        </div>
+      </div>
+
+      <nav className="district-nav">
+        <Link href="/about">About</Link>
+        <Link href="/employment">Employment</Link>
+        <Link href="/clubs">Clubs</Link>
+        <Link href="/athletics">Athletics</Link>
+        <Link href="/calendar">Calendar</Link>
+      </nav>
+    </header>
+  )
+}            </Link>
           )}
         </div>
       </div>
