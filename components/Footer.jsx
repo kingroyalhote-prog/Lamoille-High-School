@@ -1,6 +1,7 @@
 export default function Footer() {
   return (
     <footer
+      className="site-footer"
       style={{
         background: "#06101f",
         color: "white",
@@ -66,10 +67,24 @@ export default function Footer() {
           <p style={{ margin: "2px 0", color: "rgba(255,255,255,0.82)" }}>
             © 2026 Lamoille High School
           </p>
-          <p style={{ margin: "2px 0", fontSize: "0.78rem", color: "rgba(255,255,255,0.58)" }}>
+
+          <p
+            style={{
+              margin: "2px 0",
+              fontSize: "0.78rem",
+              color: "rgba(255,255,255,0.58)",
+            }}
+          >
             Website made by Josh Productions
           </p>
-          <p style={{ margin: "2px 0", fontSize: "0.78rem", color: "rgba(255,255,255,0.58)" }}>
+
+          <p
+            style={{
+              margin: "2px 0",
+              fontSize: "0.78rem",
+              color: "rgba(255,255,255,0.58)",
+            }}
+          >
             This website has no affiliation with any real school.
           </p>
         </div>
