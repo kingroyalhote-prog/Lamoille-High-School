@@ -644,7 +644,8 @@ a {
   transform: translateY(-2px);
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
 }
-body:has(.maintenancePage) .site-nav,
+
+body:has(.maintenancePage) .district-header,
 body:has(.maintenancePage) .site-footer {
   display: none !important;
 }
