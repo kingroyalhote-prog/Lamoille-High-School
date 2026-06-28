@@ -28,7 +28,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="district-header site-nav">
+ <header className="district-header">
       <div className="district-topbar">
         <Link href="/" className="district-brand">
           <Image
