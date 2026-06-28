@@ -72,18 +72,4 @@ export default function Navbar() {
       </nav>
     </header>
   )
-}            </Link>
-          )}
-        </div>
-      </div>
-
-      <nav className="district-nav">
-        <Link href="/about">About</Link>
-        <Link href="/employment">Employment</Link>
-        <Link href="/clubs">Clubs</Link>
-        <Link href="/athletics">Athletics</Link>
-        <Link href="/calendar">Calendar</Link>
-      </nav>
-    </header>
-  )
 }
