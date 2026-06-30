@@ -104,7 +104,7 @@ export default async function Home() {
 
             <div className="school-event-card">
               <strong>Weekly Sessions</strong>
-              <span>Monday, Wednesday, Thursday</span>
+              <span>Monday, Wednesday, Friday</span>
               <p>7:00 PM Eastern Time</p>
             </div>
           </aside>
