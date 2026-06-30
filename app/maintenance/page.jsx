@@ -1,6 +1,20 @@
-import Link from "next/link";
+import Link from "next/link"
+import { redirect } from "next/navigation"
+import { supabase } from "../../lib/supabase"
 
-export default function MaintenancePage() {
+export const dynamic = "force-dynamic"
+
+export default async function MaintenancePage() {
+  const { data } = await supabase
+    .from("site_settings")
+    .select("maintenance_mode")
+    .eq("id", 1)
+    .single()
+
+  if (data?.maintenance_mode !== true) {
+    redirect("/")
+  }
+
   return (
     <main className="maintenancePage">
       <div className="maintenanceCard">
@@ -12,5 +26,5 @@ export default function MaintenancePage() {
         </Link>
       </div>
     </main>
-  );
+  )
 }
