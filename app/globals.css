@@ -172,11 +172,11 @@ a {
 }
 
 .hero h1 {
-  font-size: clamp(3.2rem, 7vw, 6.4rem);
+  font-size: clamp(4rem, 10vw, 8rem);
   margin: 0;
   font-weight: 950;
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
   text-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
 }
 
