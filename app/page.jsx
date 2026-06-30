@@ -17,26 +17,18 @@ export default async function Home() {
         <div className="hero-inner">
           <p className="hero-eyebrow">Lamoille Independent School District</p>
 
-          <h1>
-            Lamoille ISD
-            <span className="hero-break">Home of Lamoille High School</span>
-          </h1>
+          <h1>Lamoille ISD</h1>
 
-          <p className="hero-tagline">One District. One Campus. Every Opportunity.</p>
+          <p className="hero-tagline">Where Ambition Meets Opportunity</p>
 
           <p className="hero-subtext">
-            Lamoille ISD supports a focused high school community built around
-            academics, leadership, student life, athletics, and meaningful
-            opportunities for every learner.
+            Home of Lamoille High School, a focused school community built
+            around excellence, leadership, and opportunity for every student.
           </p>
 
           <div className="hero-actions">
             <Link href="/about" className="btn-primary">
-              Explore Lamoille ISD
-            </Link>
-
-            <Link href="/calendar" className="btn-secondary">
-              View Calendar
+              Learn More
             </Link>
           </div>
         </div>
@@ -58,6 +50,7 @@ export default async function Home() {
                 <p className="section-label">District Updates</p>
                 <h2>News & Announcements</h2>
               </div>
+
               <Link href="/announcements">View All</Link>
             </div>
 
@@ -91,13 +84,16 @@ export default async function Home() {
                 <p className="section-label">At a Glance</p>
                 <h2>District Snapshot</h2>
               </div>
+
               <Link href="/about">Learn More</Link>
             </div>
 
             <div className="school-event-card">
               <strong>Lamoille High School</strong>
               <span>Main district campus</span>
-              <p>A high school community focused on student growth and belonging.</p>
+              <p>
+                A high school community focused on student growth and belonging.
+              </p>
             </div>
 
             <div className="school-event-card">
@@ -118,7 +114,9 @@ export default async function Home() {
       <section className="school-about-strip">
         <div>
           <p className="section-label">About Lamoille ISD</p>
+
           <h2>A district built around one strong high school community.</h2>
+
           <p>
             Lamoille Independent School District exists to support Lamoille High
             School with a clear focus on academics, opportunity, leadership, and
