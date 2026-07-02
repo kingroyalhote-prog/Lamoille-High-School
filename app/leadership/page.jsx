@@ -16,24 +16,9 @@ function LeaderCard({ leader }) {
         <h3>{leader.roleplay_name}</h3>
 
         <div className="leadership-details">
-          <p>
-            <strong>Roblox Username:</strong>{" "}
-            {leader.roblox_username || "Not provided"}
-          </p>
-
-          <p>
-            <strong>Email:</strong>{" "}
-            {leader.email ? (
-              <a href={`mailto:${leader.email}`}>{leader.email}</a>
-            ) : (
-              "Not provided"
-            )}
-          </p>
-
-          <p>
-            <strong>Fun Fact:</strong>{" "}
-            {leader.fun_fact || "No fun fact has been added yet."}
-          </p>
+          <p><strong>Roblox Username:</strong> {leader.roblox_username || "Not provided"}</p>
+          <p><strong>Email:</strong> {leader.email || "Not provided"}</p>
+          <p><strong>Fun Fact:</strong> {leader.fun_fact || "No fun fact has been added yet."}</p>
         </div>
       </div>
     </article>
@@ -49,19 +34,16 @@ function LeaderSection({ title, subtitle, leaders }) {
             <p className="section-label">Leadership</p>
             <h2>{title}</h2>
           </div>
-
           <span className="muted">{subtitle}</span>
         </div>
 
         <div className="leadership-grid">
           {leaders.length ? (
-            leaders.map((leader) => (
-              <LeaderCard key={leader.id} leader={leader} />
-            ))
+            leaders.map((leader) => <LeaderCard key={leader.id} leader={leader} />)
           ) : (
             <div className="card">
               <h3>No leaders added yet</h3>
-              <p>This leadership section will update once profiles are added.</p>
+              <p>This section will update once profiles are added.</p>
             </div>
           )}
         </div>
@@ -71,33 +53,38 @@ function LeaderSection({ title, subtitle, leaders }) {
 }
 
 export default async function LeadershipPage() {
-  const { data: leaders } = await supabase
+  const { data, error } = await supabase
     .from("leadership_members")
     .select("*")
     .eq("is_published", true)
     .order("display_order", { ascending: true })
-    .order("created_at", { ascending: true })
 
-  const allLeaders = leaders || []
+  if (error) {
+    return (
+      <main className="content">
+        <section className="section">
+          <div className="container">
+            <div className="card">
+              <h1>Leadership page error</h1>
+              <p>{error.message}</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    )
+  }
 
-  const districtLeaders = allLeaders.filter(
-    (leader) => leader.leader_type === "district"
-  )
-
-  const schoolLeaders = allLeaders.filter(
-    (leader) => leader.leader_type === "school"
-  )
+  const leaders = data || []
+  const districtLeaders = leaders.filter((leader) => leader.leader_type === "district")
+  const schoolLeaders = leaders.filter((leader) => leader.leader_type === "school")
 
   return (
     <main>
       <section className="hero leadership-hero">
         <div className="hero-inner">
           <p className="hero-eyebrow">Lamoille ISD</p>
-
           <h1>Leadership</h1>
-
           <p className="hero-tagline">Guiding Our District and School</p>
-
           <p className="hero-subtext">
             Meet the district and school leaders supporting Lamoille ISD and
             Lamoille High School.
@@ -105,13 +92,13 @@ export default async function LeadershipPage() {
         </div>
       </section>
 
-      <LeadershipSection
+      <LeaderSection
         title="District Leaders"
         subtitle="District leadership appears first"
         leaders={districtLeaders}
       />
 
-      <LeadershipSection
+      <LeaderSection
         title="School Leaders"
         subtitle="Lamoille High School leadership"
         leaders={schoolLeaders}
