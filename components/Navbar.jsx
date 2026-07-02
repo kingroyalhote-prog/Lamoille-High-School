@@ -63,13 +63,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      <nav className="district-nav">
-        <Link href="/about">About ISD</Link>
-        <Link href="/employment">Careers</Link>
-        <Link href="/clubs">Clubs</Link>
-        <Link href="/athletics">Athletics</Link>
-        <Link href="/calendar">Calendar</Link>
-      </nav>
+  <nav className="district-nav">
+  <Link href="/about">About ISD</Link>
+  <Link href="/leadership">Leadership</Link>
+  <Link href="/employment">Careers</Link>
+  <Link href="/clubs">Clubs</Link>
+  <Link href="/athletics">Athletics</Link>
+  <Link href="/calendar">Calendar</Link>
+</nav>
     </header>
   )
 }
