@@ -1940,3 +1940,11 @@ body:has(.maintenancePage) main {
 .leadership-details {
   flex: 1;
 }
+.leadership-photo {
+  width: 100%;
+  height: 260px;
+  object-fit: contain;
+  object-position: center;
+  background: #f1f5f9;
+  padding: 12px;
+}
