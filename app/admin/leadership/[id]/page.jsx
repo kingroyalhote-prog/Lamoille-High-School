@@ -141,6 +141,7 @@ export default function EditLeaderPage() {
             >
               <option value="district">District Leader</option>
               <option value="school">School Leader</option>
+              <option value="board">School Board Member</option>
             </select>
 
             <label>Roleplay Name</label>
