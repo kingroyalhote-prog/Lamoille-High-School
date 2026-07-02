@@ -1,18 +1,17 @@
 export default function AboutPage() {
   return (
     <main className="content">
-
       <section className="section">
         <div className="container">
-
           <div
             style={{
               background:
                 "linear-gradient(135deg, #06101f, #0b1f3f, #0f3d46)",
               color: "white",
-              padding: "50px",
+              padding: "52px",
               borderRadius: "28px",
-              marginBottom: "40px",
+              marginBottom: "36px",
+              boxShadow: "0 18px 45px rgba(15, 23, 42, 0.18)",
             }}
           >
             <p
@@ -20,17 +19,19 @@ export default function AboutPage() {
                 textTransform: "uppercase",
                 fontWeight: 800,
                 letterSpacing: "0.08em",
-                opacity: 0.8,
-                marginBottom: "10px",
+                opacity: 0.82,
+                margin: "0 0 10px",
               }}
             >
-              About Lamoille High School
+              About Lamoille ISD
             </p>
 
             <h1
               style={{
                 margin: 0,
-                fontSize: "3rem",
+                fontSize: "clamp(2.4rem, 6vw, 4.4rem)",
+                lineHeight: 1,
+                letterSpacing: "-0.04em",
               }}
             >
               Where Ambition Meets Opportunity
@@ -38,40 +39,41 @@ export default function AboutPage() {
 
             <p
               style={{
-                maxWidth: "750px",
-                marginTop: "20px",
+                maxWidth: "780px",
+                margin: "22px 0 0",
                 fontSize: "1.1rem",
                 lineHeight: 1.7,
                 opacity: 0.92,
               }}
             >
-              Lamoille High School is a modern educational community focused on
-              leadership, involvement, academic excellence, and meaningful
-              opportunities for every student.
+              Lamoille Independent School District is built around Lamoille High
+              School, a focused learning community where students are encouraged
+              to grow through academics, leadership, student life, athletics,
+              and meaningful school involvement.
             </p>
           </div>
 
           <div className="card-grid">
-
             <div className="card">
-              <h2>🎯 Our Mission</h2>
-
+              <p className="section-label">Mission</p>
+              <h2>Preparing students for what comes next.</h2>
               <p>
-                We prepare students for future success through strong academics,
-                positive relationships, leadership development, and meaningful
-                opportunities both inside and outside the classroom.
+                Lamoille ISD supports students through strong academics,
+                positive relationships, leadership development, and
+                opportunities that help every learner build confidence and
+                purpose.
               </p>
             </div>
 
             <div className="card">
-              <h2>🌟 Our Vision</h2>
-
+              <p className="section-label">Vision</p>
+              <h2>A connected school community.</h2>
               <p>
-                To create a welcoming school community where every student feels
-                supported, challenged, and inspired to achieve their goals.
+                Our vision is to create a district where students feel known,
+                supported, challenged, and inspired to reach their goals inside
+                and outside the classroom.
               </p>
             </div>
-
           </div>
 
           <div
@@ -80,14 +82,13 @@ export default function AboutPage() {
               marginTop: "30px",
             }}
           >
-            <h2>🏫 Our Community</h2>
-
+            <p className="section-label">Lamoille High School</p>
+            <h2>One district, one campus, one shared standard.</h2>
             <p>
-              At Lamoille High School, students, staff, and families work
-              together to build a positive and engaging learning environment.
-              Through clubs, athletics, events, and leadership opportunities,
-              students are encouraged to become active members of the school
-              community.
+              Lamoille High School is the heart of Lamoille ISD. Students,
+              staff, and families work together to create a positive school
+              culture built on responsibility, participation, and community
+              pride.
             </p>
           </div>
 
@@ -97,13 +98,12 @@ export default function AboutPage() {
               marginTop: "24px",
             }}
           >
-            <h2>📚 Student Growth</h2>
-
+            <p className="section-label">Student Experience</p>
+            <h2>Growth beyond the classroom.</h2>
             <p>
-              We believe education extends beyond the classroom. Students are
-              encouraged to develop leadership skills, build lasting
-              relationships, participate in extracurricular activities, and
-              prepare for future success.
+              Students are encouraged to take part in clubs, athletics, events,
+              and leadership opportunities that help them build relationships,
+              discover interests, and prepare for future success.
             </p>
           </div>
 
@@ -122,9 +122,10 @@ export default function AboutPage() {
                 gap: "12px",
               }}
             >
-              <h2 style={{ margin: 0 }}>
-                👥 Meet Our Leadership Team
-              </h2>
+              <div>
+                <p className="section-label">Leadership</p>
+                <h2 style={{ margin: 0 }}>Meet Our Leadership Team</h2>
+              </div>
 
               <span
                 style={{
@@ -140,14 +141,12 @@ export default function AboutPage() {
             </div>
 
             <p style={{ marginTop: "16px" }}>
-              Learn more about the leadership team guiding Lamoille High School,
-              including school administrators and department leaders.
+              Learn more about the administrators and department leaders guiding
+              Lamoille ISD and supporting Lamoille High School students.
             </p>
           </div>
-
         </div>
       </section>
-
     </main>
   )
 }
