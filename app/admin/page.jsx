@@ -5,15 +5,25 @@ import WebsiteAlertAdmin from "../../components/WebsiteAlertAdmin"
 
 export const dynamic = "force-dynamic"
 
+async function getCount(table) {
+  const { count } = await supabase
+    .from(table)
+    .select("*", { count: "exact", head: true })
+
+  return count || 0
+}
+
 export default async function AdminPage() {
-  const { count: announcementsCount } = await supabase.from("announcements").select("*", { count: "exact", head: true })
-  const { count: jobsCount } = await supabase.from("job_postings").select("*", { count: "exact", head: true })
-  const { count: applicationsCount } = await supabase.from("applications").select("*", { count: "exact", head: true })
-  const { count: eventsCount } = await supabase.from("events").select("*", { count: "exact", head: true })
-  const { count: clubsCount } = await supabase.from("clubs").select("*", { count: "exact", head: true })
-  const { count: athleticsCount } = await supabase.from("athletics").select("*", { count: "exact", head: true })
-  const { count: leadershipCount } = await supabase.from("leadership_members").select("*", { count: "exact", head: true })
-  const { count: athleticRegistrationsCount } = await supabase.from("athletic_registrations").select("*", { count: "exact", head: true })
+  const cards = [
+    ["Announcements", await getCount("announcements"), "posts", "/admin/announcements", "Manage"],
+    ["Clubs", await getCount("clubs"), "clubs", "/admin/clubs", "Manage"],
+    ["Athletics", await getCount("athletics"), "sports", "/admin/athletics", "Manage"],
+    ["Leadership", await getCount("leadership_members"), "leaders", "/admin/leadership", "Manage"],
+    ["Athletic Registrations", await getCount("athletic_registrations"), "submissions", "/admin/athletics/registrations", "View"],
+    ["Jobs", await getCount("job_postings"), "postings", "/admin/jobs", "Manage"],
+    ["Applications", await getCount("applications"), "submitted", "/admin/applications", "Review"],
+    ["Calendar", await getCount("events"), "events", "/admin/calendar", "Manage"],
+  ]
 
   return (
     <main className="content">
@@ -26,21 +36,13 @@ export default async function AdminPage() {
           </div>
 
           <div className="card-grid" style={{ marginTop: "20px" }}>
-            <div
-              className="card"
-              style={{
-                background: "linear-gradient(135deg, #0f172a, #1e293b)",
-                color: "white",
-                border: "none",
-                boxShadow: "0 15px 40px rgba(15, 23, 42, 0.25)",
-              }}
-            >
+            <div className="card">
               <h3>Staff Database</h3>
-              <p style={{ opacity: 0.9, lineHeight: 1.6, marginBottom: "18px" }}>
-                Manage employee records, warnings, notes, performance, hiring
-                eligibility, blacklists, and staff history.
+              <p className="muted">
+                Manage employee records, warnings, notes, eligibility,
+                blacklists, and staff history.
               </p>
-              <Link href="/admin/staff" className="btn-secondary">
+              <Link href="/admin/staff" className="btn-primary" style={{ marginTop: "12px" }}>
                 Open Staff Database
               </Link>
             </div>
@@ -48,25 +50,21 @@ export default async function AdminPage() {
             <MaintenanceSwitch />
             <WebsiteAlertAdmin />
 
-            <AdminCard title="Announcements" count={announcementsCount} label="posts" href="/admin/announcements" button="Manage" />
-            <AdminCard title="Clubs" count={clubsCount} label="clubs" href="/admin/clubs" button="Manage" />
-            <AdminCard title="Athletics" count={athleticsCount} label="sports" href="/admin/athletics" button="Manage" />
-            <AdminCard title="Leadership" count={leadershipCount} label="leaders" href="/admin/leadership" button="Manage" />
-            <AdminCard title="Athletic Registrations" count={athleticRegistrationsCount} label="submissions" href="/admin/athletics/registrations" button="View" />
-            <AdminCard title="Jobs" count={jobsCount} label="postings" href="/admin/jobs" button="Manage" />
-            <AdminCard title="Applications" count={applicationsCount} label="submitted" href="/admin/applications" button="Review" />
-            <AdminCard title="Calendar" count={eventsCount} label="events" href="/admin/calendar" button="Manage" />
+            {cards.map(([title, count, label, href, button]) => (
+              <AdminCard
+                key={href}
+                title={title}
+                count={count}
+                label={label}
+                href={href}
+                button={button}
+              />
+            ))}
 
-            <div
-              className="card"
-              style={{
-                background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-                color: "white",
-              }}
-            >
+            <div className="card">
               <h3>Admin Controls</h3>
-              <p style={{ opacity: 0.85 }}>Manage admin access and permissions</p>
-              <Link href="/admin/users" className="btn-secondary" style={{ marginTop: "12px" }}>
+              <p className="muted">Manage admin access and permissions.</p>
+              <Link href="/admin/users" className="btn-primary" style={{ marginTop: "12px" }}>
                 Manage Admins
               </Link>
             </div>
@@ -81,18 +79,11 @@ function AdminCard({ title, count, label, href, button }) {
   return (
     <div className="card">
       <h3>{title}</h3>
-
       <p style={{ fontSize: "22px", fontWeight: 700, margin: "6px 0" }}>
-        {count || 0}
+        {count}
       </p>
-
       <p className="muted">{label}</p>
-
-      <Link
-        href={href}
-        className="btn-primary"
-        style={{ marginTop: "12px", display: "inline-block" }}
-      >
+      <Link href={href} className="btn-primary" style={{ marginTop: "12px" }}>
         {button}
       </Link>
     </div>
