@@ -106,7 +106,21 @@ export default function AboutPage() {
               discover interests, and prepare for future success.
             </p>
           </div>
-
+<div
+  className="card"
+  style={{
+    marginTop: "24px",
+  }}
+>
+  <p className="section-label">Career & Technical Education</p>
+  <h2>Hands-on pathways for real-world skills.</h2>
+  <p>
+    Lamoille ISD offers Career and Technical Education opportunities that help
+    students explore future careers while building practical skills. Programs
+    such as Health Sciences and Culinary Arts give students meaningful ways to
+    learn, practice, and prepare for life after high school.
+  </p>
+</div>
           <div
             className="card"
             style={{
