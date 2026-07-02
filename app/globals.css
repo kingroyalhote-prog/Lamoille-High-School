@@ -1935,3 +1935,37 @@ body:has(.maintenancePage) main {
     height: 220px;
   }
 }
+/* ===== HOME ALERT BANNER ===== */
+.home-alert-banner {
+  width: 100%;
+  overflow: hidden;
+  background: #ff2a12;
+  color: white;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid rgba(7, 20, 38, 0.18);
+  padding: 14px 0;
+  font-weight: 900;
+}
+
+.home-alert-track {
+  display: flex;
+  width: max-content;
+  gap: 48px;
+  white-space: nowrap;
+  animation: homeAlertScroll 28s linear infinite;
+}
+
+.home-alert-track span {
+  display: inline-block;
+  padding-right: 48px;
+}
+
+@keyframes homeAlertScroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
