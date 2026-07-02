@@ -1920,8 +1920,8 @@ body:has(.maintenancePage) main {
 }
 
 .leadership-photo {
-  aspect-ratio: 1 / 1;
-  height: auto;
+  width: 100%;
+  height: 190px;
   object-fit: cover;
 }
 
