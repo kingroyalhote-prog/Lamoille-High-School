@@ -19,7 +19,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body style={{ margin: 0 }}>
         <SummerSemesterPopup />
-        <WebsiteAlert />
 
         <div
           style={{
@@ -29,6 +28,7 @@ export default function RootLayout({ children }) {
           }}
         >
           <Navbar />
+          <WebsiteAlert />
 
           <main style={{ flex: 1 }}>
             {children}
