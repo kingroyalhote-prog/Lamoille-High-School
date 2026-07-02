@@ -470,26 +470,95 @@ a {
 /* ===== LOADING ===== */
 .loading-page {
   min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(99, 102, 241, 0.2), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.22), transparent 36%),
+    linear-gradient(135deg, #06101f, #0b1f3f 58%, #0f3d46);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
+  padding: 24px;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #e2e8f0;
-  border-top: 4px solid #4f46e5;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.loading-box {
+  text-align: center;
+  animation: loadingFadeUp 0.5s ease both;
 }
 
-@keyframes spin {
+.loading-orbit {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 24px;
+  position: relative;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  animation: loadingSpin 1.4s linear infinite;
+}
+
+.loading-orbit::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.loading-orbit span {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.72);
+}
+
+.loading-orbit span:nth-child(1) {
+  top: -7px;
+  left: 41px;
+}
+
+.loading-orbit span:nth-child(2) {
+  right: 6px;
+  bottom: 12px;
+  background: #5eead4;
+}
+
+.loading-orbit span:nth-child(3) {
+  left: 6px;
+  bottom: 12px;
+  background: #818cf8;
+}
+
+.loading-box h1 {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  letter-spacing: -0.04em;
+}
+
+.loading-box p {
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 700;
+}
+
+@keyframes loadingSpin {
   to {
     transform: rotate(360deg);
   }
 }
 
+@keyframes loadingFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 /* ===== MOBILE ===== */
 @media (max-width: 900px) {
   .home-feature-card {
