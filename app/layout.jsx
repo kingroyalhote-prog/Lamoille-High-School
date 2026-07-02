@@ -5,10 +5,12 @@ import SummerSemesterPopup from "../components/SummerSemesterPopup"
 import WebsiteAlert from "../components/WebsiteAlert"
 
 export const metadata = {
-  title: "Lamoille High School",
-  description: "Official website of Lamoille High School",
+  title: "Lamoille ISD",
+  description: "Where Ambition Meets Opportunity",
   icons: {
-    icon: "/images/lamoille-logo.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
 }
 
