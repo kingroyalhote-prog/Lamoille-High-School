@@ -214,4 +214,46 @@ export default function EditLeaderPage() {
             {message && (
               <p
                 style={{
-                  color: message.includes("Error") ? "#b
+                  color: message.includes("Error") ? "#b91c1c" : "#166534",
+                }}
+              >
+                {message}
+              </p>
+            )}
+
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+                marginTop: "16px",
+              }}
+            >
+              <button type="submit" className="btn-primary" disabled={saving}>
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="admin-action-btn admin-delete"
+              >
+                Delete Leader
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  )
+}
+
+const inputStyle = {
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "1px solid #cbd5e1",
+  marginTop: "6px",
+  marginBottom: "16px",
+  fontFamily: "inherit",
+}
