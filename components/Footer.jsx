@@ -3,11 +3,11 @@ export default function Footer() {
     <footer
       className="site-footer"
       style={{
-        background: "#06101f",
+        background: "linear-gradient(90deg, #071426, #0b2f4f)",
         color: "white",
         marginTop: "80px",
-        padding: "28px 20px",
-        borderTop: "1px solid rgba(255,255,255,0.08)",
+        padding: "34px 20px",
+        borderTop: "5px solid #c9972b",
       }}
     >
       <div
@@ -25,17 +25,17 @@ export default function Footer() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "14px",
+            gap: "16px",
           }}
         >
           <img
             src="/images/lamoille-logo.png"
-            alt="Lamoille High School logo"
+            alt="Lamoille ISD logo"
             style={{
-              width: "52px",
-              height: "52px",
-              objectFit: "cover",
-              borderRadius: "999px",
+              width: "70px",
+              height: "70px",
+              objectFit: "contain",
+              borderRadius: 0,
               flexShrink: 0,
             }}
           />
@@ -44,48 +44,49 @@ export default function Footer() {
             <h3
               style={{
                 margin: "0 0 4px",
-                fontSize: "1.05rem",
+                fontSize: "1.15rem",
                 color: "white",
               }}
             >
-              Lamoille High School
+              Lamoille ISD
             </h3>
 
             <p
               style={{
                 margin: 0,
-                color: "rgba(255,255,255,0.72)",
-                fontSize: "0.9rem",
+                color: "rgba(255,255,255,0.76)",
+                fontSize: "0.92rem",
+                fontWeight: 700,
               }}
             >
-              Excellence. Community. Opportunity.
+              Where Ambition Meets Opportunity
             </p>
           </div>
         </div>
 
         <div style={{ textAlign: "right" }}>
-          <p style={{ margin: "2px 0", color: "rgba(255,255,255,0.82)" }}>
-            © 2026 Lamoille High School
+          <p style={{ margin: "2px 0", color: "rgba(255,255,255,0.84)" }}>
+            © 2026 Lamoille Independent School District
           </p>
 
           <p
             style={{
               margin: "2px 0",
               fontSize: "0.78rem",
-              color: "rgba(255,255,255,0.58)",
+              color: "rgba(255,255,255,0.6)",
+            }}
+          >
+            Home of Lamoille High School
+          </p>
+
+          <p
+            style={{
+              margin: "2px 0",
+              fontSize: "0.78rem",
+              color: "rgba(255,255,255,0.6)",
             }}
           >
             Website made by Josh Productions
-          </p>
-
-          <p
-            style={{
-              margin: "2px 0",
-              fontSize: "0.78rem",
-              color: "rgba(255,255,255,0.58)",
-            }}
-          >
-            This website has no affiliation with any real school.
           </p>
         </div>
       </div>
