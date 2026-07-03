@@ -1067,12 +1067,7 @@ body:has(.maintenancePage) main {
   border-radius: 32px;
   overflow: hidden;
   background:
-    linear-gradient(
-      135deg,
-      rgba(6, 16, 31, 0.94),
-      rgba(22, 42, 88, 0.86),
-      rgba(92, 27, 36, 0.82)
-    ),
+    linear-gradient(135deg, rgba(6, 16, 31, 0.94), rgba(22, 42, 88, 0.86), rgba(92, 27, 36, 0.82)),
     url("/images/LHS.png") center / cover no-repeat;
   color: white;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.45);
@@ -1172,7 +1167,6 @@ body:has(.maintenancePage) main {
   margin: 0;
   font-size: clamp(2rem, 5vw, 3rem);
   line-height: 1.05;
-  letter-spacing: -0.04em;
 }
 
 .summer-popup-dates {
