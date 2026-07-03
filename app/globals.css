@@ -1937,27 +1937,62 @@ body:has(.maintenancePage) main {
 }
 /* ===== HOME ALERT BANNER ===== */
 .home-alert-banner {
+  position: relative;
   width: 100%;
+  min-height: 44px;
   overflow: hidden;
-  background: #ff2a12;
-  color: white;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
-  border-bottom: 1px solid rgba(7, 20, 38, 0.18);
-  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(
+    90deg,
+    rgba(6, 16, 31, 0.96),
+    rgba(87, 29, 35, 0.96),
+    rgba(6, 16, 31, 0.96)
+  );
+  color: #fff7ed;
+  border-top: 1px solid rgba(217, 157, 43, 0.36);
+  border-bottom: 1px solid rgba(217, 157, 43, 0.42);
   font-weight: 900;
 }
 
+.home-alert-banner::before {
+  content: "ALERT";
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  padding: 0 18px;
+  background: rgba(217, 157, 43, 0.18);
+  color: #ffe8ad;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  border-right: 1px solid rgba(217, 157, 43, 0.28);
+}
+
 .home-alert-track {
+  min-width: max-content;
   display: flex;
-  width: max-content;
+  align-items: center;
   gap: 48px;
+  padding-left: 28px;
   white-space: nowrap;
-  animation: homeAlertScroll 28s linear infinite;
+  animation: homeAlertScroll 34s linear infinite;
 }
 
 .home-alert-track span {
   display: inline-block;
-  padding-right: 48px;
+  color: rgba(255, 247, 237, 0.95);
+  font-size: 0.95rem;
+}
+
+.home-alert-track span::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 48px;
+  border-radius: 999px;
+  background: rgba(217, 157, 43, 0.8);
+  vertical-align: middle;
 }
 
 @keyframes homeAlertScroll {
@@ -1966,6 +2001,13 @@ body:has(.maintenancePage) main {
   }
 
   to {
-    transform: translateX(-50%);
+    transform: translateX(-33.333%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-alert-track {
+    animation: none;
+    transform: none;
   }
 }
