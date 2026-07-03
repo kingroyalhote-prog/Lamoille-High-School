@@ -30,19 +30,14 @@ export default function SummerSemesterPopup() {
           <span className="firework firework-three"></span>
         </div>
 
-        <button
-          className="summer-popup-close"
-          onClick={() => setShow(false)}
-        >
+        <button className="summer-popup-close" onClick={() => setShow(false)}>
           ×
         </button>
 
         <div className="summer-popup-content">
           <p className="summer-popup-pill">Fourth of July Holiday</p>
 
-          <h2>
-            Happy Fourth of July from Lamoille ISD
-          </h2>
+          <h2>Happy Fourth of July from Lamoille ISD</h2>
 
           <p className="summer-popup-dates">
             Offices Closed Until July 6
