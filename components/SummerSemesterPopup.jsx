@@ -23,14 +23,19 @@ export default function SummerSemesterPopup() {
 
   return (
     <div className="summer-popup-overlay">
-      <div className="summer-popup">
-        <div className="summer-fireworks" aria-hidden="true">
-          <span className="firework firework-one"></span>
-          <span className="firework firework-two"></span>
-          <span className="firework firework-three"></span>
-        </div>
+      <div className="summer-fireworks" aria-hidden="true">
+        <span className="firework firework-one"></span>
+        <span className="firework firework-two"></span>
+        <span className="firework firework-three"></span>
+        <span className="firework firework-four"></span>
+        <span className="firework firework-five"></span>
+      </div>
 
-        <button className="summer-popup-close" onClick={() => setShow(false)}>
+      <div className="summer-popup">
+        <button
+          className="summer-popup-close"
+          onClick={() => setShow(false)}
+        >
           ×
         </button>
 
