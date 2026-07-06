@@ -4,15 +4,14 @@ import { useEffect, useState } from "react"
 
 export default function SummerSemesterPopup() {
   const [show, setShow] = useState(false)
-  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
-    const alreadySeen = sessionStorage.getItem("julyFourthPopupSeen")
+    const alreadySeen = sessionStorage.getItem("robloxGroupPopupSeen")
 
     if (!alreadySeen) {
       const timer = setTimeout(() => {
         setShow(true)
-        sessionStorage.setItem("julyFourthPopupSeen", "true")
+        sessionStorage.setItem("robloxGroupPopupSeen", "true")
       }, 700)
 
       return () => clearTimeout(timer)
@@ -23,14 +22,6 @@ export default function SummerSemesterPopup() {
 
   return (
     <div className="summer-popup-overlay">
-      <div className="summer-fireworks" aria-hidden="true">
-        <span className="firework firework-one"></span>
-        <span className="firework firework-two"></span>
-        <span className="firework firework-three"></span>
-        <span className="firework firework-four"></span>
-        <span className="firework firework-five"></span>
-      </div>
-
       <div className="summer-popup">
         <button
           className="summer-popup-close"
@@ -40,39 +31,30 @@ export default function SummerSemesterPopup() {
         </button>
 
         <div className="summer-popup-content">
-          <p className="summer-popup-pill">Fourth of July Holiday</p>
+          <p className="summer-popup-pill">Lamoille ISD Update</p>
 
-          <h2>Happy Fourth of July from Lamoille ISD</h2>
+          <h2>
+            Join Our New Roblox Group
+          </h2>
 
           <p className="summer-popup-dates">
-            Offices Closed Until July 6
+            New Official Community
           </p>
 
           <p>
-            Lamoille ISD offices are closed for the Independence Day holiday
-            weekend and will reopen on Monday, July 6.
+            We had to make a new Roblox group due to unforeseen events. Please
+            join the new Lamoille Independent School District group to stay
+            connected with our community.
           </p>
 
-          {expanded && (
-            <div className="summer-popup-more">
-              <p>
-                Families, students, and staff can still check the website for
-                announcements, calendar updates, and other district information
-                while offices are closed.
-              </p>
-
-              <p>
-                We hope everyone has a safe, fun, and relaxing holiday weekend.
-              </p>
-            </div>
-          )}
-
-          <button
+          <a
+            href="https://www.roblox.com/communities/1022057335/Lamoille-Independent-School-District#!/about"
             className="summer-popup-btn"
-            onClick={() => setExpanded(!expanded)}
+            target="_blank"
+            rel="noreferrer"
           >
-            {expanded ? "Show Less" : "Holiday Details"}
-          </button>
+            Join Roblox Group
+          </a>
         </div>
       </div>
     </div>
