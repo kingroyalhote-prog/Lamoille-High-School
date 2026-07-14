@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import SummerSemesterPopup from "../components/SummerSemesterPopup"
 import WebsiteAlert from "../components/WebsiteAlert"
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata = {
   title: "Lamoille ISD",
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
 
           <Footer />
         </div>
+        <Analytics />
       </body>
     </html>
   )
