@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingIncludes: {
+    "/api/school-board-results/image": [
+      "./private/school-board-results/**/*",
+    ],
+  },
+
   images: {
     remotePatterns: [
       {
