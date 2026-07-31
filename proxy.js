@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server"
+import { SCHOOL_BOARD_RESULTS_ENABLED } from "./lib/schoolBoardResults"
 
 export async function proxy(request) {
   const pathname = request.nextUrl.pathname
 
   if (
     pathname.startsWith("/admin") ||
+    pathname.startsWith("/login") ||
     pathname.startsWith("/maintenance") ||
+    pathname.startsWith("/school-board-results") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/images") ||
@@ -32,6 +35,10 @@ export async function proxy(request) {
 
   if (data?.[0]?.maintenance_mode === true) {
     return NextResponse.redirect(new URL("/maintenance", request.url))
+  }
+
+  if (SCHOOL_BOARD_RESULTS_ENABLED) {
+    return NextResponse.redirect(new URL("/school-board-results", request.url))
   }
 
   return NextResponse.next()
