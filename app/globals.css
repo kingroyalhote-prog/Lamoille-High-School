@@ -16,6 +16,35 @@ a {
   color: inherit;
 }
 
+/* ===== SCHOOL BOARD RESULTS GATE ===== */
+body:has(.results-gate-page) .district-header,
+body:has(.results-gate-page) .site-nav,
+body:has(.results-gate-page) .site-footer,
+body:has(.results-gate-page) .home-alert-banner,
+body:has(.results-gate-page) .website-alert,
+body:has(.results-gate-page) .summer-popup-overlay {
+  display: none !important;
+}
+
+.results-gate-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  color: white;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(217, 157, 43, 0.25), transparent 28%),
+    radial-gradient(circle at 82% 20%, rgba(15, 95, 102, 0.32), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(99, 102, 241, 0.18), transparent 34%),
+    linear-gradient(135deg, #06101f, #0b1f3f 52%, #0f3d46);
+}
+
+/* rest of the countdown CSS goes here */
+
+/* ===== NAVBAR ===== */
+.site-nav {
+
 /* ===== NAVBAR ===== */
 .site-nav {
   width: 100%;
