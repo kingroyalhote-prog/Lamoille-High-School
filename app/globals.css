@@ -40,11 +40,6 @@ body:has(.results-gate-page) .summer-popup-overlay {
     linear-gradient(135deg, #06101f, #0b1f3f 52%, #0f3d46);
 }
 
-/* rest of the countdown CSS goes here */
-
-/* ===== NAVBAR ===== */
-.site-nav {
-
 /* ===== NAVBAR ===== */
 .site-nav {
   width: 100%;
