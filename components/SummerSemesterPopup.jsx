@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 
 export default function SummerSemesterPopup() {
+  const popupEnabled = false
   const [show, setShow] = useState(false)
 
   useEffect(() => {
