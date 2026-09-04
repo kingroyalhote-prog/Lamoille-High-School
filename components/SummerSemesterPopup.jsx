@@ -6,6 +6,8 @@ export default function SummerSemesterPopup() {
   const popupEnabled = false
   const [show, setShow] = useState(false)
 
+  if (!popupEnabled) return null
+
   useEffect(() => {
     const alreadySeen = sessionStorage.getItem("robloxGroupPopupSeen")
 
@@ -34,9 +36,7 @@ export default function SummerSemesterPopup() {
         <div className="summer-popup-content">
           <p className="summer-popup-pill">Lamoille ISD Update</p>
 
-          <h2>
-            Join Our New Roblox Group
-          </h2>
+          <h2>Join Our New Roblox Group</h2>
 
           <p className="summer-popup-dates">
             New Official Community
