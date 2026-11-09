@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { supabaseAdmin } from "../../../lib/supabaseAdmin"
+import { getSupabaseAdmin } from "../../../lib/supabaseAdmin"
 
 const GROUP_ID = "1048796934"
 
@@ -30,6 +30,8 @@ export async function GET() {
   let skipped = 0
 
   try {
+    const supabaseAdmin = getSupabaseAdmin()
+
     do {
       const url = cursor
         ? `https://groups.roblox.com/v1/groups/${GROUP_ID}/users?limit=10&cursor=${encodeURIComponent(cursor)}`

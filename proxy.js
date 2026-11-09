@@ -20,6 +20,12 @@ export async function proxy(request) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+  // Local previews and build environments may not have deployment secrets.
+  // In that case, leave the public site available and skip the maintenance check.
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.next()
+  }
+
   const response = await fetch(
     `${supabaseUrl}/rest/v1/site_settings?select=maintenance_mode&id=eq.1`,
     {

@@ -1,0 +1,7 @@
+node_modules/
+.next/
+.env*
+!.env.example
+.DS_Store
+.legacy-backup/
+npm-debug.log*

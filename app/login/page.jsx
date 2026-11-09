@@ -1,5 +1,7 @@
 "use client"
 
+import Image from "next/image"
+import Link from "next/link"
 import { useState } from "react"
 import { supabase } from "../../lib/supabase"
 
@@ -8,90 +10,87 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [remember, setRemember] = useState(true)
   const [message, setMessage] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
+  const handleLogin = async (event) => {
+    event.preventDefault()
     setMessage("")
+    setLoading(true)
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
       setMessage(error.message)
+      setLoading(false)
       return
     }
 
-    // optional "remember me"
     if (!remember) {
-      window.addEventListener("beforeunload", async () => {
-        await supabase.auth.signOut()
-      })
+      window.addEventListener("beforeunload", async () => supabase.auth.signOut())
     }
 
-    // ✅ just redirect
     window.location.href = "/admin"
   }
 
   return (
-    <main className="page-shell">
-      <div
-        className="content-card"
-        style={{ maxWidth: "400px", margin: "0 auto" }}
-      >
-        <h2>Admin Login</h2>
+    <main className="login-page">
+      <section className="login-panel login-panel--brand">
+        <div className="login-brand-mark">
+          <Image src="/images/lamoille-logo.png" alt="" width={84} height={84} />
+          <span>Lamoille ISD</span>
+        </div>
+        <div>
+          <p className="eyebrow">Staff portal</p>
+          <h1>The work behind a great student experience starts here.</h1>
+          <p>Manage district news, programs, events, applications, and community information.</p>
+        </div>
+        <Link href="/">← Return to the district site</Link>
+      </section>
 
-        <form onSubmit={handleLogin}>
+      <section className="login-panel login-panel--form">
+        <form className="login-form" onSubmit={handleLogin}>
+          <p className="section-label">Authorized staff</p>
+          <h2>Welcome back.</h2>
+          <p>Sign in with your Lamoille administrator account.</p>
+
+          <label htmlFor="email">Email address</label>
           <input
+            id="email"
             type="email"
-            placeholder="Email"
+            autoComplete="email"
+            placeholder="name@lamoilleisd.org"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
             required
-            style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
           />
 
+          <label htmlFor="password">Password</label>
           <input
+            id="password"
             type="password"
-            placeholder="Password"
+            autoComplete="current-password"
+            placeholder="Enter your password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
             required
-            style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
           />
 
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "12px",
-              fontSize: "14px",
-              color: "#334155",
-            }}
-          >
+          <label className="login-remember">
             <input
               type="checkbox"
               checked={remember}
-              onChange={() => setRemember(!remember)}
+              onChange={() => setRemember((value) => !value)}
             />
             Keep me signed in
           </label>
 
-          <button
-            type="submit"
-            className="btn btn-primary"
-            style={{ width: "100%" }}
-          >
-            Login
+          {message && <p className="form-error" role="alert">{message}</p>}
+
+          <button type="submit" className="button button--navy" disabled={loading}>
+            {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
-
-        {message && (
-          <p style={{ marginTop: "10px", color: "red" }}>{message}</p>
-        )}
-      </div>
+      </section>
     </main>
   )
 }

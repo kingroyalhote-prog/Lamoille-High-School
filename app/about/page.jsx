@@ -1,163 +1,116 @@
+import Image from "next/image"
+import Link from "next/link"
+
+export const metadata = {
+  title: "About",
+  description: "Meet the mission, values, and student experience behind Lamoille ISD.",
+}
+
+const values = [
+  ["01", "Ambition", "We set a high bar and give students the support to clear it."],
+  ["02", "Belonging", "Every student deserves to be known, included, and heard."],
+  ["03", "Leadership", "Students learn to take initiative and follow through."],
+  ["04", "Opportunity", "School should open doors—in the classroom and beyond it."],
+]
+
 export default function AboutPage() {
   return (
-    <main className="content">
-      <section className="section">
+    <main>
+      <section className="page-hero page-hero--about">
+        <div className="container page-hero-inner">
+          <p className="eyebrow">About Lamoille ISD</p>
+          <h1>Small enough to know you. Bold enough to move you forward.</h1>
+          <p>
+            Lamoille Independent School District is one focused high school
+            community built around excellence, leadership, and meaningful opportunity.
+          </p>
+        </div>
+      </section>
+
+      <section className="about-intro-section">
+        <div className="container about-intro-grid">
+          <div className="about-intro-copy">
+            <p className="section-label">Our purpose</p>
+            <h2>School should feel personal—and lead somewhere real.</h2>
+          </div>
+          <div className="about-intro-body">
+            <p>
+              At Lamoille, strong academics are only the beginning. Students
+              build confidence by leading, collaborating, competing, and
+              contributing to a community that takes their ideas seriously.
+            </p>
+            <p>
+              Our virtual campus creates room for focused learning and genuine
+              connection, with a weekly rhythm that keeps students engaged and moving forward.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mission-section">
+        <div className="container mission-grid">
+          <div className="mission-image">
+            <Image src="/images/LHS.png" alt="Lamoille High School campus" fill sizes="(max-width: 900px) 100vw, 50vw" />
+          </div>
+          <div className="mission-copy">
+            <div>
+              <p className="section-label section-label--light">Our mission</p>
+              <h2>Prepare every student to lead with purpose.</h2>
+              <p>
+                We pair academic growth with positive relationships, practical
+                skills, and opportunities that help learners discover what they do well.
+              </p>
+            </div>
+            <div className="mission-divider" />
+            <div>
+              <p className="section-label section-label--light">Our vision</p>
+              <h2>A community where potential becomes momentum.</h2>
+              <p>
+                Every student feels known, challenged, supported, and ready to
+                take the next step with confidence.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="values-section">
         <div className="container">
-          <div
-            style={{
-              background:
-                "linear-gradient(135deg, #06101f, #0b1f3f, #0f3d46)",
-              color: "white",
-              padding: "52px",
-              borderRadius: "28px",
-              marginBottom: "36px",
-              boxShadow: "0 18px 45px rgba(15, 23, 42, 0.18)",
-            }}
-          >
-            <p
-              style={{
-                textTransform: "uppercase",
-                fontWeight: 800,
-                letterSpacing: "0.08em",
-                opacity: 0.82,
-                margin: "0 0 10px",
-              }}
-            >
-              About Lamoille ISD
-            </p>
-
-            <h1
-              style={{
-                margin: 0,
-                fontSize: "clamp(2.4rem, 6vw, 4.4rem)",
-                lineHeight: 1,
-                letterSpacing: "-0.04em",
-              }}
-            >
-              Where Ambition Meets Opportunity
-            </h1>
-
-            <p
-              style={{
-                maxWidth: "780px",
-                margin: "22px 0 0",
-                fontSize: "1.1rem",
-                lineHeight: 1.7,
-                opacity: 0.92,
-              }}
-            >
-              Lamoille Independent School District is built around Lamoille High
-              School, a focused learning community where students are encouraged
-              to grow through academics, leadership, student life, athletics,
-              and meaningful school involvement.
-            </p>
-          </div>
-
-          <div className="card-grid">
-            <div className="card">
-              <p className="section-label">Mission</p>
-              <h2>Preparing students for what comes next.</h2>
-              <p>
-                Lamoille ISD supports students through strong academics,
-                positive relationships, leadership development, and
-                opportunities that help every learner build confidence and
-                purpose.
-              </p>
+          <div className="section-heading section-heading--split">
+            <div>
+              <p className="section-label">What guides us</p>
+              <h2>Values you can feel.</h2>
             </div>
-
-            <div className="card">
-              <p className="section-label">Vision</p>
-              <h2>A connected school community.</h2>
-              <p>
-                Our vision is to create a district where students feel known,
-                supported, challenged, and inspired to reach their goals inside
-                and outside the classroom.
-              </p>
-            </div>
+            <p>These ideas shape how we learn, lead, and show up for one another.</p>
           </div>
+          <div className="values-grid">
+            {values.map(([number, title, copy]) => (
+              <article className="value-card" key={title}>
+                <span>{number}</span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div
-            className="card"
-            style={{
-              marginTop: "30px",
-            }}
-          >
-            <p className="section-label">Lamoille High School</p>
-            <h2>One district, one campus, one shared standard.</h2>
+      <section className="pathways-section">
+        <div className="container pathways-grid">
+          <div>
+            <p className="section-label">Beyond the classroom</p>
+            <h2>More ways to find what moves you.</h2>
             <p>
-              Lamoille High School is the heart of Lamoille ISD. Students,
-              staff, and families work together to create a positive school
-              culture built on responsibility, participation, and community
-              pride.
+              Career and Technical Education pathways—including Health
+              Sciences and Culinary Arts—help students build practical skills
+              while clubs, service, and leadership turn interests into experience.
             </p>
+            <Link href="/clubs" className="button button--navy">Explore student life <span aria-hidden="true">→</span></Link>
           </div>
-
-          <div
-            className="card"
-            style={{
-              marginTop: "24px",
-            }}
-          >
-            <p className="section-label">Student Experience</p>
-            <h2>Growth beyond the classroom.</h2>
-            <p>
-              Students are encouraged to take part in clubs, athletics, events,
-              and leadership opportunities that help them build relationships,
-              discover interests, and prepare for future success.
-            </p>
-          </div>
-<div
-  className="card"
-  style={{
-    marginTop: "24px",
-  }}
->
-  <p className="section-label">Career & Technical Education</p>
-  <h2>Hands-on pathways for real-world skills.</h2>
-  <p>
-    Lamoille ISD offers Career and Technical Education opportunities that help
-    students explore future careers while building practical skills. Programs
-    such as Health Sciences and Culinary Arts give students meaningful ways to
-    learn, practice, and prepare for life after high school.
-  </p>
-</div>
-          <div
-            className="card"
-            style={{
-              marginTop: "24px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: "12px",
-              }}
-            >
-              <div>
-                <p className="section-label">Leadership</p>
-                <h2 style={{ margin: 0 }}>Meet Our Leadership Team</h2>
-              </div>
-
-              <span
-                style={{
-                  background: "#e2e8f0",
-                  padding: "8px 14px",
-                  borderRadius: "999px",
-                  fontWeight: 700,
-                  color: "#334155",
-                }}
-              >
-                Coming Soon
-              </span>
-            </div>
-
-            <p style={{ marginTop: "16px" }}>
-              Learn more about the administrators and department leaders guiding
-              Lamoille ISD and supporting Lamoille High School students.
-            </p>
+          <div className="pathway-list">
+            <Link href="/clubs"><span>Student clubs</span><strong>Connect & create</strong><i aria-hidden="true">↗</i></Link>
+            <a href="https://lamoille-sis.vercel.app/" target="_blank" rel="noreferrer"><span>SIS portal</span><strong>Student access</strong><i aria-hidden="true">↗</i></a>
+            <Link href="/employment"><span>Careers</span><strong>Join the team</strong><i aria-hidden="true">↗</i></Link>
           </div>
         </div>
       </section>

@@ -2,15 +2,23 @@ import { NextResponse } from "next/server"
 import { Resend } from "resend"
 import { createClient } from "@supabase/supabase-js"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-)
-
 export async function POST(request, { params }) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        { error: "Server email and database settings are not configured." },
+        { status: 503 }
+      )
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey)
+    const resend = process.env.RESEND_API_KEY
+      ? new Resend(process.env.RESEND_API_KEY)
+      : null
+
     const { id } = await params
     const { status, denialReason } = await request.json()
 
@@ -58,7 +66,7 @@ export async function POST(request, { params }) {
 
     const applicantEmail = application.email
 
-    if (applicantEmail) {
+    if (applicantEmail && resend) {
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL,
         to: applicantEmail,
