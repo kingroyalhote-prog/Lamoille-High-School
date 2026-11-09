@@ -36,12 +36,12 @@ export default async function Home() {
           <div className="home-hero-copy">
             <p className="eyebrow">Lamoille Independent School District</p>
             <h1>
-              Start here.
-              <span>Go anywhere.</span>
+              Lamoille
+              <span>High School</span>
             </h1>
             <p className="home-hero-lead">
-              A student-first virtual school community where ambition turns
-              into action—and every learner has room to lead.
+              Where ambition meets opportunity. Access school resources,
+              student programs, district news, and the SIS portal from one place.
             </p>
             <div className="home-hero-actions">
               <a href="https://lamoille-sis.vercel.app/" target="_blank" rel="noreferrer" className="button button--gold">
@@ -63,8 +63,8 @@ export default async function Home() {
               <span><i aria-hidden="true" /> Campus schedule</span>
               <strong>ET</strong>
             </div>
-            <p className="week-card-kicker">One portal. Everything you need.</p>
-            <h2>Your Lamoille school day starts in SIS.</h2>
+            <p className="week-card-kicker">Student information system</p>
+            <h2>Grades, records, and school resources.</h2>
             <div className="week-days" aria-label="SIS portal features">
               <span>GRADES</span><span>INFO</span><span>TOOLS</span>
             </div>
@@ -82,9 +82,9 @@ export default async function Home() {
           <div className="section-heading section-heading--split">
             <div>
               <p className="section-label">Find your next move</p>
-              <h2 id="quick-links-title">Everything you need, one click away.</h2>
+              <h2 id="quick-links-title">Get where you need to go.</h2>
             </div>
-            <p>Explore the people, programs, and moments that make Lamoille feel like home.</p>
+            <p>Direct access to the tools, information, and programs students use most.</p>
           </div>
           <div className="quick-link-grid">
             {quickLinks.map((item) => (
@@ -106,7 +106,7 @@ export default async function Home() {
           <div className="section-heading section-heading--split">
             <div>
               <p className="section-label">District pulse</p>
-              <h2 id="news-title">News worth knowing.</h2>
+              <h2 id="news-title">District announcements.</h2>
             </div>
             <Link href="/announcements" className="text-link">All announcements <span aria-hidden="true">→</span></Link>
           </div>
@@ -150,11 +150,10 @@ export default async function Home() {
           </div>
           <div className="story-copy">
             <p className="section-label">One school. One community.</p>
-            <h2>Built for students who want more from school.</h2>
+            <h2>One high school. One community.</h2>
             <p>
-              Lamoille combines ambitious academics with real leadership,
-              spirited competition, and a community that notices when you show
-              up. Here, students do more than attend—they help shape what comes next.
+              Lamoille High School brings academics, student leadership, clubs,
+              and community programs together in one connected virtual campus.
             </p>
             <ul className="story-points">
               <li><span>01</span> Student leadership with real responsibility</li>
@@ -170,7 +169,7 @@ export default async function Home() {
         <div className="container home-final-cta-inner">
           <div>
             <p className="section-label section-label--light">Make your mark</p>
-            <h2>Your future looks good from here.</h2>
+            <h2>Need student information?</h2>
           </div>
           <div>
             <p>Grades, schedules, resources, and student information are always within reach.</p>

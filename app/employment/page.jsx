@@ -17,7 +17,7 @@ export default function EmploymentPage() {
       <section className="page-hero page-hero--careers">
         <div className="container page-hero-inner">
           <p className="eyebrow">Careers at Lamoille</p>
-          <h1>Do work that helps students become more.</h1>
+          <h1>Join the Lamoille team.</h1>
           <p>
             Join a collaborative team creating an ambitious, welcoming, and
             memorable school experience for every learner.
@@ -31,7 +31,7 @@ export default function EmploymentPage() {
           <div className="section-heading section-heading--split">
             <div>
               <p className="section-label">Why Lamoille</p>
-              <h2>Bring your strengths. Build something meaningful.</h2>
+              <h2>Why work at Lamoille?</h2>
             </div>
             <p>We’re looking for dependable, creative people who care about student growth.</p>
           </div>
@@ -51,7 +51,7 @@ export default function EmploymentPage() {
         <div className="container application-layout">
           <aside className="application-sidebar">
             <p className="section-label section-label--light">Apply now</p>
-            <h2>Ready to make an impact?</h2>
+            <h2>Employment application</h2>
             <p>Complete the application and our leadership team will review your submission.</p>
             <ol>
               <li><span>1</span> Tell us about yourself</li>

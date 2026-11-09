@@ -19,7 +19,7 @@ export default function AboutPage() {
       <section className="page-hero page-hero--about">
         <div className="container page-hero-inner">
           <p className="eyebrow">About Lamoille ISD</p>
-          <h1>Small enough to know you. Bold enough to move you forward.</h1>
+          <h1>About Lamoille ISD</h1>
           <p>
             Lamoille Independent School District is one focused high school
             community built around excellence, leadership, and meaningful opportunity.
@@ -31,7 +31,7 @@ export default function AboutPage() {
         <div className="container about-intro-grid">
           <div className="about-intro-copy">
             <p className="section-label">Our purpose</p>
-            <h2>School should feel personal—and lead somewhere real.</h2>
+            <h2>A focused, connected school community.</h2>
           </div>
           <div className="about-intro-body">
             <p>
@@ -55,7 +55,7 @@ export default function AboutPage() {
           <div className="mission-copy">
             <div>
               <p className="section-label section-label--light">Our mission</p>
-              <h2>Prepare every student to lead with purpose.</h2>
+              <h2>Prepare every student for what comes next.</h2>
               <p>
                 We pair academic growth with positive relationships, practical
                 skills, and opportunities that help learners discover what they do well.
@@ -64,7 +64,7 @@ export default function AboutPage() {
             <div className="mission-divider" />
             <div>
               <p className="section-label section-label--light">Our vision</p>
-              <h2>A community where potential becomes momentum.</h2>
+              <h2>A community where students can learn and lead.</h2>
               <p>
                 Every student feels known, challenged, supported, and ready to
                 take the next step with confidence.
@@ -79,7 +79,7 @@ export default function AboutPage() {
           <div className="section-heading section-heading--split">
             <div>
               <p className="section-label">What guides us</p>
-              <h2>Values you can feel.</h2>
+              <h2>Our core values.</h2>
             </div>
             <p>These ideas shape how we learn, lead, and show up for one another.</p>
           </div>
@@ -99,7 +99,7 @@ export default function AboutPage() {
         <div className="container pathways-grid">
           <div>
             <p className="section-label">Beyond the classroom</p>
-            <h2>More ways to find what moves you.</h2>
+            <h2>Learning beyond the classroom.</h2>
             <p>
               Career and Technical Education pathways—including Health
               Sciences and Culinary Arts—help students build practical skills
