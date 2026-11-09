@@ -10,6 +10,7 @@ const navigation = [
   { href: "/about", label: "About" },
   { href: "/clubs", label: "Clubs" },
   { href: "/announcements", label: "News" },
+  { href: "/school-board", label: "School Board" },
   { href: "/calendar", label: "Calendar", disabled: true },
   { href: "/employment", label: "Careers" },
 ]

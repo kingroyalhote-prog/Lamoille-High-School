@@ -4,6 +4,7 @@ import { supabase } from "../../../lib/supabase"
 export const dynamic = "force-dynamic"
 
 function getLeaderTypeLabel(type) {
+  if (type === "board") return "School Board Member"
   return type === "district" ? "District Leader" : "School Leader"
 }
 
@@ -22,7 +23,7 @@ export default async function AdminLeadershipPage() {
           <h1>Manage Leadership</h1>
 
           <p className="muted">
-            Add, edit, publish, and organize district and school leaders.
+            Add, edit, publish, and organize district, school, and school board members.
           </p>
 
           <Link

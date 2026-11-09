@@ -24,6 +24,7 @@ export default function Footer() {
           <Link href="/about">About the district</Link>
           <Link href="/clubs">Student clubs</Link>
           <Link href="/announcements">District news</Link>
+          <Link href="/school-board">School board</Link>
           <a href="https://lamoille-sis.vercel.app/" target="_blank" rel="noreferrer">Student SIS portal ↗</a>
         </div>
 

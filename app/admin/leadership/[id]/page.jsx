@@ -209,7 +209,7 @@ export default function EditLeaderPage() {
                 type="checkbox"
                 defaultChecked={leader.is_published}
               />
-              Show on public leadership page
+              Show on the public website
             </label>
 
             {message && (

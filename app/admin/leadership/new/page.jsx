@@ -105,7 +105,7 @@ export default function NewLeaderPage() {
               }}
             >
               <input name="is_published" type="checkbox" defaultChecked />
-              Show on public leadership page
+              Show on the public website
             </label>
 
             {message && <p style={{ color: "#b91c1c" }}>{message}</p>}
