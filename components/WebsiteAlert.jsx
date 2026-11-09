@@ -29,22 +29,20 @@ export default function WebsiteAlert() {
 
   const title = alert.alert_title || "Website Alert"
   const message = alert.alert_message || ""
-  const alertText = `${title}: ${message}`
+
+  if (closed) return null
 
   if (pathname === "/") {
     return (
       <div className="home-alert-banner">
-        <div className="home-alert-track">
-          <span>{alertText}</span>
-          <span>{alertText}</span>
-          <span>{alertText}</span>
-          <span>{alertText}</span>
+        <div className="home-alert-content">
+          <strong>{title}</strong>
+          <span>{message}</span>
         </div>
+        <button className="home-alert-close" onClick={() => setClosed(true)} aria-label="Close alert">×</button>
       </div>
     )
   }
-
-  if (closed) return null
 
   return (
     <div className="website-alert">

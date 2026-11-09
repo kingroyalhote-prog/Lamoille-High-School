@@ -40,18 +40,6 @@ export default function Navbar() {
 
   return (
     <header className="district-header">
-      <div className="district-utility">
-        <div className="district-utility-inner">
-          <p>
-            <span className="utility-dot" aria-hidden="true" />
-            A virtual school community built for what comes next
-          </p>
-          <a href="https://lamoille-sis.vercel.app/" target="_blank" rel="noreferrer">
-            Open the Lamoille SIS portal ↗
-          </a>
-        </div>
-      </div>
-
       <div className="district-topbar">
         <Link href="/" className="district-brand" aria-label="Lamoille ISD home">
           <Image
@@ -131,18 +119,6 @@ export default function Navbar() {
           </Link>
         </div>
       </nav>
-
-      <a
-        href="https://lamoille-sis.vercel.app/"
-        target="_blank"
-        rel="noreferrer"
-        className="sis-float-link"
-        aria-label="Open the Lamoille SIS student portal in a new tab"
-      >
-        <span>SIS</span>
-        Student portal
-        <b aria-hidden="true">↗</b>
-      </a>
     </header>
   )
 }

@@ -4,17 +4,6 @@ import Link from "next/link"
 export default function Footer() {
   return (
     <footer className="site-footer">
-      <div className="footer-cta">
-        <div>
-          <p className="section-label section-label--light">Your next chapter starts here</p>
-          <h2>Find your place at Lamoille.</h2>
-        </div>
-        <div className="footer-cta-actions">
-          <a href="https://lamoille-sis.vercel.app/" target="_blank" rel="noreferrer" className="button button--light">Open SIS portal ↗</a>
-          <Link href="/employment" className="button button--outline-light">Join our team</Link>
-        </div>
-      </div>
-
       <div className="footer-grid">
         <div className="footer-brand">
           <Link href="/" aria-label="Lamoille ISD home">
@@ -25,8 +14,8 @@ export default function Footer() {
             </span>
           </Link>
           <p>
-            A focused virtual school community where students learn, lead,
-            compete, and belong.
+            Home of the Raiders. A connected school community where students
+            learn, lead, and belong.
           </p>
         </div>
 
@@ -58,7 +47,7 @@ export default function Footer() {
 
       <div className="footer-bottom">
         <p>© {new Date().getFullYear()} Lamoille Independent School District</p>
-        <p>Home of Lamoille High School · Built by Josh Productions</p>
+        <p>Home of the Raiders · Built by Josh Productions</p>
       </div>
     </footer>
   )

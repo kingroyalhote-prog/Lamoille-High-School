@@ -5,10 +5,10 @@ import { supabase } from "../lib/supabase"
 export const dynamic = "force-dynamic"
 
 const quickLinks = [
-  { number: "01", title: "SIS student portal", copy: "Access student records, schedules, and school resources.", href: "https://lamoille-sis.vercel.app/", external: true },
-  { number: "02", title: "Student clubs", copy: "Find people who share your interests.", href: "/clubs" },
-  { number: "03", title: "District news", copy: "Read the latest updates from Lamoille ISD.", href: "/announcements" },
-  { number: "04", title: "Careers", copy: "Help build an exceptional student experience.", href: "/employment" },
+  { title: "SIS student portal", copy: "Grades, schedules, records, and student resources.", href: "https://lamoille-sis.vercel.app/", external: true },
+  { title: "Student clubs", copy: "Explore clubs and get involved at Lamoille.", href: "/clubs" },
+  { title: "School news", copy: "Read current announcements and updates.", href: "/announcements" },
+  { title: "Careers", copy: "View opportunities to join the Lamoille team.", href: "/employment" },
 ]
 
 function formatDate(value) {
@@ -34,46 +34,21 @@ export default async function Home() {
         <div className="home-hero-image" aria-hidden="true" />
         <div className="container home-hero-grid">
           <div className="home-hero-copy">
-            <p className="eyebrow">Lamoille Independent School District</p>
-            <h1>
-              Lamoille
-              <span>High School</span>
-            </h1>
+            <p className="eyebrow">Lamoille High School</p>
+            <h1>Where ambition meets opportunity.</h1>
             <p className="home-hero-lead">
-              Where ambition meets opportunity. Access school resources,
-              student programs, district news, and the SIS portal from one place.
+              Home of the Raiders. Find school resources, student programs,
+              district news, and SIS access in one place.
             </p>
             <div className="home-hero-actions">
               <a href="https://lamoille-sis.vercel.app/" target="_blank" rel="noreferrer" className="button button--gold">
                 Open SIS portal <span aria-hidden="true">↗</span>
               </a>
               <Link href="/about" className="text-link text-link--light">
-                Discover Lamoille <span aria-hidden="true">→</span>
+                About our school <span aria-hidden="true">→</span>
               </Link>
             </div>
-            <div className="home-stat-row" aria-label="District highlights">
-              <div><strong>3</strong><span>weekly sessions</span></div>
-              <div><strong>1</strong><span>unified campus</span></div>
-              <div><strong>∞</strong><span>ways to grow</span></div>
-            </div>
           </div>
-
-          <aside className="home-week-card">
-            <div className="week-card-topline">
-              <span><i aria-hidden="true" /> Campus schedule</span>
-              <strong>ET</strong>
-            </div>
-            <p className="week-card-kicker">Student information system</p>
-            <h2>Grades, records, and school resources.</h2>
-            <div className="week-days" aria-label="SIS portal features">
-              <span>GRADES</span><span>INFO</span><span>TOOLS</span>
-            </div>
-            <div className="week-time">
-              <span>Student access</span>
-              <strong>24 / 7</strong>
-            </div>
-            <a href="https://lamoille-sis.vercel.app/" target="_blank" rel="noreferrer">Launch the SIS portal <span aria-hidden="true">↗</span></a>
-          </aside>
         </div>
       </section>
 
@@ -81,15 +56,14 @@ export default async function Home() {
         <div className="container">
           <div className="section-heading section-heading--split">
             <div>
-              <p className="section-label">Find your next move</p>
-              <h2 id="quick-links-title">Get where you need to go.</h2>
+              <p className="section-label">Quick links</p>
+              <h2 id="quick-links-title">Everything in one place.</h2>
             </div>
-            <p>Direct access to the tools, information, and programs students use most.</p>
+            <p>Simple access to the pages students, families, and staff use most.</p>
           </div>
           <div className="quick-link-grid">
             {quickLinks.map((item) => (
               <Link href={item.href} className="quick-link-card" key={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noreferrer" : undefined}>
-                <span className="quick-link-number">{item.number}</span>
                 <div>
                   <h3>{item.title}</h3>
                   <p>{item.copy}</p>
@@ -105,8 +79,8 @@ export default async function Home() {
         <div className="container">
           <div className="section-heading section-heading--split">
             <div>
-              <p className="section-label">District pulse</p>
-              <h2 id="news-title">District announcements.</h2>
+              <p className="section-label">School news</p>
+              <h2 id="news-title">Latest from Lamoille.</h2>
             </div>
             <Link href="/announcements" className="text-link">All announcements <span aria-hidden="true">→</span></Link>
           </div>
@@ -145,20 +119,20 @@ export default async function Home() {
             />
             <div className="story-image-stamp">
               <strong>LHS</strong>
-              <span>Home of the Patriots</span>
+              <span>Home of the Raiders</span>
             </div>
           </div>
           <div className="story-copy">
-            <p className="section-label">One school. One community.</p>
-            <h2>One high school. One community.</h2>
+            <p className="section-label">Home of the Raiders</p>
+            <h2>A school community built to belong.</h2>
             <p>
               Lamoille High School brings academics, student leadership, clubs,
               and community programs together in one connected virtual campus.
             </p>
             <ul className="story-points">
-              <li><span>01</span> Student leadership with real responsibility</li>
-              <li><span>02</span> Clubs and programs that build belonging</li>
-              <li><span>03</span> A connected SIS portal for daily student life</li>
+              <li>Student leadership with real responsibility</li>
+              <li>Clubs and programs that build belonging</li>
+              <li>A connected SIS portal for daily student life</li>
             </ul>
             <Link href="/about" className="button button--navy">Our story <span aria-hidden="true">→</span></Link>
           </div>
@@ -168,8 +142,8 @@ export default async function Home() {
       <section className="home-final-cta">
         <div className="container home-final-cta-inner">
           <div>
-            <p className="section-label section-label--light">Make your mark</p>
-            <h2>Need student information?</h2>
+            <p className="section-label section-label--light">Student access</p>
+            <h2>Your school information, ready when you need it.</h2>
           </div>
           <div>
             <p>Grades, schedules, resources, and student information are always within reach.</p>
